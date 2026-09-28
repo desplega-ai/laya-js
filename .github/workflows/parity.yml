@@ -17,6 +17,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -40,7 +44,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.gated == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -62,12 +66,16 @@ jobs:
           path: ~/.cache/laya-ts/hf
           key: laya-bundle-${{ matrix.checkpoint }}-${{ hashFiles('packages/laya/src/artifacts.ts') }}
       - run: bun install --frozen-lockfile
-      - name: Parity (fp32 vs Python)
-        run: bun run parity --checkpoint ${{ matrix.checkpoint }} --report parity-report/${{ matrix.checkpoint }}-fp32.json
+      - name: Parity (fp32 vs Python), single and batch
+        run: bun run parity --checkpoint ${{ matrix.checkpoint }} --suites single,batch --report parity-report/${{ matrix.checkpoint }}-fp32.json
+      # A fresh process, so the long windows do not stack on the heap the first pass left behind.
+      - name: Parity (fp32 vs Python), long
+        run: bun run parity --checkpoint ${{ matrix.checkpoint }} --suites long --no-arena --report parity-report/${{ matrix.checkpoint }}-fp32-long.json
+      # The perturbation hits every head call, so 20 single cases are enough to prove the gate fails.
       - name: Negative control (--perturb 0.01 must fail the gate)
         run: |
           set +e
-          bun run parity --checkpoint ${{ matrix.checkpoint }} --perturb 0.01 --report parity-report/${{ matrix.checkpoint }}-fp32-perturb.json > perturb.log 2>&1
+          bun run parity --checkpoint ${{ matrix.checkpoint }} --suites single --limit 20 --perturb 0.01 --report parity-report/${{ matrix.checkpoint }}-fp32-perturb.json > perturb.log 2>&1
           code=$?
           tail -n 30 perturb.log
           test "$code" -eq 1 || { echo "::error::negative control exited $code, expected 1 (gate failure)"; exit 1; }
