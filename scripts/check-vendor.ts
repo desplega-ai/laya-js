@@ -34,7 +34,10 @@ for (const [path, { from, sha256 }] of Object.entries(vendor.files)) {
   }
   modified++;
   const head = bytes.toString("utf8").split("\n").slice(0, 5).join("\n");
-  if (!HEADER.test(head)) errors.push(`${path}: differs from upstream ${from} but has no "Modified by Desplega Labs, 2026: <summary>" header`);
+  if (!HEADER.test(head))
+    errors.push(
+      `${path}: differs from upstream ${from} but has no "Modified by Desplega Labs, 2026: <summary>" header`,
+    );
   if (!upstreamMd.includes(`\`${path}\``)) errors.push(`${path}: modified, but UPSTREAM.md does not list it`);
 }
 
