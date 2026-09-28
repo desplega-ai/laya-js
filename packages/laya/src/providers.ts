@@ -1,4 +1,5 @@
-/** ONNX session shim: Node (onnxruntime-node) + browser (onnxruntime-web).
+// Modified by Desplega Labs, 2026: removed the browser path (createWebProvider, loadWebBundle, fetchArrayBuffer, onnxruntime-web).
+/** ONNX session shim: Node (onnxruntime-node).
  * Lazy imports only — unit tests with a fake provider never touch onnxruntime. */
 
 /** Opt-in reviewed commit SHAs of the published checkpoints (mirror of laya/revisions.py).
@@ -187,68 +188,6 @@ function isOomError(e: unknown): boolean {
   const m = String((e as any)?.message ?? e).toLowerCase();
   return m.includes("memory") || m.includes("cuda") || m.includes("out of memory") || m.includes("oom");
 }
-
-/** Online-first fetch: try network, cache on success, fall back to CacheStorage. */
-async function fetchArrayBuffer(
-  url: string,
-  onHeaders?: (response: Response) => void,
-): Promise<ArrayBuffer> {
-  const g = globalThis as unknown as { caches?: any };
-  let cache: any = null;
-  let hit: any = null;
-  try {
-    if (g.caches && typeof g.caches.open === "function") {
-      try {
-        cache = await g.caches.open("laya-ts");
-        try {
-          hit = await cache.match(url);
-        } catch {
-          hit = null;
-        }
-      } catch {
-        cache = null;
-      }
-    }
-  } catch {
-    cache = null;
-  }
-  if (cache) {
-    try {
-      const res = await fetch(url);
-      onHeaders?.(res);
-      if (res.ok) {
-        try {
-          await cache.put(url, res.clone());
-        } catch {
-          /* cache full/blocked: still return network bytes */
-        }
-        return await res.arrayBuffer();
-      }
-    } catch (e) {
-      if (hit) {
-        try {
-          return await hit.arrayBuffer();
-        } catch {
-          /* fall through to throw original */
-        }
-      }
-      throw e;
-    }
-    if (hit) {
-      try {
-        return await hit.arrayBuffer();
-      } catch {
-        /* fall through to direct error below */
-      }
-    }
-    throw new Error(`fetch failed for ${url}`);
-  }
-  const res = await fetch(url);
-  onHeaders?.(res);
-  if (!res.ok) throw new Error(`fetch failed for ${url}: ${res.status}`);
-  return await res.arrayBuffer();
-}
-
 export interface NodeBundle {
   dir: string;
   cfg: any;
@@ -361,61 +300,6 @@ export async function loadNodeBundle(
   return { dir, cfg, tokenizerJson, revision: resolvedRevision };
 }
 
-export interface WebBundle {
-  dir: string;
-  cfg: any;
-  tokenizerJson: unknown | null;
-  /** Pinned/requested commit SHA, if any (full-URL sources have no implicit revision). */
-  revision: string | null;
-}
-
-function baseUrlFor(repoOrUrl: string, subfolder?: string | null, revision?: string | null): string {
-  const sub = subfolder ? `/${subfolder.replace(/^\/+|\/+$/g, "")}` : "";
-  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(repoOrUrl)) {
-    return `${repoOrUrl.replace(/\/+$/, "")}${sub}`;
-  }
-  return `https://huggingface.co/${repoOrUrl}/resolve/${revision ?? "main"}${sub}`;
-}
-
-export async function loadWebBundle(
-  repoOrUrl: string,
-  opts?: {
-    subfolder?: string | null;
-    revision?: string | null;
-    expectedSha256?: Record<string, string>;
-  },
-): Promise<WebBundle> {
-  const revision = resolveRevision(repoOrUrl, opts?.revision);
-  const base = baseUrlFor(repoOrUrl, opts?.subfolder ?? null, revision);
-  let reportedRevision = revision;
-  const fetchVerifiedJson = async (rel: string): Promise<unknown> => {
-    const buf = await fetchArrayBuffer(`${base}/${rel}`, (response) => {
-      const commit = response.headers?.get?.("x-repo-commit");
-      if (commit) reportedRevision = commit;
-    });
-    if (opts?.expectedSha256) await expectDigest(rel, buf, opts.expectedSha256);
-    return JSON.parse(new TextDecoder().decode(buf));
-  };
-  let cfg: any;
-  try {
-    cfg = await fetchVerifiedJson("rl_agent_config.json");
-  } catch (e) {
-    if (e instanceof Error && e.message.startsWith("laya-ts: SHA-256 mismatch")) throw e;
-    throw new Error(`Incompatible model: ${JSON.stringify(repoOrUrl)} does not contain 'rl_agent_config.json'.`);
-  }
-  let tokenizerJson: unknown | null = null;
-  for (const candidate of ["tokenizer.json", "tokenizer/tokenizer.json"]) {
-    try {
-      tokenizerJson = await fetchVerifiedJson(candidate);
-      break;
-    } catch (e) {
-      if (e instanceof Error && e.message.startsWith("laya-ts: SHA-256 mismatch")) throw e;
-      // Try the next supported Hugging Face layout.
-    }
-  }
-  return { dir: base, cfg, tokenizerJson, revision: reportedRevision };
-}
-
 export async function createNodeProvider(
   modelDir: string,
   opts?: ProviderOptions,
@@ -505,71 +389,5 @@ export async function createNodeProvider(
         const at = pickOutput(out, ["act_logits", "act"]) ?? vals[1] ?? vals[0];
         return { logits: toNested(lt.data, lt.dims), act: toNested(at.data, at.dims) };
       }),
-  };
-}
-
-export async function createWebProvider(
-  modelUrl: string,
-  opts?: ProviderOptions,
-): Promise<SessionProvider> {
-  const spec = "onnxruntime-" + "web";
-  const ort: any = await import(/* @vite-ignore */ spec);
-  applyNumThreads(ort, opts?.numThreads);
-  const base = modelUrl.replace(/\/+$/, "");
-  const encUrl = `${base}/encoder.onnx`;
-  const headUrl = `${base}/head.onnx`;
-  let encBuf: ArrayBuffer;
-  try {
-    encBuf = await fetchArrayBuffer(encUrl);
-  } catch {
-    throw new Error(`Incompatible model: 'encoder.onnx' not found (expected ${encUrl}).`);
-  }
-  let headBuf: ArrayBuffer;
-  try {
-    headBuf = await fetchArrayBuffer(headUrl);
-  } catch {
-    throw new Error(`Incompatible model: 'head.onnx' not found (expected ${headUrl}).`);
-  }
-  // Verify before the bytes reach the runtime: a tampered ONNX never becomes a session.
-  if (opts?.expectedSha256) {
-    await expectDigest("encoder.onnx", encBuf, opts.expectedSha256);
-    await expectDigest("head.onnx", headBuf, opts.expectedSha256);
-  }
-  let enc: any;
-  try {
-    enc = await ort.InferenceSession.create(new Uint8Array(encBuf), {
-      executionProviders: ["webgpu", "wasm"],
-    });
-  } catch (e) {
-    enc = await ort.InferenceSession.create(new Uint8Array(encBuf), {
-      executionProviders: ["wasm"],
-    });
-  }
-  const head = await ort.InferenceSession.create(new Uint8Array(headBuf), {
-    executionProviders: ["wasm"],
-  });
-  return {
-    runEncoder: async (b) => {
-      try {
-        const out = await enc.run(feed(ort, b));
-        const t = pickOutput(out, ["last_hidden_state", "lastHidden", "hidden_states"]);
-        return { lastHidden: toNested(t.data, t.dims) };
-      } catch (e) {
-        if (isOomError(e)) throw new Error(`${(e as Error).message} (WebGPU out of memory; WASM fallback already active)`);
-        throw e;
-      }
-    },
-    runHead: async (h, b) => {
-      try {
-        const out = await head.run(feedHead(ort, h, b));
-        const vals = Object.values(out) as any[];
-        const lt = pickOutput(out, ["logits"]);
-        const at = pickOutput(out, ["act_logits", "act"]) ?? vals[1] ?? vals[0];
-        return { logits: toNested(lt.data, lt.dims), act: toNested(at.data, at.dims) };
-      } catch (e) {
-        if (isOomError(e)) throw new Error(`${(e as Error).message} (out of memory; try fewer questions per call)`);
-        throw e;
-      }
-    },
   };
 }

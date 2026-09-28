@@ -1,3 +1,4 @@
+// Modified by Desplega Labs, 2026: Agent.load always takes the Node path (browser branch removed).
 import {
   TEMP_MAX,
   TEMP_MIN,
@@ -581,29 +582,12 @@ export class Agent extends HookRegistry {
     },
   ): Promise<Agent> {
     const sub = opts?.subfolder ?? null;
-    const isBrowser =
-      typeof (globalThis as unknown as { window?: unknown }).window !== "undefined";
     let cfg: AgentCfg = {};
     let tokenizerJson: unknown | null = null;
     let dir = opts?.localDir ?? modelDirOrRepo;
     let revision: string | null = null;
     let provider: SessionProvider;
-    if (isBrowser) {
-      const { loadWebBundle, createWebProvider } = await import("./providers.js");
-      const bundle = await loadWebBundle(modelDirOrRepo, {
-        subfolder: sub,
-        revision: opts?.revision,
-        expectedSha256: opts?.expectedSha256,
-      });
-      cfg = bundle.cfg;
-      tokenizerJson = bundle.tokenizerJson;
-      dir = bundle.dir;
-      revision = bundle.revision;
-      provider = await createWebProvider(dir, {
-        numThreads: opts?.numThreads,
-        expectedSha256: opts?.expectedSha256,
-      });
-    } else {
+    {
       const { loadNodeBundle, createNodeProvider } = await import("./providers.js");
       const bundle = await loadNodeBundle(modelDirOrRepo, {
         subfolder: sub,

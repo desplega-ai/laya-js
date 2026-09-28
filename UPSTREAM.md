@@ -16,8 +16,13 @@ To bump the pin, re-vendor at the new commit, then replay the changes below.
 
 | File | Change |
 |---|---|
+| `packages/laya/src/providers.ts` | Removed the browser path: `createWebProvider`, `loadWebBundle`, `WebBundle`, `baseUrlFor`, `fetchArrayBuffer` (onnxruntime-web). Edge targets are out of scope. |
+| `packages/laya/src/agent.ts` | `Agent.load` always takes the Node path; the `window`-detected browser branch is gone. |
+| `packages/laya/src/index.ts` | Dropped the `createWebProvider`, `loadWebBundle` and `WebBundle` exports. |
+| `packages/laya/test/revision-pinning.test.ts` | Removed the one web-only test, "loadWebBundle reports the x-repo-commit header". |
 
 ## Removed files
 
 | File | Reason |
 |---|---|
+| `packages/laya/test/package-e2e.mjs` | npm-pack test for upstream's `laya-ts` package name and its optional onnxruntime-node/web deps. This package is private and depends on onnxruntime-node directly. |

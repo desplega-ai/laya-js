@@ -151,5 +151,7 @@
       "sha256": "3fffde5b1adb429f0181df8c26ded5799a774e3eb9882f2c7d1d942c7326c726"
     }
   },
-  "removed": {}
+  "removed": {
+    "packages/laya/test/package-e2e.mjs": "npm-pack test for the upstream `laya-ts` package name and its optional onnxruntime-node/web deps; this package is private and depends on onnxruntime-node directly."
+  }
 }

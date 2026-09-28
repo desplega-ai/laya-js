@@ -1,3 +1,4 @@
+// Modified by Desplega Labs, 2026: dropped the createWebProvider, loadWebBundle and WebBundle exports.
 export const VERSION = "0.1.0";
 export { Agent, checkQuestion, toInternal, defaultTokenizer } from "./agent.js";
 export type {
@@ -13,8 +14,8 @@ export type {
   AgentOptions,
   PredictOptions,
 } from "./agent.js";
-export { createNodeProvider, createWebProvider, feed, feedHead, loadNodeBundle, loadWebBundle, PINNED_REVISIONS, resolveRevision } from "./providers.js";
-export type { Batch, SessionProvider, ProviderOptions, NodeBundle, WebBundle } from "./providers.js";
+export { createNodeProvider, feed, feedHead, loadNodeBundle, PINNED_REVISIONS, resolveRevision } from "./providers.js";
+export type { Batch, SessionProvider, ProviderOptions, NodeBundle } from "./providers.js";
 export { Router, normaliseName, DEFAULT_MODELS } from "./router.js";
 export type { RoutedResult, RouteDecision, ModelName, ModelSpec } from "./router.js";
 export { shortlistChoice, predictShortlist, embedFnFromAgent, DEFAULT_SHORTLIST_K } from "./shortlist.js";

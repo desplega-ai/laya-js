@@ -1,3 +1,4 @@
+// Modified by Desplega Labs, 2026: removed the loadWebBundle x-repo-commit test (browser path removed).
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createHash } from "node:crypto";
 import * as fs from "node:fs";
@@ -5,7 +6,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { Agent } from "../src/agent.js";
 import { Router } from "../src/router.js";
-import { PINNED_REVISIONS, createNodeProvider, loadNodeBundle, loadWebBundle, resolveRevision } from "../src/providers.js";
+import { PINNED_REVISIONS, createNodeProvider, loadNodeBundle, resolveRevision } from "../src/providers.js";
 
 const fakeProvider = () => ({
   async runEncoder(_b: any) { return { lastHidden: [[1, 0], [0, 1]] }; },
@@ -89,16 +90,6 @@ describe("loadNodeBundle pinning", () => {
     } finally {
       fs.rmSync(path.join(os.homedir(), ".cache", "laya-ts", "hf", "convaiinnovations__laya"), { recursive: true, force: true });
     }
-  });
-
-  it("loadWebBundle reports the x-repo-commit header", async () => {
-    vi.stubGlobal("fetch", vi.fn(async (url: string) => {
-      return url.endsWith("rl_agent_config.json")
-        ? new StubResponse(cfgFile["rl_agent_config.json"])
-        : new StubResponse(null, 404);
-    }));
-    const bundle = await loadWebBundle("convaiinnovations/laya");
-    expect(bundle.revision).toBe("abc123");
   });
 
   it("unpinned repos keep the mutable main default", async () => {
