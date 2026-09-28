@@ -1,4 +1,4 @@
-// Modified by Desplega Labs, 2026: Agent.load always takes the Node path (browser branch removed).
+// Modified by Desplega Labs, 2026: Agent.load always takes the Node path (browser branch removed); predictBatch, per-call maxLen/headMaxLen and minConfidence (agent.py).
 import {
   TEMP_MAX,
   TEMP_MIN,
@@ -28,6 +28,8 @@ import {
   type HookArg,
   type PredictHook,
 } from "./hooks.js";
+import { checkTokenBudget } from "./budget.js";
+import { checkMinConfidence, flagLowConfidence } from "./confidence.js";
 
 export const QTYPES: Record<string, number> = { choice: 0, score: 1, noul: 2 };
 
@@ -129,6 +131,38 @@ export interface PredictOptions {
   onPredictStart?: PredictHook;
   onPredictEnd?: PredictHook;
   hooksRaise?: boolean;
+  /**
+   * Per-call token budget (Python `max_len`), overriding the checkpoint config; a start hook may
+   * set `ctx.maxLen` instead. A positive integer up to `MAX_TOKEN_BUDGET`.
+   */
+  maxLen?: number | null;
+  /** Per-call option-head budget (Python `head_max_len`); a start hook may set `ctx.headMaxLen`. */
+  headMaxLen?: number | null;
+  /**
+   * Opt-in abstention (#361): an answer whose `answer_confidence` is below this threshold comes
+   * back with `low_confidence: true`; the raw answer is unchanged. A number in [0, 1].
+   */
+  minConfidence?: number | null;
+}
+
+/** Options of `Agent.predictBatch`: `PredictOptions` plus batching. */
+export interface PredictBatchOptions extends PredictOptions {
+  /** States per forward pass; unset or non-positive sends all states in one pass. */
+  batchSize?: number | null;
+  /**
+   * Group similarly sized encoded states within windows of eight batches to reduce padding.
+   * Needs a `batchSize` above 1 and below the number of states; results keep input order.
+   */
+  sortByLength?: boolean;
+}
+
+type EncodedItem = { ids: number[]; markers: number[]; qtype: number };
+type Internal = ReturnType<typeof toInternal>;
+
+function typeName(v: unknown): string {
+  if (v === null) return "null";
+  if (Array.isArray(v)) return "Array";
+  return typeof v;
 }
 
 function qidStr(qid: string): string {
@@ -365,14 +399,27 @@ export class Agent extends HookRegistry {
     questions: Record<string, QuestionDef>,
     opts: PredictOptions = {},
   ): Promise<SystemOneResult> {
-    return (await this._predictHooked([state], questions, opts))[0];
+    // Python parity (agent.py system_one): defined through predictBatch so the two cannot drift.
+    return (await this.predictBatch([state], questions, opts))[0];
   }
 
-  private async _predictHooked(
+  /**
+   * Evaluate the same questions over many states, packing their question rows into shared
+   * encoder and head passes of `batchSize` states (default: all of them in one pass).
+   *
+   * Hooks fire once per call: `ctx.states` is the whole list. Results are aligned with
+   * `states` by index, each identical in shape to `systemOne`'s output.
+   */
+  async predictBatch(
     states: unknown[],
     questions: Record<string, QuestionDef>,
-    opts: PredictOptions,
+    opts: PredictBatchOptions = {},
   ): Promise<SystemOneResult[]> {
+    const mc = opts.minConfidence !== null && opts.minConfidence !== undefined
+      ? checkMinConfidence(opts.minConfidence)
+      : null;
+    checkTokenBudget("maxLen", opts.maxLen);
+    checkTokenBudget("headMaxLen", opts.headMaxLen);
     const active = defaultsAlreadyRan(opts)
       ? [...this.hooks, ...normaliseHooks(opts.hooks, opts.onPredictStart, opts.onPredictEnd)]
       : composeHooks(this.hooks, opts.hooks, opts.onPredictStart, opts.onPredictEnd);
@@ -381,20 +428,31 @@ export class Agent extends HookRegistry {
       states,
       questions: questions as Record<string, unknown>,
       agent: this,
+      maxLen: opts.maxLen ?? null,
+      headMaxLen: opts.headMaxLen ?? null,
     });
     try {
       await dispatchAsync(active, "onPredictStart", ctx, { raiseErrors });
       if (ctx.results === null) {
-        const out: SystemOneResult[] = [];
-        for (const st of ctx.states) {
-          out.push(
-            await this._systemOneCore(
-              st,
-              ctx.questions as Record<string, QuestionDef>,
-              opts.lang ?? null,
-            ),
-          );
+        // Only the values that survive the start hooks are validated (agent.py predict_batch).
+        const sts: unknown = ctx.states;
+        const qs: unknown = ctx.questions;
+        if (!Array.isArray(sts)) {
+          throw new TypeError("predictBatch expects a list of states; pass a single state to predict()/systemOne().");
         }
+        if (typeof qs !== "object" || qs === null || Array.isArray(qs)) {
+          throw new TypeError(`questions must be an object of question id -> definition, got ${typeName(qs)}`);
+        }
+        if (sts.some((s) => s === null || s === undefined)) {
+          throw new TypeError("state must not be null or undefined; pass a string, object, or array");
+        }
+        const out = await this._inferBatch([...sts], qs as Record<string, QuestionDef>, {
+          maxLen: checkTokenBudget("maxLen", ctx.maxLen) ?? this.maxLen,
+          headMaxLen: checkTokenBudget("headMaxLen", ctx.headMaxLen) ?? this.headMaxLen,
+          lang: opts.lang ?? null,
+          batchSize: opts.batchSize ?? null,
+          sortByLength: opts.sortByLength ?? false,
+        });
         ctx.results = out as unknown as Record<string, unknown>[];
         ctx.model ??= out[0]?.model ?? null;
       }
@@ -408,7 +466,11 @@ export class Agent extends HookRegistry {
       throw err;
     } finally {
       ctx.markElapsed();
-      if (ctx.results !== null) ctx.usage = aggregateUsage(ctx.results);
+      if (ctx.results !== null) {
+        ctx.usage = aggregateUsage(ctx.results);
+        // Flagged before the end hooks, so an audit hook sees exactly what the caller gets.
+        if (mc !== null) flagLowConfidence(ctx.results, mc);
+      }
       try {
         await dispatchAsync(active, "onPredictEnd", ctx, { raiseErrors });
       } catch (hookErr) {
@@ -419,55 +481,109 @@ export class Agent extends HookRegistry {
     return ctx.results as unknown as SystemOneResult[];
   }
 
-  private async _systemOneCore(
-    state: unknown,
+  /** Validate once, then encode, collate, run and decode in chunks of `batchSize` states. */
+  private async _inferBatch(
+    states: unknown[],
     questions: Record<string, QuestionDef>,
-    lang: string | null = null,
-  ): Promise<SystemOneResult> {
-    const ids = Object.keys(questions ?? {});
+    o: { maxLen: number; headMaxLen: number; lang: string | null; batchSize: number | null; sortByLength: boolean },
+  ): Promise<SystemOneResult[]> {
+    if (states.length === 0) return [];
+    const ids = Object.keys(questions);
     if (ids.length === 0) {
-      return { model: "laya-rl-agent", answers: {}, usage: { input_tokens: 0, output_tokens: 0 } };
+      return states.map(() => ({ model: "laya-rl-agent", answers: {}, usage: { input_tokens: 0, output_tokens: 0 } }));
     }
-    const items: { ids: number[]; markers: number[]; qtype: number }[] = [];
-    const internals: { t: "choice" | "score" | "noul"; ins: string; crit: unknown; labels?: { false: string; true: string } }[] = [];
-    // The state text is shared by every question and is usually the longest text in the
-    // sequence — encode it once and compose the per-question prefixes onto it.
-    const stAll = this.tok.encode(serializeState(state).split(this.tok.maskToken).join(" "));
-    for (const qid of ids) {
-      checkQuestion(qid, questions[qid]);
-      const q = toInternal(questions[qid]);
-      internals.push(q);
-      const prefix = buildQuestionPrefix(this.tok, q, this.maxLen, this.headMaxLen);
-      const { ids: seq, markers } = sequenceWithState(
-        prefix, stAll, this.tok.sepId, this.maxLen, Array.isArray(state),
-      );
-      if (markers.length !== renderOptions(q).length) {
-        throw new Error(`question ${qidStr(qid)} options exceed head_max_len=${this.headMaxLen}`);
+    for (const qid of ids) checkQuestion(qid, questions[qid]);
+    const internals = ids.map((qid) => toInternal(questions[qid]));
+    const chunk = o.batchSize && o.batchSize > 0 ? o.batchSize : states.length;
+    const reorder = o.sortByLength && 1 < chunk && chunk < states.length;
+    // agent.py:1025 — bound the tokenized lookahead to eight batches, and sort by each state's
+    // longest post-truncation row so a state's questions stay together.
+    const window = reorder ? chunk * 8 : chunk;
+    const results: SystemOneResult[] = [];
+    for (let start = 0; start < states.length; start += window) {
+      const part = states.slice(start, start + window);
+      const encoded = part.map((st) => this._encodeState(st, ids, internals, o.maxLen, o.headMaxLen));
+      const order = encoded.map((_, i) => i);
+      if (reorder) {
+        const longest = encoded.map((items) => Math.max(...items.map((it) => it.ids.length)));
+        order.sort((a, b) => longest[a] - longest[b]);
       }
-      items.push({ ids: seq, markers, qtype: QTYPES[q.t] });
-    }
-    const collated = collateItems([items], this.tok.padId);
-    if (!collated) throw new Error("no items to collate");
-    const batch: Batch = collated;
-    const nTokens = batch.attentionMask.flat().reduce((a, b) => a + b, 0);
-    const { lastHidden } = await this.provider.runEncoder(batch);
-    const { logits, act } = await this.provider.runHead(lastHidden, batch);
-    if (!Array.isArray(logits) || !Array.isArray(act) || logits.length < ids.length || act.length < ids.length) {
-      throw new Error("model provider returned fewer output rows than input items");
-    }
-    for (let r = 0; r < ids.length; r++) {
-      const k = items[r].markers.length;
-      if (!Array.isArray(logits[r]) || logits[r].length < k || !Array.isArray(act[r]) || act[r].length === 0 ||
-          logits[r].some((v) => !Number.isFinite(v)) || act[r].some((v) => !Number.isFinite(v))) {
-        throw new Error(`model provider returned invalid output for question ${ids[r]}`);
+      const windowResults: SystemOneResult[] = new Array(encoded.length);
+      for (let offset = 0; offset < order.length; offset += chunk) {
+        const indices = order.slice(offset, offset + chunk);
+        const perState = indices.map((i) => encoded[i]);
+        const collated = collateItems(perState, this.tok.padId);
+        if (!collated) throw new Error("no items to collate");
+        const batch: Batch = collated;
+        const { lastHidden } = await this.provider.runEncoder(batch);
+        const { logits, act } = await this.provider.runHead(lastHidden, batch);
+        const rows = perState.flat();
+        if (!Array.isArray(logits) || !Array.isArray(act) || logits.length < rows.length || act.length < rows.length) {
+          throw new Error("model provider returned fewer output rows than input items");
+        }
+        for (let r = 0; r < rows.length; r++) {
+          const k = rows[r].markers.length;
+          if (!Array.isArray(logits[r]) || logits[r].length < k || !Array.isArray(act[r]) || act[r].length === 0 ||
+              logits[r].some((v) => !Number.isFinite(v)) || act[r].some((v) => !Number.isFinite(v))) {
+            throw new Error(`model provider returned invalid output for question ${ids[r % ids.length]}`);
+          }
+        }
+        let row = 0;
+        indices.forEach((index, j) => {
+          const items = perState[j];
+          let nTokens = 0;
+          for (let r = row; r < row + items.length; r++) {
+            for (const m of batch.attentionMask[r]) nTokens += m;
+          }
+          windowResults[index] = {
+            model: "laya-rl-agent",
+            answers: this._decodeAnswers(logits, act, items, ids, internals, row, o.lang),
+            usage: { input_tokens: nTokens, output_tokens: 0 },
+          };
+          row += items.length;
+        });
       }
+      results.push(...windowResults);
     }
+    return results;
+  }
 
-    const answers: Record<string, SystemAnswer> = {};
-    for (let r = 0; r < ids.length; r++) {
-      const qid = ids[r];
+  /** One state's question rows; the state is tokenized once and shared by every question. */
+  private _encodeState(
+    state: unknown,
+    ids: string[],
+    internals: Internal[],
+    maxLen: number,
+    headMaxLen: number,
+  ): EncodedItem[] {
+    const stAll = this.tok.encode(serializeState(state).split(this.tok.maskToken).join(" "));
+    return ids.map((qid, r) => {
       const q = internals[r];
-      const k = items[r].markers.length;
+      const prefix = buildQuestionPrefix(this.tok, q, maxLen, headMaxLen);
+      const { ids: seq, markers } = sequenceWithState(prefix, stAll, this.tok.sepId, maxLen, Array.isArray(state));
+      if (markers.length !== renderOptions(q).length) {
+        throw new Error(`question ${qidStr(qid)} options exceed head_max_len=${headMaxLen}`);
+      }
+      return { ids: seq, markers, qtype: QTYPES[q.t] };
+    });
+  }
+
+  /** Decode the `ids.length` head rows starting at `offset` into one state's answers. */
+  private _decodeAnswers(
+    logits: number[][],
+    act: number[][],
+    items: EncodedItem[],
+    ids: string[],
+    internals: Internal[],
+    offset: number,
+    lang: string | null,
+  ): Record<string, SystemAnswer> {
+    const answers: Record<string, SystemAnswer> = {};
+    for (let qi = 0; qi < ids.length; qi++) {
+      const r = offset + qi;
+      const qid = ids[qi];
+      const q = internals[qi];
+      const k = items[qi].markers.length;
       const qt = QTYPES[q.t];
       const bucket = tempBucket(qt, k);
       // Python parity (_decode_answers): a matching lang override replaces the scale
@@ -528,7 +644,7 @@ export class Agent extends HookRegistry {
         };
       }
     }
-    return { model: "laya-rl-agent", answers, usage: { input_tokens: nTokens, output_tokens: 0 } };
+    return answers;
   }
 
   async predict(

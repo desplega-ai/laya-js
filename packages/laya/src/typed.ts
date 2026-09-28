@@ -7,6 +7,7 @@ import {
   type ChoiceAnswer,
   checkQuestion,
   type NoulAnswer,
+  type PredictBatchOptions,
   type PredictOptions,
   type QuestionDef,
   type ScoreAnswer,
@@ -115,13 +116,19 @@ export async function validateDecision<S extends StandardSchemaV1>(
   return result.value as StandardSchemaV1.InferOutput<S>;
 }
 
+/**
+ * Options of the typed `decide`. `minConfidence` is left out: an abstained field decides to
+ * `null`, which a non-nullable schema output cannot hold (use `raw.decide` for abstention).
+ */
+export type DecideCallOptions = Omit<PredictOptions, "minConfidence">;
+
 type Decider = { decide(state: unknown, schema?: unknown, opts?: PredictOptions): Promise<Record<string, unknown>> };
 
 async function typedDecide<S extends StandardSchemaV1>(
   runner: Decider,
   state: unknown,
   schema: S,
-  opts?: PredictOptions,
+  opts?: DecideCallOptions,
 ): Promise<StandardSchemaV1.InferOutput<S>> {
   return validateDecision(schema, await runner.decide(state, jsonSchemaOf(schema), opts));
 }
@@ -171,11 +178,18 @@ export interface LayaAgent {
   readonly revision: string | null;
   /** The untyped vendored Agent, as an escape hatch. */
   readonly raw: Agent;
+  /** Answer `questions` for one state. `maxLen`/`headMaxLen` set the budget; `minConfidence` flags abstentions. */
   predict<const Q extends QuestionMap>(state: unknown, questions: Q, opts?: PredictOptions): Promise<PredictResult<Q>>;
+  /** Answer the same `questions` for many states in shared forward passes; results keep input order. */
+  predictBatch<const Q extends QuestionMap>(
+    states: readonly unknown[],
+    questions: Q,
+    opts?: PredictBatchOptions,
+  ): Promise<PredictResult<Q>[]>;
   decide<S extends StandardSchemaV1>(
     state: unknown,
     schema: S,
-    opts?: PredictOptions,
+    opts?: DecideCallOptions,
   ): Promise<StandardSchemaV1.InferOutput<S>>;
   /** Release the ONNX sessions. The agent is unusable afterwards. */
   dispose(): Promise<void>;
@@ -232,6 +246,12 @@ function wrapAgent(raw: Agent, checkpoint: CheckpointName, precision: Precision)
     raw,
     predict: (state, questions, opts) =>
       raw.predict(state, questions as unknown as Record<string, QuestionDef>, opts) as Promise<never>,
+    predictBatch: (states, questions, opts) =>
+      raw.predictBatch(
+        states as unknown[],
+        questions as unknown as Record<string, QuestionDef>,
+        opts,
+      ) as Promise<never>,
     decide: (state, schema, opts) => typedDecide(raw, state, schema, opts),
     dispose: () => releaseAgent(raw),
   };
@@ -276,7 +296,7 @@ export interface LayaRouter {
   decide<S extends StandardSchemaV1>(
     state: unknown,
     schema: S,
-    opts?: PredictOptions & { model?: string | null },
+    opts?: DecideCallOptions & { model?: string | null },
   ): Promise<StandardSchemaV1.InferOutput<S>>;
   /** Release every loaded checkpoint's ONNX sessions. */
   dispose(): Promise<void>;
