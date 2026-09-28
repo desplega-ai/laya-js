@@ -1,0 +1,45 @@
+name: artifacts
+
+# Loads each exported fp32 bundle from the private artifact store (pinned revision,
+# expectedSha256) and runs one systemOne call. One checkpoint per job, so a runner
+# never holds two models.
+on:
+  pull_request:
+    paths:
+      - packages/laya/src/artifacts.ts
+      - packages/laya/src/providers.ts
+      - packages/laya/test/artifacts.test.ts
+      - .github/workflows/artifacts.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        checkpoint: [english, multilingual, typed-decisions]
+    env:
+      HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require the HF token
+        run: test -n "$HF_TOKEN" || { echo "::error::Actions secret HF_ACCESS_TOKEN is empty or not available"; exit 1; }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/laya-ts/hf
+          key: laya-bundle-${{ matrix.checkpoint }}-${{ hashFiles('packages/laya/src/artifacts.ts') }}
+      - run: bun install --frozen-lockfile
+      - run: bun run test -- artifacts
+        env:
+          LAYA_ARTIFACTS: ${{ matrix.checkpoint }}
