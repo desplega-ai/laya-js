@@ -1,0 +1,155 @@
+{
+  "upstream": {
+    "repo": "https://github.com/NandhaKishorM/laya",
+    "sha": "9d955671415fc19f069b9cc998928075c1f255ec",
+    "tag": "v0.3.21",
+    "vendoredOn": "2026-09-28"
+  },
+  "files": {
+    "packages/laya/src/agent.ts": {
+      "from": "laya-ts/src/agent.ts",
+      "sha256": "f8e6b670f6862fc92d22b04c141f3ebce17779b8c54df8aa6a0c8401a75c2a3f"
+    },
+    "packages/laya/src/common.ts": {
+      "from": "laya-ts/src/common.ts",
+      "sha256": "a31bf450f34d849fe86cb20d61d9adfc4c569bb3490d7fc437f861529a2cfdac"
+    },
+    "packages/laya/src/email.ts": {
+      "from": "laya-ts/src/email.ts",
+      "sha256": "c752efd285e8ab8516111594bf1c0181d8db6eb070e011953fc8edd023d93e16"
+    },
+    "packages/laya/src/hooks.ts": {
+      "from": "laya-ts/src/hooks.ts",
+      "sha256": "e634d0d779974fa9bb5428fa2e1e8bce8783a14f96559dda718b7b654e3b72a7"
+    },
+    "packages/laya/src/index.ts": {
+      "from": "laya-ts/src/index.ts",
+      "sha256": "e2ae28b1354cf4eb95c6fe45ab45bd0173ab857c5df8361cc6f67f910d70276e"
+    },
+    "packages/laya/src/lang.ts": {
+      "from": "laya-ts/src/lang.ts",
+      "sha256": "5c9b2d6d80370bad55aec20d6f276dccb68252d79d99e14613f67db819dbae0b"
+    },
+    "packages/laya/src/presets.ts": {
+      "from": "laya-ts/src/presets.ts",
+      "sha256": "dd1e75ea978d24d0d31045820476d1d90555b78748ce9123c7f09e8d1a5e0ace"
+    },
+    "packages/laya/src/providers.ts": {
+      "from": "laya-ts/src/providers.ts",
+      "sha256": "69be76a62c13353401ac139b0d4b56b996a01dd788db7acdf4ba646ed3aacc2e"
+    },
+    "packages/laya/src/router.ts": {
+      "from": "laya-ts/src/router.ts",
+      "sha256": "57b2585f6e642a615559a8ff3d47ce01f291617e1a44e8fea74a4220cb95ef9b"
+    },
+    "packages/laya/src/shortlist.ts": {
+      "from": "laya-ts/src/shortlist.ts",
+      "sha256": "526b9f7d54908224419382e75834b7279803d6860f565f51869e200e09ba2243"
+    },
+    "packages/laya/src/structured.ts": {
+      "from": "laya-ts/src/structured.ts",
+      "sha256": "b313825c1d6ac847f80cfd13166d48bb825dfa53bfdae29e889007423c88d531"
+    },
+    "packages/laya/src/tokenizer.ts": {
+      "from": "laya-ts/src/tokenizer.ts",
+      "sha256": "94c5e2b14536c762f8ecd0247343b19b6195c61122d395cf4f1f380459574f1f"
+    },
+    "packages/laya/test/agent.test.ts": {
+      "from": "laya-ts/tests/agent.test.ts",
+      "sha256": "a02eb958b38ecd9726ce7f983494affdaecc77f92c0fac88d62318441398c492"
+    },
+    "packages/laya/test/answer-confidence.test.ts": {
+      "from": "laya-ts/tests/answer-confidence.test.ts",
+      "sha256": "024e22f299338d3599e360fd44dbf93f6c7270ce60931ef1d27cfb32a64ae2d9"
+    },
+    "packages/laya/test/audit-regressions.test.ts": {
+      "from": "laya-ts/tests/audit-regressions.test.ts",
+      "sha256": "eb55265cbf7753e2d41f2ddffeb376893c792e5e28ece4f50464029e9f303d22"
+    },
+    "packages/laya/test/blank-lang-routing.test.ts": {
+      "from": "laya-ts/tests/blank-lang-routing.test.ts",
+      "sha256": "a2db9f0f554f91dda7e2c3af06b94eadc6692aa91778c966361ab88e681c2cde"
+    },
+    "packages/laya/test/bpe-complexity.test.ts": {
+      "from": "laya-ts/tests/bpe-complexity.test.ts",
+      "sha256": "8194d6c5de8f6f8a34adaeb259a208c772c4be602804d9196fdb3d89235d1051"
+    },
+    "packages/laya/test/bpe.test.ts": {
+      "from": "laya-ts/tests/bpe.test.ts",
+      "sha256": "a0dfbb95a037b33d904a1aaba1ca3376b8de7b2be313b9504e42a0f10a64f544"
+    },
+    "packages/laya/test/email-presets.test.ts": {
+      "from": "laya-ts/tests/email-presets.test.ts",
+      "sha256": "d9f4f96daa0808c8cf1875eb67248f1c752ab2de72558a321cfca8d8324bdc35"
+    },
+    "packages/laya/test/flat-parity.test.ts": {
+      "from": "laya-ts/tests/flat-parity.test.ts",
+      "sha256": "2225bdd56001953ec6da43b1a6a14824f61c8bd1bf89db34b3ccef1605fce029"
+    },
+    "packages/laya/test/hooks.test.ts": {
+      "from": "laya-ts/tests/hooks.test.ts",
+      "sha256": "74b83e336a9a901b1cc6c772fdd8d71a88d93204128f5f234144d2dab5d8298e"
+    },
+    "packages/laya/test/identifier-complexity.test.ts": {
+      "from": "laya-ts/tests/identifier-complexity.test.ts",
+      "sha256": "63fc8c3aea51aae79ac756f55943169e349ec72eac3b62ba5672591b0f78af8b"
+    },
+    "packages/laya/test/lang-agnostic-codes.test.ts": {
+      "from": "laya-ts/tests/lang-agnostic-codes.test.ts",
+      "sha256": "d96338b10f2077bd2b4cee66d7d193fa5fb79f66d3381ad8f17f57a15c7504dd"
+    },
+    "packages/laya/test/lang-temperature.test.ts": {
+      "from": "laya-ts/tests/lang-temperature.test.ts",
+      "sha256": "4693da2eb07355a93a088ff37ab36248fa24e2ffe8f1f173625ac48e252cda10"
+    },
+    "packages/laya/test/lang.test.ts": {
+      "from": "laya-ts/tests/lang.test.ts",
+      "sha256": "80ce800dca77ac90e9b7ae9ee49b499dcfe12cabf2dd30942c5fdd8d660f1b51"
+    },
+    "packages/laya/test/legend-parity.test.ts": {
+      "from": "laya-ts/tests/legend-parity.test.ts",
+      "sha256": "7f0b2e69dc75fb7aecb15c695f8b186c9886061ad493341d0cf4bd10c4a038c1"
+    },
+    "packages/laya/test/maxlen.test.ts": {
+      "from": "laya-ts/tests/maxlen.test.ts",
+      "sha256": "7e15b87a0d744257770b3c32a10a34373dec30b375bc967083b1c4371083d4c5"
+    },
+    "packages/laya/test/package-e2e.mjs": {
+      "from": "laya-ts/tests/package-e2e.mjs",
+      "sha256": "c63662e57e04b1a116c849f3d6f8d8c88e954d4c5555a096f514c6f6894cd4ce"
+    },
+    "packages/laya/test/parity-sequence.test.ts": {
+      "from": "laya-ts/tests/parity-sequence.test.ts",
+      "sha256": "fb7c6dc636fbdfdabf4898c17f2368475c215117bb0c2964d06778e759f50e64"
+    },
+    "packages/laya/test/revision-pinning.test.ts": {
+      "from": "laya-ts/tests/revision-pinning.test.ts",
+      "sha256": "1e6e16f8fd71c538189dc1629190b3dee47dd9972ead84dc755494c4ece1987a"
+    },
+    "packages/laya/test/router.test.ts": {
+      "from": "laya-ts/tests/router.test.ts",
+      "sha256": "10e7e8b9f1f7962a9b915fe370fd0d717b96797ebcb3973a24b6c4e751c5dc3a"
+    },
+    "packages/laya/test/scaffold.test.ts": {
+      "from": "laya-ts/tests/scaffold.test.ts",
+      "sha256": "41f493cfcde48e7990d16f01df5b4e86a45723c1c62471b5f578240e72f31bd7"
+    },
+    "packages/laya/test/sequence-prefix.test.ts": {
+      "from": "laya-ts/tests/sequence-prefix.test.ts",
+      "sha256": "163186458acb244dd3e4c9d2bf2694910ef7069b52642cbbc9b9db22624c30d7"
+    },
+    "packages/laya/test/shortlist.test.ts": {
+      "from": "laya-ts/tests/shortlist.test.ts",
+      "sha256": "7164fc473525e7403fa9143afd625421a815118040ae4ea70db203eb193bbde2"
+    },
+    "packages/laya/test/structured.test.ts": {
+      "from": "laya-ts/tests/structured.test.ts",
+      "sha256": "80a96d655ab1bca5940519eaab807be4b74114cd8b2c7928b37ad2d3a766d90e"
+    },
+    "packages/laya/test/tokenizer-parity.test.ts": {
+      "from": "laya-ts/tests/tokenizer-parity.test.ts",
+      "sha256": "3fffde5b1adb429f0181df8c26ded5799a774e3eb9882f2c7d1d942c7326c726"
+    }
+  },
+  "removed": {}
+}
