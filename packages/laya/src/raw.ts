@@ -6,14 +6,17 @@ export type {
   AgentCfg,
   AgentOptions,
   ChoiceAnswer,
+  LongResult,
   NoulAnswer,
   PredictBatchOptions,
+  PredictLongOptions,
   PredictOptions,
   QuestionDef,
   ScoreAnswer,
   SystemAnswer,
   SystemOneResult,
   SystemUsage,
+  WindowInfo,
 } from "./agent.js";
 export { Agent, checkQuestion, defaultTokenizer, toInternal } from "./agent.js";
 export type { BundleArtifact, CheckpointName, Precision } from "./artifacts.js";
@@ -65,14 +68,27 @@ export {
   PINNED_REVISIONS,
   resolveRevision,
 } from "./providers.js";
-export type { ModelName, ModelSpec, RouteDecision, RoutedResult } from "./router.js";
+export type {
+  AgentLoader,
+  LangGuess,
+  ModelName,
+  ModelSpec,
+  RouteDecision,
+  RoutedLongResult,
+  RoutedResult,
+  RouteOptions,
+  RouterBatchOptions,
+  RouterOptions,
+  RouterRequest,
+} from "./router.js";
 export { DEFAULT_MODELS, normaliseName, Router } from "./router.js";
 export type { EmbedFn, ShortlistMeta } from "./shortlist.js";
 export { DEFAULT_SHORTLIST_K, embedFnFromAgent, predictShortlist, shortlistChoice } from "./shortlist.js";
-export type { DecideOptions, DecideRunner, DecisionResult, PlannedField } from "./structured.js";
+export type { BatchDecideRunner, DecideOptions, DecideRunner, DecisionResult, PlannedField } from "./structured.js";
 export {
   answersToJson,
   decide,
+  decideBatch,
   MAX_OPTIONS,
   MAX_PROPERTIES,
   MAX_SCORE_LEVELS,
@@ -80,10 +96,11 @@ export {
   questionsFromJsonSchema,
   SchemaError,
 } from "./structured.js";
-export type { PreTokenizerKind, TokenizerData, TokenizerIds, TokenizerLike } from "./tokenizer.js";
+export type { AddedToken, PreTokenizerKind, TokenizerData, TokenizerIds, TokenizerLike } from "./tokenizer.js";
 export {
   bpeEncode,
   CHECKPOINT_IDS,
+  decodeWithData,
   encodeWithData,
   loadTokenizerJson,
   METASPACE_REPLACEMENT,

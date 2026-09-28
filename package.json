@@ -13,11 +13,14 @@
     "test": "vitest run",
     "test:bun-smoke": "bun run --filter @desplega/laya build && bun packages/laya/test/bun-smoke.ts",
     "check-vendor": "bun scripts/check-vendor.ts",
-    "parity": "bun packages/laya/test/parity/run.ts"
+    "parity": "bun packages/laya/test/parity/run.ts",
+    "api:check": "bun run --filter @desplega/laya build && api-extractor run -c packages/laya/api-extractor.json",
+    "api:update": "bun run --filter @desplega/laya build && api-extractor run --local -c packages/laya/api-extractor.json"
   },
   "devDependencies": {
-    "@desplega/laya": "workspace:*",
     "@biomejs/biome": "2.5.14",
+    "@desplega/laya": "workspace:*",
+    "@microsoft/api-extractor": "7.59.2",
     "@types/node": "22.20.4",
     "typescript": "5.9.3",
     "vitest": "3.2.7"

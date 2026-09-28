@@ -1,9 +1,16 @@
-// Modified by Desplega Labs, 2026: predict forwards per-call maxLen/headMaxLen and flags minConfidence (router.py).
+// Modified by Desplega Labs, 2026: predict forwards per-call maxLen/headMaxLen and flags minConfidence; added routeBatch, predictBatch, predictLong, decideBatch and loadedRevisions (router.py).
 import { analyse, type AnalyseResult } from "./lang.js";
-import type { PredictOptions, QuestionDef, SystemOneResult } from "./agent.js";
+import type {
+  LongResult,
+  PredictBatchOptions,
+  PredictLongOptions,
+  PredictOptions,
+  QuestionDef,
+  SystemOneResult,
+} from "./agent.js";
 import { checkTokenBudget } from "./budget.js";
 import { checkMinConfidence, flagLowConfidence } from "./confidence.js";
-import { decide, type DecideOptions, type DecisionResult } from "./structured.js";
+import { decide, decideBatch, type DecideOptions, type DecisionResult } from "./structured.js";
 import {
   HookRegistry,
   PredictContext,
@@ -13,6 +20,7 @@ import {
   markDefaultsRan,
   dispatchAsync,
   normaliseHooks,
+  type Hook,
   type HookArg,
   type PredictHook,
 } from "./hooks.js";
@@ -111,6 +119,75 @@ export interface RouteDecision {
 }
 
 export type RoutedResult = SystemOneResult & { routing: RouteDecision };
+export type RoutedLongResult = LongResult & { routing: RouteDecision };
+
+/** One request of `Router.routeBatch` / `Router.predictBatch`: a state, its questions, and optional overrides. */
+export interface RouterRequest {
+  state: unknown;
+  questions: Record<string, QuestionDef>;
+  model?: string | null;
+  task?: string | null;
+  lang?: string | null;
+  langGuess?: LangGuess;
+  lang_guess?: LangGuess;
+  /** Per-request token budget; requests with different budgets run in separate forward passes. */
+  maxLen?: number | null;
+  headMaxLen?: number | null;
+}
+
+/** Options of `Router.predictBatch`. */
+export interface RouterBatchOptions {
+  /** States per forward pass within each checkpoint/question group. */
+  batchSize?: number | null;
+  minConfidence?: number | null;
+  /** Forwarded to every `Agent.predictBatch` call. */
+  sortByLength?: boolean;
+}
+
+type BatchAgent = {
+  predictBatch(states: unknown[], questions: Record<string, QuestionDef>, opts?: PredictBatchOptions): Promise<SystemOneResult[]>;
+  langTemperatures?: Record<string, unknown>;
+};
+
+/** A language forwarded to the agent: an explicit `lang`, else the non-English language routing detected. */
+function forwardedLang(lang: string | null | undefined, decision: unknown): string | null {
+  if (lang !== null && lang !== undefined) return lang;
+  const detected = (decision as { detection?: { language?: string | null } | null } | null)?.detection?.language;
+  return detected && detected !== "en" ? detected : null;
+}
+
+function typeName(v: unknown): string {
+  if (v === null) return "null";
+  if (Array.isArray(v)) return "Array";
+  return typeof v;
+}
+
+/**
+ * Last start hook of `Router.predictLong` (router.py `_ScanLong`): scan the routed state with the
+ * agent's `predictLong` instead of letting `predict` score one window. Appended after every other
+ * start hook, so one that answered or rewrote the state wins.
+ */
+function scanLongHook(opts: PredictLongOptions): Hook {
+  return {
+    async onPredictStart(ctx) {
+      if (ctx.results !== null) return;
+      const agent = ctx.agent as { predictLong?: (...a: unknown[]) => Promise<unknown> } | null;
+      if (typeof agent?.predictLong !== "function") {
+        throw new TypeError(
+          `${(agent as object | null)?.constructor?.name ?? "agent"} has no predictLong, so a state longer than its window cannot be scanned`,
+        );
+      }
+      const result = await agent.predictLong(ctx.states[0], ctx.questions, {
+        window: opts.window,
+        stride: opts.stride,
+        aggregate: opts.aggregate,
+        batchSize: opts.batchSize,
+        lang: forwardedLang(opts.lang, ctx.decision),
+      });
+      ctx.results = [result as Record<string, unknown>];
+    },
+  };
+}
 
 export type LangGuess = string | null | undefined | ((state: unknown) => unknown);
 
@@ -328,6 +405,13 @@ export class Router extends HookRegistry {
 
   get loaded(): string[] {
     return [...this._order];
+  }
+
+  /** Commit SHA each resident agent was loaded from (null for local paths). */
+  get loadedRevisions(): Record<string, string | null> {
+    return Object.fromEntries(
+      [...this._agents].map(([name, agent]) => [name, (agent as { revision?: string | null } | null)?.revision ?? null]),
+    );
   }
 
   _resolveHint(hint: LangGuess, state: unknown): boolean | null {
@@ -594,5 +678,235 @@ export class Router extends HookRegistry {
     opts: RouteOptions & PredictOptions = {},
   ): Promise<RoutedResult> {
     return this.predict(state, questions, opts);
+  }
+
+  /**
+   * Route, then scan every window of the state with the routed agent's `predictLong`, instead of
+   * scoring only its first window. Routing, router-level hooks and the `routing` key are
+   * `predict`'s; a caller's start hook that answers or rewrites the state wins over the scan.
+   */
+  async predictLong(
+    state: unknown,
+    questions: Record<string, QuestionDef>,
+    opts: RouteOptions & PredictLongOptions = {},
+  ): Promise<RoutedLongResult> {
+    const perCall = normaliseHooks(opts.hooks, opts.onPredictStart, opts.onPredictEnd);
+    perCall.push(scanLongHook(opts));
+    return (await this.predict(state, questions, {
+      model: opts.model,
+      task: opts.task,
+      lang: opts.lang,
+      langGuess: opts.langGuess ?? opts.lang_guess,
+      hooks: perCall,
+      hooksRaise: opts.hooksRaise,
+    })) as unknown as RoutedLongResult;
+  }
+
+  /** The batched `decide`: one `{ state, questions }` request per state through `predictBatch`. */
+  async decideBatch(
+    states: unknown[],
+    schema: unknown,
+    opts: DecideOptions & RouterBatchOptions & { returnDetails: true },
+  ): Promise<DecisionResult[]>;
+  async decideBatch(
+    states: unknown[],
+    schema?: unknown,
+    opts?: DecideOptions & RouterBatchOptions,
+  ): Promise<Record<string, unknown>[]>;
+  async decideBatch(
+    states: unknown[],
+    schema?: unknown,
+    opts: DecideOptions & RouterBatchOptions = {},
+  ): Promise<Array<Record<string, unknown> | DecisionResult>> {
+    return decideBatch(this as never, states, schema, opts);
+  }
+
+  /**
+   * Route a heterogeneous request batch without loading any checkpoint. Each request carries
+   * `state` and `questions` plus `route`'s optional overrides; decisions keep input order.
+   */
+  routeBatch(requests: RouterRequest[]): RouteDecision[] {
+    if (!Array.isArray(requests)) throw new TypeError("requests must be an array of request objects");
+    return requests.map((request, i) => {
+      if (typeof request !== "object" || request === null || Array.isArray(request)) {
+        throw new TypeError(`request ${i} must be an object, got ${typeName(request)}`);
+      }
+      if (!("state" in request)) throw new Error(`request ${i} is missing required key 'state'`);
+      if (!("questions" in request)) throw new Error(`request ${i} is missing required key 'questions'`);
+      const q: unknown = request.questions;
+      if (typeof q !== "object" || q === null || Array.isArray(q)) {
+        throw new TypeError(`request ${i} 'questions' must be an object, got ${typeName(q)}`);
+      }
+      return this.route(request.state, request.questions, {
+        model: request.model,
+        task: request.task,
+        lang: request.lang,
+        langGuess: request.langGuess ?? request.lang_guess,
+      });
+    });
+  }
+
+  /**
+   * Route and run a heterogeneous request batch with minimal model churn (router.py
+   * `predict_batch`). Requests are routed, grouped by checkpoint (one load per checkpoint), then
+   * split again by question schema, token budget and language so each group is one
+   * `Agent.predictBatch`. Results keep input order.
+   *
+   * Router-level predict hooks run per request, as `predict` runs them: each request gets its
+   * own context, so a start hook can rewrite or skip it before it joins a shared pass. A
+   * checkpoint group's requests end in reverse of the order they started; if the group fails,
+   * each started request gets `onError` and then `onPredictEnd` before the error propagates.
+   */
+  async predictBatch(requests: RouterRequest[], opts: RouterBatchOptions = {}): Promise<RoutedResult[]> {
+    const mc = opts.minConfidence !== null && opts.minConfidence !== undefined
+      ? checkMinConfidence(opts.minConfidence)
+      : null;
+    const decisions = this.routeBatch(requests);
+    if (decisions.length === 0) return [];
+    for (const r of requests) {
+      checkTokenBudget("maxLen", r.maxLen);
+      checkTokenBudget("headMaxLen", r.headMaxLen);
+    }
+    // Insertion order keeps loads deterministic: at most one load per routed checkpoint.
+    const groups = new Map<ModelName, number[]>();
+    decisions.forEach((decision, i) => {
+      // An onRoute hook may name the checkpoint by an alias; it must still share its group.
+      const key = normaliseName((decision as { model: string }).model);
+      groups.set(key, [...(groups.get(key) ?? []), i]);
+    });
+    const results: RoutedResult[] = new Array(requests.length);
+    let answered = 0;
+    const active = composeHooks(this.hooks);
+    const raiseErrors = this.hooksRaise;
+
+    for (const [modelName, indices] of groups) {
+      const agent = (await this.load(modelName)) as BatchAgent;
+      const started: PredictContext[] = [];
+      try {
+        for (const i of indices) {
+          const ctx = new PredictContext({
+            states: [requests[i].state],
+            questions: requests[i].questions as Record<string, unknown>,
+            decision: { ...decisions[i] } as unknown as Record<string, unknown>,
+            model: modelName,
+            agent,
+            router: this,
+            maxLen: requests[i].maxLen ?? null,
+            headMaxLen: requests[i].headMaxLen ?? null,
+          });
+          started.push(ctx);
+          await dispatchAsync(active, "onPredictStart", ctx, { raiseErrors });
+        }
+
+        // One Agent.predictBatch carries one question schema, budget and language, so split
+        // again on what the start hooks left (order-sensitive schema key: options are positional).
+        const questionGroups: {
+          questions: Record<string, QuestionDef>;
+          key: string;
+          lang: string | null;
+          overrides: PredictBatchOptions;
+          items: [number, PredictContext][];
+        }[] = [];
+        indices.forEach((i, j) => {
+          const ctx = started[j];
+          if (ctx.results !== null) {
+            for (const result of ctx.results) {
+              if (result && typeof result === "object" && !("routing" in result)) {
+                (result as unknown as RoutedResult).routing = { ...decisions[i] };
+              }
+            }
+            return;
+          }
+          const overrides: PredictBatchOptions = {};
+          if (ctx.maxLen !== null) overrides.maxLen = ctx.maxLen;
+          if (ctx.headMaxLen !== null) overrides.headMaxLen = ctx.headMaxLen;
+          // The language only splits a group for an agent that has per-language temperatures.
+          const lang = agent.langTemperatures && Object.keys(agent.langTemperatures).length > 0
+            ? forwardedLang(requests[i].lang, decisions[i])
+            : null;
+          const key = JSON.stringify([ctx.questions, overrides.maxLen ?? null, overrides.headMaxLen ?? null, lang]);
+          const group = questionGroups.find((g) => g.key === key);
+          if (group) group.items.push([i, ctx]);
+          else {
+            questionGroups.push({
+              questions: ctx.questions as Record<string, QuestionDef>,
+              key,
+              lang,
+              overrides,
+              items: [[i, ctx]],
+            });
+          }
+        });
+
+        for (const group of questionGroups) {
+          const batchOpts: PredictBatchOptions = { ...group.overrides, batchSize: opts.batchSize };
+          if (group.lang !== null) batchOpts.lang = group.lang;
+          if (opts.sortByLength) batchOpts.sortByLength = true;
+          markDefaultsRan(batchOpts);
+          const batchResults = await agent.predictBatch(
+            group.items.map(([, ctx]) => ctx.states[0]),
+            group.questions,
+            batchOpts,
+          );
+          if (!Array.isArray(batchResults) || batchResults.length !== group.items.length) {
+            throw new Error(
+              `internal error: Agent.predictBatch returned ${batchResults?.length} results for ${group.items.length} states`,
+            );
+          }
+          group.items.forEach(([i, ctx], k) => {
+            const result = batchResults[k] as RoutedResult;
+            result.routing = { ...decisions[i] };
+            ctx.results = [result as unknown as Record<string, unknown>];
+          });
+        }
+        // Summed here, not while ending, so a malformed usage block fails the group like any error.
+        const usages = started.map((ctx) => aggregateUsage(ctx.results ?? []));
+        started.forEach((ctx, k) => {
+          ctx.usage = usages[k];
+        });
+      } catch (err) {
+        for (const ctx of started) if (mc !== null && ctx.results) flagLowConfidence(ctx.results, mc);
+        await this._endContexts(active, started, raiseErrors, { error: err });
+        throw err;
+      }
+      for (const ctx of started) if (mc !== null && ctx.results) flagLowConfidence(ctx.results, mc);
+      await this._endContexts(active, started, raiseErrors, null);
+      indices.forEach((i, j) => {
+        results[i] = (started[j].results as unknown as RoutedResult[])[0];
+      });
+      answered += indices.length;
+    }
+    if (answered !== requests.length) throw new Error("internal error: batch execution did not produce every result");
+    return results;
+  }
+
+  /**
+   * End each request of a batch the way `predict` ends one (router.py `_end_contexts`):
+   * `elapsedMs` is set on all first; they end in reverse start order; a failed context gets
+   * `onError` before `onPredictEnd`; every context ends even if another's hooks raise, and the
+   * first such failure on a successful context is thrown afterwards.
+   */
+  private async _endContexts(
+    active: Hook[],
+    contexts: PredictContext[],
+    raiseErrors: boolean,
+    failure: { error: unknown } | null,
+  ): Promise<void> {
+    for (const ctx of contexts) {
+      ctx.markElapsed();
+      if (failure) ctx.error = failure.error;
+    }
+    let first: { error: unknown } | null = null;
+    for (const ctx of [...contexts].reverse()) {
+      const failed = ctx.error !== null;
+      for (const event of failed ? (["onError", "onPredictEnd"] as const) : (["onPredictEnd"] as const)) {
+        try {
+          await dispatchAsync(active, event, ctx, { raiseErrors });
+        } catch (hookErr) {
+          if (!failed && first === null) first = { error: hookErr };
+        }
+      }
+    }
+    if (first !== null) throw first.error;
   }
 }
