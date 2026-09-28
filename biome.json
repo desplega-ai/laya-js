@@ -1,0 +1,60 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.14/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!vendor.json",
+      "!packages/laya/src/agent.ts",
+      "!packages/laya/src/common.ts",
+      "!packages/laya/src/email.ts",
+      "!packages/laya/src/hooks.ts",
+      "!packages/laya/src/index.ts",
+      "!packages/laya/src/lang.ts",
+      "!packages/laya/src/presets.ts",
+      "!packages/laya/src/providers.ts",
+      "!packages/laya/src/router.ts",
+      "!packages/laya/src/shortlist.ts",
+      "!packages/laya/src/structured.ts",
+      "!packages/laya/src/tokenizer.ts",
+      "!packages/laya/test/agent.test.ts",
+      "!packages/laya/test/answer-confidence.test.ts",
+      "!packages/laya/test/audit-regressions.test.ts",
+      "!packages/laya/test/blank-lang-routing.test.ts",
+      "!packages/laya/test/bpe-complexity.test.ts",
+      "!packages/laya/test/bpe.test.ts",
+      "!packages/laya/test/email-presets.test.ts",
+      "!packages/laya/test/flat-parity.test.ts",
+      "!packages/laya/test/hooks.test.ts",
+      "!packages/laya/test/identifier-complexity.test.ts",
+      "!packages/laya/test/lang-agnostic-codes.test.ts",
+      "!packages/laya/test/lang-temperature.test.ts",
+      "!packages/laya/test/lang.test.ts",
+      "!packages/laya/test/legend-parity.test.ts",
+      "!packages/laya/test/maxlen.test.ts",
+      "!packages/laya/test/package-e2e.mjs",
+      "!packages/laya/test/parity-sequence.test.ts",
+      "!packages/laya/test/revision-pinning.test.ts",
+      "!packages/laya/test/router.test.ts",
+      "!packages/laya/test/scaffold.test.ts",
+      "!packages/laya/test/sequence-prefix.test.ts",
+      "!packages/laya/test/shortlist.test.ts",
+      "!packages/laya/test/structured.test.ts",
+      "!packages/laya/test/tokenizer-parity.test.ts"
+    ]
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "lineWidth": 120
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended"
+    }
+  }
+}

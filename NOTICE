@@ -1,0 +1,7 @@
+@desplega/laya
+Copyright 2026 Desplega Labs.
+
+This product includes software developed by Convai Innovations as part of
+laya (https://github.com/NandhaKishorM/laya), licensed under the Apache
+License 2.0. Vendored from `laya-ts/` at commit
+9d955671415fc19f069b9cc998928075c1f255ec (v0.3.21).
