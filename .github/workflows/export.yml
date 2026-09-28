@@ -1,0 +1,91 @@
+name: export
+
+# Re-exports the fp32 split bundles from the pinned upstream checkpoints and verifies
+# torch vs ONNX to 1e-4. With `upload`, each job pushes its bundle to the artifact
+# store, then `pin` rewrites packages/laya/src/artifacts.ts at the store's new head
+# and opens a PR. INT8 is deferred (plan, 2026-09-28).
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: Upload the bundles and open a PR that pins them
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - checkpoint: multilingual
+            repo: convaiinnovations/laya-multilingual
+            revision: e4e9ddf21a7b1903b7acffd8814ad4307bf63a67
+            verify_len: 1024
+          - checkpoint: english
+            repo: convaiinnovations/laya
+            revision: 55cf4c4ebb4ebe31b2550e8bdf3bd21b99753851
+            verify_len: 512
+          - checkpoint: typed-decisions
+            repo: convaiinnovations/laya-typed-decisions
+            revision: 1a793eb568e6718f15941d08f85432581df534e3
+            verify_len: 1024
+    env:
+      OUT: ${{ github.workspace }}/bundles/${{ matrix.checkpoint }}/fp32
+    defaults:
+      run:
+        working-directory: tools/export
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+      - name: Export and verify (torch vs ONNX, 1e-4)
+        run: >-
+          uv run python export_split.py --repo ${{ matrix.repo }} --revision ${{ matrix.revision }}
+          --out-dir "$OUT" --verify-len ${{ matrix.verify_len }}
+      - name: Finalize (inline data, onnx.checker, manifest.json)
+        run: >-
+          uv run python finalize_bundle.py --bundle-dir "$OUT" --checkpoint ${{ matrix.checkpoint }}
+          --repo ${{ matrix.repo }} --revision ${{ matrix.revision }}
+      - name: Upload to the artifact store
+        if: inputs.upload
+        # Write-scoped token on this step only, so uv sync and the export never see it.
+        env:
+          HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
+        run: |
+          test -n "$HF_TOKEN" || { echo "::error::Actions secret HF_ACCESS_TOKEN is empty"; exit 1; }
+          uv run python upload_bundle.py --bundles "${{ github.workspace }}/bundles" --checkpoints ${{ matrix.checkpoint }}
+
+  pin:
+    needs: export
+    if: inputs.upload
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+        working-directory: tools/export
+      - run: uv run python upload_bundle.py --pin-only
+        working-directory: tools/export
+      - name: Open a PR with the new pins
+        run: |
+          git diff --quiet packages/laya/src/artifacts.ts && { echo "artifacts.ts unchanged"; exit 0; }
+          branch="export/pin-${{ github.run_id }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -am "Pin re-exported fp32 bundles (export run ${{ github.run_id }})"
+          git push origin "$branch"
+          gh pr create --fill --body "Export run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -1,4 +1,4 @@
-// Modified by Desplega Labs, 2026: removed the browser path (createWebProvider, loadWebBundle, fetchArrayBuffer, onnxruntime-web).
+// Modified by Desplega Labs, 2026: removed the browser path (createWebProvider, loadWebBundle, fetchArrayBuffer, onnxruntime-web); HF 401/403 throws LayaLoadError.
 /** ONNX session shim: Node (onnxruntime-node).
  * Lazy imports only — unit tests with a fake provider never touch onnxruntime. */
 
@@ -188,6 +188,14 @@ function isOomError(e: unknown): boolean {
   const m = String((e as any)?.message ?? e).toLowerCase();
   return m.includes("memory") || m.includes("cuda") || m.includes("out of memory") || m.includes("oom");
 }
+/** A model bundle could not be loaded (for example, the Hub rejected the token). */
+export class LayaLoadError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "LayaLoadError";
+  }
+}
+
 export interface NodeBundle {
   dir: string;
   cfg: any;
@@ -242,6 +250,12 @@ export async function loadNodeBundle(
         const commit = res.headers?.get?.("x-repo-commit");
         if (commit) resolvedRevision = commit;
         if (!res.ok) {
+          // A bad or missing token must never read as a wrong model or a skipped file.
+          if (res.status === 401 || res.status === 403) {
+            throw new LayaLoadError(
+              `HF auth failed for ${modelDirOrRepo} (HTTP ${res.status} on ${f}); check HF_TOKEN or opts.token, and that the repo exists.`,
+            );
+          }
           if (f === "rl_agent_config.json") {
             throw new Error(
               `Incompatible model: ${JSON.stringify(modelDirOrRepo)} does not contain 'rl_agent_config.json'.`,

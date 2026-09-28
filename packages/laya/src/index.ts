@@ -14,8 +14,10 @@ export type {
   AgentOptions,
   PredictOptions,
 } from "./agent.js";
-export { createNodeProvider, feed, feedHead, loadNodeBundle, PINNED_REVISIONS, resolveRevision } from "./providers.js";
+export { createNodeProvider, feed, LayaLoadError, feedHead, loadNodeBundle, PINNED_REVISIONS, resolveRevision } from "./providers.js";
 export type { Batch, SessionProvider, ProviderOptions, NodeBundle } from "./providers.js";
+export { ARTIFACT_REPO, ARTIFACT_REVISION, ARTIFACTS } from "./artifacts.js";
+export type { BundleArtifact, CheckpointName, Precision } from "./artifacts.js";
 export { Router, normaliseName, DEFAULT_MODELS } from "./router.js";
 export type { RoutedResult, RouteDecision, ModelName, ModelSpec } from "./router.js";
 export { shortlistChoice, predictShortlist, embedFnFromAgent, DEFAULT_SHORTLIST_K } from "./shortlist.js";

@@ -9,6 +9,7 @@
     "includes": [
       "**",
       "!vendor.json",
+      "!packages/laya/src/artifacts.ts",
       "!packages/laya/src/agent.ts",
       "!packages/laya/src/common.ts",
       "!packages/laya/src/email.ts",
