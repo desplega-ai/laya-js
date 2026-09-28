@@ -1,6 +1,10 @@
-"""Write the parity fixtures: tools/parity/fixtures/cases.jsonl, shared by all three checkpoints.
+"""Write the parity fixtures, shared by all three checkpoints:
 
-Deterministic, no model needed. Each line is {id, state, questions, opts}. The questions are
+- tools/parity/fixtures/cases.jsonl: one state per case, {id, state, questions, opts};
+- tools/parity/fixtures/batch.jsonl: `predict_batch` cases, {id, states, questions, opts} with
+  `batch_size` and `sort_by_length` in opts.
+
+Deterministic, no model needed. The questions are
 written out in full (presets expanded through the pinned Python `laya.presets`), so the Python
 golden generator and the TS gate read exactly the same inputs.
 
@@ -240,13 +244,40 @@ def build_cases() -> list:
     return cases
 
 
-def main():
-    os.makedirs(OUT, exist_ok=True)
-    cases = build_cases()
-    with open(os.path.join(OUT, "cases.jsonl"), "w", encoding="utf-8") as f:
+def build_batch_cases() -> list:
+    """20 `predict_batch` cases: mixed lengths and state kinds, batch sizes 1, 3, 4, 16 and all
+    states in one pass, with `sort_by_length` on and off."""
+    long_text = LONG_PARAGRAPH * 8
+    pool = (TEXTS[:6] + JSON_STATES[:3] + CONVERSATIONS[:2]
+            + [long_text, LONG_PARAGRAPH, LONG_PARAGRAPH * 3, {"subject": "Escalation", "body": long_text}])
+    mixed = {"department": DEPARTMENT, "urgency": urgency(), "churn_risk": NOULS[0], "levels": score(5)}
+    question_sets = [mixed, triage_questions(), {"q": choice(6)}, guard_questions()]
+    cases = []
+    i = 0
+    for batch_size in (None, 1, 3, 4, 16):
+        for sort_by_length in (False, True):
+            for q in range(2):
+                n = 5 + (i * 3) % 11  # 5 to 15 states
+                states = [pool[(i * 5 + j * 7) % len(pool)] for j in range(n)]
+                opts = {"batch_size": batch_size, "sort_by_length": sort_by_length}
+                cases.append({"id": f"batch/{i}", "states": states,
+                              "questions": question_sets[(i + q) % len(question_sets)], "opts": opts})
+                i += 1
+    assert len(cases) == 20
+    return cases
+
+
+def write_jsonl(name: str, cases: list) -> None:
+    with open(os.path.join(OUT, name), "w", encoding="utf-8") as f:
         for c in cases:
             f.write(json.dumps(c, ensure_ascii=False, sort_keys=True) + "\n")
-    print("cases", len(cases))
+    print(name, len(cases))
+
+
+def main():
+    os.makedirs(OUT, exist_ok=True)
+    write_jsonl("cases.jsonl", build_cases())
+    write_jsonl("batch.jsonl", build_batch_cases())
 
 
 if __name__ == "__main__":

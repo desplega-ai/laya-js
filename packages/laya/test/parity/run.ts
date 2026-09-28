@@ -1,6 +1,7 @@
 // Python-vs-TS parity gate for one checkpoint. Loads the fp32 bundle, runs every fixture in
-// tools/parity/fixtures/cases.jsonl through Agent.systemOne, compares to the committed Python
-// golden and exits non-zero on any failure.
+// tools/parity/fixtures/cases.jsonl through Agent.systemOne and every batch.jsonl case through
+// Agent.predictBatch, compares to the committed Python goldens (<checkpoint>.json and
+// <checkpoint>.batch.json) and exits non-zero on any failure.
 //
 //   bun run parity -- --checkpoint multilingual [--precision fp32] [--bundle-dir <dir>]
 //                     [--perturb 0.01] [--report <path.json>]
@@ -42,13 +43,22 @@ if (!Number.isFinite(perturb)) {
   process.exit(2);
 }
 
-const golden = JSON.parse(readFileSync(resolve(here, "golden", `${ckpt}.json`), "utf8")) as Golden;
-const cases = readFileSync(resolve(root, "tools/parity/fixtures/cases.jsonl"), "utf8")
-  .split("\n")
-  .filter((l) => l.trim())
-  .map(
-    (l) => JSON.parse(l) as { id: string; state: unknown; questions: Record<string, never>; opts: { lang?: string } },
-  );
+type Opts = { lang?: string; batch_size?: number | null; sort_by_length?: boolean };
+const readJsonl = <T>(name: string): T[] =>
+  readFileSync(resolve(root, "tools/parity/fixtures", name), "utf8")
+    .split("\n")
+    .filter((l) => l.trim())
+    .map((l) => JSON.parse(l) as T);
+const readGolden = (suffix: string): Golden =>
+  JSON.parse(readFileSync(resolve(here, "golden", `${ckpt}${suffix}.json`), "utf8")) as Golden;
+
+const single = readGolden("");
+// Batch results are keyed `<case id>#<index>`, as make_goldens.py --kind batch writes them.
+const golden: Golden = { meta: single.meta, cases: { ...single.cases, ...readGolden(".batch").cases } };
+const cases = readJsonl<{ id: string; state: unknown; questions: Record<string, never>; opts: Opts }>("cases.jsonl");
+const batchCases = readJsonl<{ id: string; states: unknown[]; questions: Record<string, never>; opts: Opts }>(
+  "batch.jsonl",
+);
 
 const t0 = performance.now();
 const bundleDir = values["bundle-dir"];
@@ -82,6 +92,20 @@ const observed: Record<string, Observed> = {};
 for (const c of cases) {
   try {
     observed[c.id] = (await agent.systemOne(c.state, c.questions, { lang: c.opts?.lang ?? null })) as Observed;
+  } catch (e) {
+    observed[c.id] = { error: e instanceof Error ? e.message : String(e) };
+  }
+}
+for (const c of batchCases) {
+  try {
+    const rs = await agent.predictBatch(c.states, c.questions, {
+      lang: c.opts?.lang ?? null,
+      batchSize: c.opts?.batch_size ?? null,
+      sortByLength: c.opts?.sort_by_length ?? false,
+    });
+    rs.forEach((r, i) => {
+      observed[`${c.id}#${i}`] = r as Observed;
+    });
   } catch (e) {
     observed[c.id] = { error: e instanceof Error ? e.message : String(e) };
   }
