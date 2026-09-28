@@ -39,6 +39,7 @@
       "!packages/laya/test/maxlen.test.ts",
       "!packages/laya/test/package-e2e.mjs",
       "!packages/laya/test/parity-sequence.test.ts",
+      "!packages/laya/test/parity/golden",
       "!packages/laya/test/revision-pinning.test.ts",
       "!packages/laya/test/router.test.ts",
       "!packages/laya/test/scaffold.test.ts",

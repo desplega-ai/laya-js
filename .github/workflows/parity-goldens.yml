@@ -1,0 +1,30 @@
+name: parity-goldens
+
+# Regenerates the Python fp32 goldens (tools/parity/make_goldens.py) from the pinned public
+# checkpoints. Run once per pin bump or fixture change; the goldens come back as an artifact to
+# commit. CI never runs torch on PRs.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  golden:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        checkpoint: [english, multilingual, typed-decisions]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+        working-directory: tools/export
+      - run: uv run --project tools/export python tools/parity/make_goldens.py --checkpoint ${{ matrix.checkpoint }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: golden-${{ matrix.checkpoint }}
+          path: packages/laya/test/parity/golden/${{ matrix.checkpoint }}.json
