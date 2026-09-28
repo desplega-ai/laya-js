@@ -6,6 +6,7 @@ import { serve } from "@hono/node-server";
 import { createApp, type ServerRouter } from "./app.js";
 import { createBundleStore } from "./bundles.js";
 import { describeEnv, EnvError, type LogLevel, loadEnv, type ServerEnv } from "./env.js";
+import { routeWithin, toServerRouter } from "./routing.js";
 
 const RANK: Record<LogLevel, number> = { trace: 0, debug: 1, info: 2, warning: 3, error: 4, critical: 5 };
 
@@ -42,6 +43,7 @@ function buildRouter(env: ServerEnv, log: Log): { router: Router; server: Server
   const agents = new Map<string, LayaAgent>();
   const revisions = new Map<string, string | null>();
   const names = ["english", "multilingual", "typed-decisions"] as const;
+  const repos = Object.fromEntries(names.map((n) => [n, `${env.onnxRepo}/${n}/${env.precision}`]));
   const router = new Router({
     models: Object.fromEntries(names.map((n) => [n, { repo: env.onnxRepo, subfolder: `${n}/${env.precision}` }])),
     maxLoaded: env.maxLoaded ?? undefined,
@@ -49,6 +51,8 @@ function buildRouter(env: ServerEnv, log: Log): { router: Router; server: Server
     // Tokens never go through the Router: bundles are resolved to local dirs by the store.
     token: null,
     loader: async (name) => {
+      // routeWithin and the app's 400 keep routing inside LAYA_MODELS; this is the backstop.
+      if (!env.models.includes(name)) throw new Error(`refusing to load ${name}: not in LAYA_MODELS`);
       const bundle = await store.resolve(name);
       log.info(`loading ${name}/${env.precision} from ${bundle.dir} (${bundle.source})`);
       const agent = await createAgent({
@@ -63,36 +67,21 @@ function buildRouter(env: ServerEnv, log: Log): { router: Router; server: Server
       revisions.set(name, bundle.revision);
       return agent.raw;
     },
-    hooks: {
-      onEvict: async (ctx) => {
-        const name = String(ctx.model);
-        const agent = agents.get(name);
-        agents.delete(name);
-        revisions.delete(name);
-        log.info(`evicted ${name}`);
-        await agent?.dispose();
+    hooks: [
+      routeWithin(env.models, env.defaultModel, repos),
+      {
+        onEvict: async (ctx) => {
+          const name = String(ctx.model);
+          const agent = agents.get(name);
+          agents.delete(name);
+          revisions.delete(name);
+          log.info(`evicted ${name}`);
+          await agent?.dispose();
+        },
       },
-    },
+    ],
   });
-  const server: ServerRouter = {
-    get loaded() {
-      return router.loaded;
-    },
-    get revisions() {
-      return Object.fromEntries(router.loaded.map((n) => [n, revisions.get(n) ?? null]));
-    },
-    predict: (state, questions, o) =>
-      router.predict(
-        state,
-        questions as Parameters<Router["predict"]>[1],
-        {
-          model: o.model,
-          // Per-call token budgets; honoured once the lib's predict reads them (plan, Phase 6).
-          ...(o.maxLen !== undefined ? { maxLen: o.maxLen } : {}),
-          ...(o.headMaxLen !== undefined ? { headMaxLen: o.headMaxLen } : {}),
-        } as Parameters<Router["predict"]>[2],
-      ),
-  };
+  const server = toServerRouter(router, (n) => revisions.get(n) ?? null);
   return {
     router,
     server,
@@ -127,6 +116,7 @@ async function main(): Promise<void> {
     maxTokenBudget: env.maxTokenBudget,
     precision: env.precision,
     isReady: () => ready,
+    allowedModels: env.models,
     logger: { error: (m, e) => log.error(m, e) },
   });
   const server = serve({ fetch: app.fetch, hostname: env.host, port: env.port }, (info) => {

@@ -23,6 +23,7 @@ export const SMOKE_QUESTIONS = {
   },
   urgent: { type: "noul", instructions: "Does `message` need a reply today?" },
 };
+export const SMOKE_ENGLISH = "The server is down and none of our customers can log in. Please help us today.";
 export const SMOKE_STATE = {
   message: "Mi factura se cobró dos veces este mes, por favor devuelvan uno de los cargos.",
 };
@@ -82,6 +83,21 @@ export async function checkServer(base: string, opts: { apiKey?: string; secrets
   assert.ok(typeof noul === "number" && noul >= 0 && noul <= 1, `noul answer missing: ${text}`);
   assert.ok(r.usage?.input_tokens > 0, `usage missing: ${text}`);
   assert.ok(res.headers.get("x-inference-time-ms"), "X-Inference-Time-Ms header missing");
+  // No `model`, English text: routing picks `english`, which is not in LAYA_MODELS, so the
+  // server must answer with its default checkpoint and say so, never load or fetch english.
+  const en = await fetch(`${base}/v1/systemone`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ state: SMOKE_ENGLISH, questions: SMOKE_QUESTIONS }),
+  });
+  const enText = await en.text();
+  assert.equal(en.status, 200, `POST /v1/systemone (no model, English) -> ${en.status}: ${enText}`);
+  const enRouting = JSON.parse(enText).routing;
+  assert.equal(enRouting?.model, "multilingual", `English text not served by the default: ${enText}`);
+  assert.match(enRouting.reason, /"english" is not in LAYA_MODELS, served by "multilingual"$/, enText);
+  const after = JSON.parse(await (await fetch(`${base}/health`)).text());
+  assert.deepEqual(after.loaded, ["multilingual"], "a request loaded a checkpoint outside LAYA_MODELS");
+  console.log(`smoke: English without model -> ${enRouting.reason}`);
   console.log(
     `smoke: department=${dept.choice} (${JSON.stringify(dept.probabilities)}), urgent=${r.answers.urgent.noul}, ` +
       `${(performance.now() - t0).toFixed(0)} ms`,

@@ -76,6 +76,8 @@ export interface AppOptions {
   precision?: Precision;
   /** False until preload completes; /health and /v1/systemone answer 503 meanwhile. */
   isReady?: () => boolean;
+  /** LAYA_MODELS: an explicit `model` outside this set is a 400 (see routing.ts). Unset = any. */
+  allowedModels?: readonly string[];
   logger?: Logger;
 }
 
@@ -284,6 +286,12 @@ export function createApp(router: ServerRouter, opts: AppOptions = {}): Hono {
       const questions = body.questions;
       checkRequestLimits(state, questions);
       const model = resolveModel(body.model);
+      if (model !== null && opts.allowedModels && !opts.allowedModels.includes(model)) {
+        throw new HttpError(
+          400,
+          `model '${model}' is not served here; this server serves ${opts.allowedModels.join(", ")} (LAYA_MODELS)`,
+        );
+      }
       const maxLen = validateBudgetParam(body, "max_len", maxTokenBudget);
       const headMaxLen = validateBudgetParam(body, "head_max_len", maxTokenBudget);
       const callOpts: PredictCallOptions = { model };

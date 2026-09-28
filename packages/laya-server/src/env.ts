@@ -2,7 +2,10 @@
 // `laya/serve.py`; the additions (LAYA_PRECISION, LAYA_MODEL_DIR, LAYA_CACHE_DIR,
 // LAYA_ONNX_REPO, LAYA_ONNX_REVISION, HF_TOKEN, HF_ENDPOINT) come from the plan (Phase 8).
 //
-// One deliberate difference from serve.py: an invalid value fails fast instead of silently
+// Deliberate differences from serve.py:
+// - LAYA_MODELS is the set of checkpoints the server serves, not only what it preloads; the
+//   first entry is the default that out-of-set routing falls back to. See routing.ts.
+// - An invalid value fails fast instead of silently
 // falling back to the default. A typo in a deployment file should crash-loop visibly rather
 // than run a server with a different concurrency cap or token budget than the operator wrote.
 import { homedir } from "node:os";
@@ -24,8 +27,10 @@ export interface ServerEnv {
   /** LAYA_DEVICE as given. The TS runtime is CPU-only, so this is a preference that is never met by anything else. */
   device: string | null;
   preload: boolean;
-  /** Checkpoints to preload (and to fetch into the cache when not baked). */
+  /** The only checkpoints the server loads (preloaded, fetched into the cache when not baked). */
   models: CheckpointName[];
+  /** Serves requests whose routing picks a checkpoint outside `models`: the first of LAYA_MODELS. */
+  defaultModel: CheckpointName;
   threads: number | null;
   autoTask: boolean;
   maxLoaded: number | null;
@@ -127,12 +132,14 @@ export function loadEnv(env: Env = process.env): ServerEnv {
   if (!/^https?:\/\//.test(hfEndpoint)) {
     throw new EnvError(`invalid HF_ENDPOINT ${JSON.stringify(hfEndpoint)}: must be an http(s) URL`);
   }
+  const served = models(env);
   return {
     host: str(env, "LAYA_HOST") ?? "0.0.0.0",
     port,
     device: str(env, "LAYA_DEVICE"),
     preload: bool(env, "LAYA_PRELOAD", true),
-    models: models(env),
+    models: served,
+    defaultModel: served[0],
     threads: int(env, "LAYA_THREADS", positive, "a positive integer"),
     autoTask: bool(env, "LAYA_AUTO_TASK", false),
     maxLoaded: int(env, "LAYA_MAX_LOADED", positive, "a positive integer"),

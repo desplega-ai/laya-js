@@ -12,6 +12,7 @@ describe("loadEnv", () => {
       device: null,
       preload: true,
       models: ["multilingual"],
+      defaultModel: "multilingual",
       threads: null,
       autoTask: false,
       maxLoaded: null,
@@ -57,6 +58,7 @@ describe("loadEnv", () => {
       device: "cpu",
       preload: false,
       models: ["multilingual", "english", "typed-decisions"],
+      defaultModel: "multilingual",
       threads: 4,
       autoTask: true,
       maxLoaded: 3,
@@ -80,6 +82,10 @@ describe("loadEnv", () => {
     expect(env.port).toBe(8000);
     expect(env.apiKey).toBeNull();
     expect(env.threads).toBeNull();
+  });
+
+  it("defaults to the first of LAYA_MODELS", () => {
+    expect(loadEnv({ LAYA_MODELS: "english,multilingual" }).defaultModel).toBe("english");
   });
 
   it("dedupes aliased checkpoints", () => {

@@ -401,3 +401,26 @@ describe("routing", () => {
     expect(await na.json()).toEqual({ detail: "Method Not Allowed" });
   });
 });
+
+describe("LAYA_MODELS is the served set", () => {
+  it.each([
+    ["english", "english"],
+    ["en", "english"],
+    ["typed-decisions", "typed-decisions"],
+  ])("400 on an explicit model=%j outside it, before inference", async (model, key) => {
+    const { app, router } = setup({ allowedModels: ["multilingual"] });
+    const res = await post(app, { state: "hi", questions: QUESTIONS, model });
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({
+      detail: `model '${key}' is not served here; this server serves multilingual (LAYA_MODELS)`,
+    });
+    expect(router.calls).toHaveLength(0);
+  });
+
+  it("serves an explicit model inside it, and auto-routing (no model) is not refused", async () => {
+    const { app, router } = setup({ allowedModels: ["multilingual", "english"] });
+    expect((await post(app, { state: "hi", questions: QUESTIONS, model: "english" })).status).toBe(200);
+    expect((await post(app, { state: "hi", questions: QUESTIONS, model: "jev-1" })).status).toBe(200);
+    expect(router.calls.map((c) => c.opts.model)).toEqual(["english", null]);
+  });
+});
