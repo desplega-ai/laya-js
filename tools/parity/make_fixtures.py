@@ -246,10 +246,14 @@ def build_cases() -> list:
 
 def build_batch_cases() -> list:
     """20 `predict_batch` cases: mixed lengths and state kinds, batch sizes 1, 3, 4, 16 and all
-    states in one pass, with `sort_by_length` on and off."""
-    long_text = LONG_PARAGRAPH * 8
+    states in one pass, with `sort_by_length` on and off.
+
+    States stay under about 300 tokens and 10 per case: an all-in-one pass of 15 states at 700
+    tokens on ModernBERT-large ran the 7 GB CI runner out of memory. Past-512 states are covered
+    by cases.jsonl and long.jsonl."""
     pool = (TEXTS[:6] + JSON_STATES[:3] + CONVERSATIONS[:2]
-            + [long_text, LONG_PARAGRAPH, LONG_PARAGRAPH * 3, {"subject": "Escalation", "body": long_text}])
+            + [LONG_PARAGRAPH, LONG_PARAGRAPH * 2, LONG_PARAGRAPH * 3,
+               {"subject": "Escalation", "body": LONG_PARAGRAPH * 2}])
     mixed = {"department": DEPARTMENT, "urgency": urgency(), "churn_risk": NOULS[0], "levels": score(5)}
     question_sets = [mixed, triage_questions(), {"q": choice(6)}, guard_questions()]
     cases = []
@@ -257,7 +261,7 @@ def build_batch_cases() -> list:
     for batch_size in (None, 1, 3, 4, 16):
         for sort_by_length in (False, True):
             for q in range(2):
-                n = 5 + (i * 3) % 11  # 5 to 15 states
+                n = 4 + (i * 3) % 7  # 4 to 10 states
                 states = [pool[(i * 5 + j * 7) % len(pool)] for j in range(n)]
                 opts = {"batch_size": batch_size, "sort_by_length": sort_by_length}
                 cases.append({"id": f"batch/{i}", "states": states,

@@ -114,56 +114,56 @@
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.7976,
-     "confidence": 0.7976,
-     "margin": 0.5952,
-     "noul": 0.2024,
+     "answer_confidence": 0.6612,
+     "confidence": 0.6612,
+     "margin": 0.3224,
+     "noul": 0.3388,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8292,
+     "answer_confidence": 0.8625,
      "choice": "technical",
-     "confidence": 0.5412,
-     "margin": 0.7457,
+     "confidence": 0.6051,
+     "margin": 0.8033,
      "probabilities": {
-      "billing": 0.042,
-      "other": 0.0835,
-      "sales": 0.0453,
-      "technical": 0.8292
+      "billing": 0.0324,
+      "other": 0.0592,
+      "sales": 0.0459,
+      "technical": 0.8625
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5923,
-     "confidence": 0.3082,
-     "margin": 0.4099,
+     "answer_confidence": 0.6702,
+     "confidence": 0.4164,
+     "margin": 0.513,
      "probabilities": {
-      "0": 0.1687,
-      "1": 0.5923,
-      "2": 0.1824,
-      "3": 0.0439,
-      "4": 0.0127
+      "0": 0.151,
+      "1": 0.6702,
+      "2": 0.1572,
+      "3": 0.0163,
+      "4": 0.0053
      },
-     "score": 1.1395,
+     "score": 1.0547,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.3932,
-     "confidence": 0.0183,
-     "margin": 0.029,
+     "answer_confidence": 0.5024,
+     "confidence": 0.0687,
+     "margin": 0.1929,
      "probabilities": {
-      "0": 0.3932,
-      "1": 0.3642,
-      "2": 0.2425
+      "0": 0.5024,
+      "1": 0.3095,
+      "2": 0.1881
      },
-     "score": 0.8493,
+     "score": 0.6858,
      "type": "score"
     }
    },
-   "input_tokens": 2048
+   "input_tokens": 929
   },
   "batch/0#3": {
    "answers": {
@@ -220,61 +220,6 @@
    },
    "input_tokens": 261
   },
-  "batch/0#4": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8903,
-     "confidence": 0.8903,
-     "margin": 0.7806,
-     "noul": 0.1097,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8935,
-     "choice": "technical",
-     "confidence": 0.6738,
-     "margin": 0.8438,
-     "probabilities": {
-      "billing": 0.0281,
-      "other": 0.0497,
-      "sales": 0.0287,
-      "technical": 0.8935
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6116,
-     "confidence": 0.3647,
-     "margin": 0.3774,
-     "probabilities": {
-      "0": 0.2342,
-      "1": 0.6116,
-      "2": 0.1227,
-      "3": 0.0255,
-      "4": 0.006
-     },
-     "score": 0.9576,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4726,
-     "confidence": 0.0454,
-     "margin": 0.1617,
-     "probabilities": {
-      "0": 0.4726,
-      "1": 0.3109,
-      "2": 0.2165
-     },
-     "score": 0.7439,
-     "type": "score"
-    }
-   },
-   "input_tokens": 1241
-  },
   "batch/1#0": {
    "answers": {
     "q": {
@@ -300,22 +245,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8509,
+     "answer_confidence": 0.6445,
      "choice": "opt1",
-     "confidence": 0.6958,
-     "margin": 0.7729,
+     "confidence": 0.5541,
+     "margin": 0.3244,
      "probabilities": {
-      "opt0": 0.0667,
-      "opt1": 0.8509,
-      "opt2": 0.078,
-      "opt3": 0.002,
-      "opt4": 0.0012,
-      "opt5": 0.0011
+      "opt0": 0.3201,
+      "opt1": 0.6445,
+      "opt2": 0.0238,
+      "opt3": 0.0074,
+      "opt4": 0.0024,
+      "opt5": 0.0018
      },
      "type": "choice"
     }
    },
-   "input_tokens": 144
+   "input_tokens": 234
   },
   "batch/1#2": {
    "answers": {
@@ -342,22 +287,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5794,
+     "answer_confidence": 0.8509,
      "choice": "opt1",
-     "confidence": 0.3802,
-     "margin": 0.3186,
+     "confidence": 0.6958,
+     "margin": 0.7729,
      "probabilities": {
-      "opt0": 0.2608,
-      "opt1": 0.5794,
-      "opt2": 0.0894,
-      "opt3": 0.058,
-      "opt4": 0.0073,
-      "opt5": 0.0051
+      "opt0": 0.0667,
+      "opt1": 0.8509,
+      "opt2": 0.078,
+      "opt3": 0.002,
+      "opt4": 0.0012,
+      "opt5": 0.0011
      },
      "type": "choice"
     }
    },
-   "input_tokens": 512
+   "input_tokens": 144
   },
   "batch/1#4": {
    "answers": {
@@ -422,27 +367,6 @@
    },
    "input_tokens": 70
   },
-  "batch/1#7": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.507,
-     "choice": "opt2",
-     "confidence": 0.4587,
-     "margin": 0.0969,
-     "probabilities": {
-      "opt0": 0.0678,
-      "opt1": 0.4101,
-      "opt2": 0.507,
-      "opt3": 0.0091,
-      "opt4": 0.0035,
-      "opt5": 0.0025
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 118
-  },
   "batch/10#0": {
    "answers": {
     "q": {
@@ -468,85 +392,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8509,
+     "answer_confidence": 0.6445,
      "choice": "opt1",
-     "confidence": 0.6958,
-     "margin": 0.7729,
+     "confidence": 0.5541,
+     "margin": 0.3244,
      "probabilities": {
-      "opt0": 0.0667,
-      "opt1": 0.8509,
-      "opt2": 0.078,
-      "opt3": 0.002,
-      "opt4": 0.0012,
-      "opt5": 0.0011
+      "opt0": 0.3201,
+      "opt1": 0.6445,
+      "opt2": 0.0238,
+      "opt3": 0.0074,
+      "opt4": 0.0024,
+      "opt5": 0.0018
      },
      "type": "choice"
     }
    },
-   "input_tokens": 144
-  },
-  "batch/10#10": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9772,
-     "choice": "opt0",
-     "confidence": 0.9292,
-     "margin": 0.9593,
-     "probabilities": {
-      "opt0": 0.9772,
-      "opt1": 0.0179,
-      "opt2": 0.0024,
-      "opt3": 0.0011,
-      "opt4": 0.0006,
-      "opt5": 0.0007
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 75
-  },
-  "batch/10#11": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8396,
-     "choice": "opt0",
-     "confidence": 0.6809,
-     "margin": 0.7243,
-     "probabilities": {
-      "opt0": 0.8396,
-      "opt1": 0.1153,
-      "opt2": 0.0342,
-      "opt3": 0.0055,
-      "opt4": 0.0028,
-      "opt5": 0.0026
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 83
-  },
-  "batch/10#12": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6738,
-     "choice": "opt1",
-     "confidence": 0.4595,
-     "margin": 0.4723,
-     "probabilities": {
-      "opt0": 0.2015,
-      "opt1": 0.6738,
-      "opt2": 0.0813,
-      "opt3": 0.0275,
-      "opt4": 0.0081,
-      "opt5": 0.0077
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 512
+   "input_tokens": 234
   },
   "batch/10#2": {
    "answers": {
@@ -573,22 +434,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5794,
+     "answer_confidence": 0.8509,
      "choice": "opt1",
-     "confidence": 0.3802,
-     "margin": 0.3186,
+     "confidence": 0.6958,
+     "margin": 0.7729,
      "probabilities": {
-      "opt0": 0.2608,
-      "opt1": 0.5794,
-      "opt2": 0.0894,
-      "opt3": 0.058,
-      "opt4": 0.0073,
-      "opt5": 0.0051
+      "opt0": 0.0667,
+      "opt1": 0.8509,
+      "opt2": 0.078,
+      "opt3": 0.002,
+      "opt4": 0.0012,
+      "opt5": 0.0011
      },
      "type": "choice"
     }
    },
-   "input_tokens": 512
+   "input_tokens": 144
   },
   "batch/10#4": {
    "answers": {
@@ -631,90 +492,6 @@
     }
    },
    "input_tokens": 117
-  },
-  "batch/10#6": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9915,
-     "choice": "opt0",
-     "confidence": 0.9703,
-     "margin": 0.9841,
-     "probabilities": {
-      "opt0": 0.9915,
-      "opt1": 0.0074,
-      "opt2": 0.0006,
-      "opt3": 0.0002,
-      "opt4": 0.0001,
-      "opt5": 0.0001
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 70
-  },
-  "batch/10#7": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.507,
-     "choice": "opt2",
-     "confidence": 0.4587,
-     "margin": 0.0969,
-     "probabilities": {
-      "opt0": 0.0678,
-      "opt1": 0.4101,
-      "opt2": 0.507,
-      "opt3": 0.0091,
-      "opt4": 0.0035,
-      "opt5": 0.0025
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 118
-  },
-  "batch/10#8": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6235,
-     "choice": "opt1",
-     "confidence": 0.4417,
-     "margin": 0.3829,
-     "probabilities": {
-      "opt0": 0.1086,
-      "opt1": 0.6235,
-      "opt2": 0.2406,
-      "opt3": 0.0181,
-      "opt4": 0.0058,
-      "opt5": 0.0034
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 63
-  },
-  "batch/10#9": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3642,
-     "choice": "opt0",
-     "confidence": 0.2593,
-     "margin": 0.0207,
-     "probabilities": {
-      "opt0": 0.3642,
-      "opt1": 0.3435,
-      "opt2": 0.1446,
-      "opt3": 0.1414,
-      "opt4": 0.0032,
-      "opt5": 0.003
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 87
   },
   "batch/11#0": {
    "answers": {
@@ -991,6 +768,226 @@
    },
    "input_tokens": 293
   },
+  "batch/11#5": {
+   "answers": {
+    "churn_risk": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.932,
+     "confidence": 0.932,
+     "margin": 0.864,
+     "noul": 0.932,
+     "type": "noul"
+    },
+    "department": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.9718,
+     "choice": "billing",
+     "confidence": 0.8853,
+     "margin": 0.9611,
+     "probabilities": {
+      "billing": 0.9718,
+      "other": 0.0073,
+      "sales": 0.0107,
+      "technical": 0.0102
+     },
+     "type": "choice"
+    },
+    "levels": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.8314,
+     "confidence": 0.6506,
+     "margin": 0.6939,
+     "probabilities": {
+      "0": 0.8314,
+      "1": 0.1375,
+      "2": 0.0197,
+      "3": 0.0062,
+      "4": 0.0052
+     },
+     "score": 0.2161,
+     "type": "score"
+    },
+    "urgency": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.4043,
+     "confidence": 0.0277,
+     "margin": 0.0307,
+     "probabilities": {
+      "0": 0.2221,
+      "1": 0.3736,
+      "2": 0.4043
+     },
+     "score": 1.1822,
+     "type": "score"
+    }
+   },
+   "input_tokens": 245
+  },
+  "batch/11#6": {
+   "answers": {
+    "churn_risk": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.8904,
+     "confidence": 0.8904,
+     "margin": 0.7808,
+     "noul": 0.1096,
+     "type": "noul"
+    },
+    "department": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.5685,
+     "choice": "billing",
+     "confidence": 0.291,
+     "margin": 0.235,
+     "probabilities": {
+      "billing": 0.5685,
+      "other": 0.0492,
+      "sales": 0.0488,
+      "technical": 0.3335
+     },
+     "type": "choice"
+    },
+    "levels": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.5519,
+     "confidence": 0.3611,
+     "margin": 0.2638,
+     "probabilities": {
+      "0": 0.2881,
+      "1": 0.5519,
+      "2": 0.1488,
+      "3": 0.0065,
+      "4": 0.0047
+     },
+     "score": 0.8879,
+     "type": "score"
+    },
+    "urgency": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.781,
+     "confidence": 0.4071,
+     "margin": 0.6193,
+     "probabilities": {
+      "0": 0.0572,
+      "1": 0.1617,
+      "2": 0.781
+     },
+     "score": 1.7238,
+     "type": "score"
+    }
+   },
+   "input_tokens": 277
+  },
+  "batch/11#7": {
+   "answers": {
+    "churn_risk": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.6612,
+     "confidence": 0.6612,
+     "margin": 0.3224,
+     "noul": 0.3388,
+     "type": "noul"
+    },
+    "department": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.8625,
+     "choice": "technical",
+     "confidence": 0.6051,
+     "margin": 0.8033,
+     "probabilities": {
+      "billing": 0.0324,
+      "other": 0.0592,
+      "sales": 0.0459,
+      "technical": 0.8625
+     },
+     "type": "choice"
+    },
+    "levels": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.6702,
+     "confidence": 0.4164,
+     "margin": 0.513,
+     "probabilities": {
+      "0": 0.151,
+      "1": 0.6702,
+      "2": 0.1572,
+      "3": 0.0163,
+      "4": 0.0053
+     },
+     "score": 1.0547,
+     "type": "score"
+    },
+    "urgency": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.5024,
+     "confidence": 0.0687,
+     "margin": 0.1929,
+     "probabilities": {
+      "0": 0.5024,
+      "1": 0.3095,
+      "2": 0.1881
+     },
+     "score": 0.6858,
+     "type": "score"
+    }
+   },
+   "input_tokens": 929
+  },
+  "batch/11#8": {
+   "answers": {
+    "churn_risk": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.9216,
+     "confidence": 0.9216,
+     "margin": 0.8432,
+     "noul": 0.0784,
+     "type": "noul"
+    },
+    "department": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.9522,
+     "choice": "billing",
+     "confidence": 0.8237,
+     "margin": 0.9341,
+     "probabilities": {
+      "billing": 0.9522,
+      "other": 0.0181,
+      "sales": 0.0153,
+      "technical": 0.0144
+     },
+     "type": "choice"
+    },
+    "levels": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.4549,
+     "confidence": 0.2847,
+     "margin": 0.1346,
+     "probabilities": {
+      "0": 0.2004,
+      "1": 0.4549,
+      "2": 0.3203,
+      "3": 0.0161,
+      "4": 0.0083
+     },
+     "score": 1.177,
+     "type": "score"
+    },
+    "urgency": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.546,
+     "confidence": 0.1155,
+     "margin": 0.2349,
+     "probabilities": {
+      "0": 0.3111,
+      "1": 0.546,
+      "2": 0.1429
+     },
+     "score": 0.8318,
+     "type": "score"
+    }
+   },
+   "input_tokens": 261
+  },
   "batch/12#0": {
    "answers": {
     "churn_risk": {
@@ -1105,56 +1102,56 @@
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.7976,
-     "confidence": 0.7976,
-     "margin": 0.5952,
-     "noul": 0.2024,
+     "answer_confidence": 0.6612,
+     "confidence": 0.6612,
+     "margin": 0.3224,
+     "noul": 0.3388,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8292,
+     "answer_confidence": 0.8625,
      "choice": "technical",
-     "confidence": 0.5412,
-     "margin": 0.7457,
+     "confidence": 0.6051,
+     "margin": 0.8033,
      "probabilities": {
-      "billing": 0.042,
-      "other": 0.0835,
-      "sales": 0.0453,
-      "technical": 0.8292
+      "billing": 0.0324,
+      "other": 0.0592,
+      "sales": 0.0459,
+      "technical": 0.8625
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5923,
-     "confidence": 0.3082,
-     "margin": 0.4099,
+     "answer_confidence": 0.6702,
+     "confidence": 0.4164,
+     "margin": 0.513,
      "probabilities": {
-      "0": 0.1687,
-      "1": 0.5923,
-      "2": 0.1824,
-      "3": 0.0439,
-      "4": 0.0127
+      "0": 0.151,
+      "1": 0.6702,
+      "2": 0.1572,
+      "3": 0.0163,
+      "4": 0.0053
      },
-     "score": 1.1395,
+     "score": 1.0547,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.3932,
-     "confidence": 0.0183,
-     "margin": 0.029,
+     "answer_confidence": 0.5024,
+     "confidence": 0.0687,
+     "margin": 0.1929,
      "probabilities": {
-      "0": 0.3932,
-      "1": 0.3642,
-      "2": 0.2425
+      "0": 0.5024,
+      "1": 0.3095,
+      "2": 0.1881
      },
-     "score": 0.8493,
+     "score": 0.6858,
      "type": "score"
     }
    },
-   "input_tokens": 2048
+   "input_tokens": 929
   },
   "batch/12#3": {
    "answers": {
@@ -1266,171 +1263,6 @@
    },
    "input_tokens": 1241
   },
-  "batch/12#5": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9999,
-     "confidence": 0.9999,
-     "margin": 0.9998,
-     "noul": 0.0001,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.7307,
-     "choice": "technical",
-     "confidence": 0.3958,
-     "margin": 0.5686,
-     "probabilities": {
-      "billing": 0.0578,
-      "other": 0.1621,
-      "sales": 0.0494,
-      "technical": 0.7307
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9292,
-     "confidence": 0.8143,
-     "margin": 0.8704,
-     "probabilities": {
-      "0": 0.9292,
-      "1": 0.0588,
-      "2": 0.0075,
-      "3": 0.0025,
-      "4": 0.002
-     },
-     "score": 0.0893,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4966,
-     "confidence": 0.0617,
-     "margin": 0.1918,
-     "probabilities": {
-      "0": 0.4966,
-      "1": 0.1987,
-      "2": 0.3048
-     },
-     "score": 0.8082,
-     "type": "score"
-    }
-   },
-   "input_tokens": 197
-  },
-  "batch/12#6": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9616,
-     "confidence": 0.9616,
-     "margin": 0.9232,
-     "noul": 0.0384,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8919,
-     "choice": "technical",
-     "confidence": 0.6679,
-     "margin": 0.8493,
-     "probabilities": {
-      "billing": 0.0313,
-      "other": 0.0426,
-      "sales": 0.0342,
-      "technical": 0.8919
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6571,
-     "confidence": 0.447,
-     "margin": 0.4243,
-     "probabilities": {
-      "0": 0.1028,
-      "1": 0.6571,
-      "2": 0.2328,
-      "3": 0.004,
-      "4": 0.0032
-     },
-     "score": 1.1478,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4794,
-     "confidence": 0.0467,
-     "margin": 0.1801,
-     "probabilities": {
-      "0": 0.4794,
-      "1": 0.2993,
-      "2": 0.2214
-     },
-     "score": 0.742,
-     "type": "score"
-    }
-   },
-   "input_tokens": 521
-  },
-  "batch/12#7": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 1.0,
-     "confidence": 1.0,
-     "margin": 1.0,
-     "noul": 0.0,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3362,
-     "choice": "other",
-     "confidence": 0.0321,
-     "margin": 0.0419,
-     "probabilities": {
-      "billing": 0.2247,
-      "other": 0.3362,
-      "sales": 0.1448,
-      "technical": 0.2943
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5328,
-     "confidence": 0.3444,
-     "margin": 0.196,
-     "probabilities": {
-      "0": 0.5328,
-      "1": 0.3368,
-      "2": 0.1022,
-      "3": 0.0148,
-      "4": 0.0134
-     },
-     "score": 0.6392,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5982,
-     "confidence": 0.176,
-     "margin": 0.302,
-     "probabilities": {
-      "0": 0.5982,
-      "1": 0.2962,
-      "2": 0.1056
-     },
-     "score": 0.5074,
-     "type": "score"
-    }
-   },
-   "input_tokens": 209
-  },
   "batch/13#0": {
    "answers": {
     "q": {
@@ -1456,43 +1288,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8509,
+     "answer_confidence": 0.6445,
      "choice": "opt1",
-     "confidence": 0.6958,
-     "margin": 0.7729,
+     "confidence": 0.5541,
+     "margin": 0.3244,
      "probabilities": {
-      "opt0": 0.0667,
-      "opt1": 0.8509,
-      "opt2": 0.078,
-      "opt3": 0.002,
-      "opt4": 0.0012,
-      "opt5": 0.0011
+      "opt0": 0.3201,
+      "opt1": 0.6445,
+      "opt2": 0.0238,
+      "opt3": 0.0074,
+      "opt4": 0.0024,
+      "opt5": 0.0018
      },
      "type": "choice"
     }
    },
-   "input_tokens": 144
-  },
-  "batch/13#10": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9772,
-     "choice": "opt0",
-     "confidence": 0.9292,
-     "margin": 0.9593,
-     "probabilities": {
-      "opt0": 0.9772,
-      "opt1": 0.0179,
-      "opt2": 0.0024,
-      "opt3": 0.0011,
-      "opt4": 0.0006,
-      "opt5": 0.0007
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 75
+   "input_tokens": 234
   },
   "batch/13#2": {
    "answers": {
@@ -1519,22 +1330,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5794,
+     "answer_confidence": 0.8509,
      "choice": "opt1",
-     "confidence": 0.3802,
-     "margin": 0.3186,
+     "confidence": 0.6958,
+     "margin": 0.7729,
      "probabilities": {
-      "opt0": 0.2608,
-      "opt1": 0.5794,
-      "opt2": 0.0894,
-      "opt3": 0.058,
-      "opt4": 0.0073,
-      "opt5": 0.0051
+      "opt0": 0.0667,
+      "opt1": 0.8509,
+      "opt2": 0.078,
+      "opt3": 0.002,
+      "opt4": 0.0012,
+      "opt5": 0.0011
      },
      "type": "choice"
     }
    },
-   "input_tokens": 512
+   "input_tokens": 144
   },
   "batch/13#4": {
    "answers": {
@@ -1620,48 +1431,6 @@
    },
    "input_tokens": 118
   },
-  "batch/13#8": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6235,
-     "choice": "opt1",
-     "confidence": 0.4417,
-     "margin": 0.3829,
-     "probabilities": {
-      "opt0": 0.1086,
-      "opt1": 0.6235,
-      "opt2": 0.2406,
-      "opt3": 0.0181,
-      "opt4": 0.0058,
-      "opt5": 0.0034
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 63
-  },
-  "batch/13#9": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3642,
-     "choice": "opt0",
-     "confidence": 0.2593,
-     "margin": 0.0207,
-     "probabilities": {
-      "opt0": 0.3642,
-      "opt1": 0.3435,
-      "opt2": 0.1446,
-      "opt3": 0.1414,
-      "opt4": 0.0032,
-      "opt5": 0.003
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 87
-  },
   "batch/14#0": {
    "answers": {
     "q": {
@@ -1704,90 +1473,6 @@
    },
    "input_tokens": 70
   },
-  "batch/14#10": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9796,
-     "choice": "opt0",
-     "confidence": 0.9339,
-     "margin": 0.9646,
-     "probabilities": {
-      "opt0": 0.9796,
-      "opt1": 0.015,
-      "opt2": 0.0024,
-      "opt3": 0.0012,
-      "opt4": 0.0007,
-      "opt5": 0.0011
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 63
-  },
-  "batch/14#11": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8509,
-     "choice": "opt1",
-     "confidence": 0.6958,
-     "margin": 0.7729,
-     "probabilities": {
-      "opt0": 0.0667,
-      "opt1": 0.8509,
-      "opt2": 0.078,
-      "opt3": 0.002,
-      "opt4": 0.0012,
-      "opt5": 0.0011
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 144
-  },
-  "batch/14#12": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6407,
-     "choice": "opt0",
-     "confidence": 0.3847,
-     "margin": 0.4525,
-     "probabilities": {
-      "opt0": 0.6407,
-      "opt1": 0.1882,
-      "opt2": 0.0927,
-      "opt3": 0.0369,
-      "opt4": 0.0181,
-      "opt5": 0.0233
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 66
-  },
-  "batch/14#13": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5794,
-     "choice": "opt1",
-     "confidence": 0.3802,
-     "margin": 0.3186,
-     "probabilities": {
-      "opt0": 0.2608,
-      "opt1": 0.5794,
-      "opt2": 0.0894,
-      "opt3": 0.058,
-      "opt4": 0.0073,
-      "opt5": 0.0051
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 512
-  },
   "batch/14#2": {
    "answers": {
     "q": {
@@ -1829,132 +1514,6 @@
     }
    },
    "input_tokens": 63
-  },
-  "batch/14#4": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3642,
-     "choice": "opt0",
-     "confidence": 0.2593,
-     "margin": 0.0207,
-     "probabilities": {
-      "opt0": 0.3642,
-      "opt1": 0.3435,
-      "opt2": 0.1446,
-      "opt3": 0.1414,
-      "opt4": 0.0032,
-      "opt5": 0.003
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 87
-  },
-  "batch/14#5": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9772,
-     "choice": "opt0",
-     "confidence": 0.9292,
-     "margin": 0.9593,
-     "probabilities": {
-      "opt0": 0.9772,
-      "opt1": 0.0179,
-      "opt2": 0.0024,
-      "opt3": 0.0011,
-      "opt4": 0.0006,
-      "opt5": 0.0007
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 75
-  },
-  "batch/14#6": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8396,
-     "choice": "opt0",
-     "confidence": 0.6809,
-     "margin": 0.7243,
-     "probabilities": {
-      "opt0": 0.8396,
-      "opt1": 0.1153,
-      "opt2": 0.0342,
-      "opt3": 0.0055,
-      "opt4": 0.0028,
-      "opt5": 0.0026
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 83
-  },
-  "batch/14#7": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6738,
-     "choice": "opt1",
-     "confidence": 0.4595,
-     "margin": 0.4723,
-     "probabilities": {
-      "opt0": 0.2015,
-      "opt1": 0.6738,
-      "opt2": 0.0813,
-      "opt3": 0.0275,
-      "opt4": 0.0081,
-      "opt5": 0.0077
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 512
-  },
-  "batch/14#8": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3856,
-     "choice": "opt1",
-     "confidence": 0.2698,
-     "margin": 0.0597,
-     "probabilities": {
-      "opt0": 0.3259,
-      "opt1": 0.3856,
-      "opt2": 0.2229,
-      "opt3": 0.0383,
-      "opt4": 0.0173,
-      "opt5": 0.0099
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 79
-  },
-  "batch/14#9": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5437,
-     "choice": "opt1",
-     "confidence": 0.4596,
-     "margin": 0.1645,
-     "probabilities": {
-      "opt0": 0.3792,
-      "opt1": 0.5437,
-      "opt2": 0.0498,
-      "opt3": 0.0194,
-      "opt4": 0.0046,
-      "opt5": 0.0032
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 324
   },
   "batch/15#0": {
    "answers": {
@@ -2070,56 +1629,56 @@
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.7976,
-     "confidence": 0.7976,
-     "margin": 0.5952,
-     "noul": 0.2024,
+     "answer_confidence": 0.6612,
+     "confidence": 0.6612,
+     "margin": 0.3224,
+     "noul": 0.3388,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8292,
+     "answer_confidence": 0.8625,
      "choice": "technical",
-     "confidence": 0.5412,
-     "margin": 0.7457,
+     "confidence": 0.6051,
+     "margin": 0.8033,
      "probabilities": {
-      "billing": 0.042,
-      "other": 0.0835,
-      "sales": 0.0453,
-      "technical": 0.8292
+      "billing": 0.0324,
+      "other": 0.0592,
+      "sales": 0.0459,
+      "technical": 0.8625
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5923,
-     "confidence": 0.3082,
-     "margin": 0.4099,
+     "answer_confidence": 0.6702,
+     "confidence": 0.4164,
+     "margin": 0.513,
      "probabilities": {
-      "0": 0.1687,
-      "1": 0.5923,
-      "2": 0.1824,
-      "3": 0.0439,
-      "4": 0.0127
+      "0": 0.151,
+      "1": 0.6702,
+      "2": 0.1572,
+      "3": 0.0163,
+      "4": 0.0053
      },
-     "score": 1.1395,
+     "score": 1.0547,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.3932,
-     "confidence": 0.0183,
-     "margin": 0.029,
+     "answer_confidence": 0.5024,
+     "confidence": 0.0687,
+     "margin": 0.1929,
      "probabilities": {
-      "0": 0.3932,
-      "1": 0.3642,
-      "2": 0.2425
+      "0": 0.5024,
+      "1": 0.3095,
+      "2": 0.1881
      },
-     "score": 0.8493,
+     "score": 0.6858,
      "type": "score"
     }
    },
-   "input_tokens": 2048
+   "input_tokens": 929
   },
   "batch/15#3": {
    "answers": {
@@ -2286,6 +1845,61 @@
    },
    "input_tokens": 197
   },
+  "batch/15#6": {
+   "answers": {
+    "churn_risk": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.8557,
+     "confidence": 0.8557,
+     "margin": 0.7114,
+     "noul": 0.1443,
+     "type": "noul"
+    },
+    "department": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.9052,
+     "choice": "technical",
+     "confidence": 0.7,
+     "margin": 0.8649,
+     "probabilities": {
+      "billing": 0.0252,
+      "other": 0.0403,
+      "sales": 0.0293,
+      "technical": 0.9052
+     },
+     "type": "choice"
+    },
+    "levels": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.6576,
+     "confidence": 0.4144,
+     "margin": 0.4641,
+     "probabilities": {
+      "0": 0.1935,
+      "1": 0.6576,
+      "2": 0.1307,
+      "3": 0.0137,
+      "4": 0.0045
+     },
+     "score": 0.9781,
+     "type": "score"
+    },
+    "urgency": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.4037,
+     "confidence": 0.0128,
+     "margin": 0.0746,
+     "probabilities": {
+      "0": 0.4037,
+      "1": 0.3291,
+      "2": 0.2671
+     },
+     "score": 0.8634,
+     "type": "score"
+    }
+   },
+   "input_tokens": 881
+  },
   "batch/16#0": {
    "answers": {
     "churn_risk": {
@@ -2345,56 +1959,56 @@
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.9616,
-     "confidence": 0.9616,
-     "margin": 0.9232,
-     "noul": 0.0384,
+     "answer_confidence": 0.8557,
+     "confidence": 0.8557,
+     "margin": 0.7114,
+     "noul": 0.1443,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8919,
+     "answer_confidence": 0.9052,
      "choice": "technical",
-     "confidence": 0.6679,
-     "margin": 0.8493,
+     "confidence": 0.7,
+     "margin": 0.8649,
      "probabilities": {
-      "billing": 0.0313,
-      "other": 0.0426,
-      "sales": 0.0342,
-      "technical": 0.8919
+      "billing": 0.0252,
+      "other": 0.0403,
+      "sales": 0.0293,
+      "technical": 0.9052
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.6571,
-     "confidence": 0.447,
-     "margin": 0.4243,
+     "answer_confidence": 0.6576,
+     "confidence": 0.4144,
+     "margin": 0.4641,
      "probabilities": {
-      "0": 0.1028,
-      "1": 0.6571,
-      "2": 0.2328,
-      "3": 0.004,
-      "4": 0.0032
+      "0": 0.1935,
+      "1": 0.6576,
+      "2": 0.1307,
+      "3": 0.0137,
+      "4": 0.0045
      },
-     "score": 1.1478,
+     "score": 0.9781,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.4794,
-     "confidence": 0.0467,
-     "margin": 0.1801,
+     "answer_confidence": 0.4037,
+     "confidence": 0.0128,
+     "margin": 0.0746,
      "probabilities": {
-      "0": 0.4794,
-      "1": 0.2993,
-      "2": 0.2214
+      "0": 0.4037,
+      "1": 0.3291,
+      "2": 0.2671
      },
-     "score": 0.742,
+     "score": 0.8634,
      "type": "score"
     }
    },
-   "input_tokens": 521
+   "input_tokens": 881
   },
   "batch/16#2": {
    "answers": {
@@ -2455,56 +2069,56 @@
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8715,
-     "confidence": 0.8715,
-     "margin": 0.743,
-     "noul": 0.1285,
+     "answer_confidence": 0.9616,
+     "confidence": 0.9616,
+     "margin": 0.9232,
+     "noul": 0.0384,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8155,
+     "answer_confidence": 0.8919,
      "choice": "technical",
-     "confidence": 0.5104,
-     "margin": 0.7412,
+     "confidence": 0.6679,
+     "margin": 0.8493,
      "probabilities": {
-      "billing": 0.0526,
-      "other": 0.0743,
-      "sales": 0.0576,
-      "technical": 0.8155
+      "billing": 0.0313,
+      "other": 0.0426,
+      "sales": 0.0342,
+      "technical": 0.8919
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5882,
-     "confidence": 0.3224,
-     "margin": 0.3824,
+     "answer_confidence": 0.6571,
+     "confidence": 0.447,
+     "margin": 0.4243,
      "probabilities": {
-      "0": 0.2058,
-      "1": 0.5882,
-      "2": 0.1615,
-      "3": 0.0369,
-      "4": 0.0075
+      "0": 0.1028,
+      "1": 0.6571,
+      "2": 0.2328,
+      "3": 0.004,
+      "4": 0.0032
      },
-     "score": 1.0521,
+     "score": 1.1478,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.3735,
-     "confidence": 0.0062,
-     "margin": 0.0285,
+     "answer_confidence": 0.4794,
+     "confidence": 0.0467,
+     "margin": 0.1801,
      "probabilities": {
-      "0": 0.345,
-      "1": 0.3735,
-      "2": 0.2815
+      "0": 0.4794,
+      "1": 0.2993,
+      "2": 0.2214
      },
-     "score": 0.9365,
+     "score": 0.742,
      "type": "score"
     }
    },
-   "input_tokens": 2048
+   "input_tokens": 521
   },
   "batch/16#4": {
    "answers": {
@@ -2781,6 +2395,61 @@
    },
    "input_tokens": 197
   },
+  "batch/16#9": {
+   "answers": {
+    "churn_risk": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.8947,
+     "confidence": 0.8947,
+     "margin": 0.7894,
+     "noul": 0.1053,
+     "type": "noul"
+    },
+    "department": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.4395,
+     "choice": "billing",
+     "confidence": 0.1044,
+     "margin": 0.151,
+     "probabilities": {
+      "billing": 0.4395,
+      "other": 0.1888,
+      "sales": 0.2885,
+      "technical": 0.0833
+     },
+     "type": "choice"
+    },
+    "levels": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.4883,
+     "confidence": 0.2739,
+     "margin": 0.2277,
+     "probabilities": {
+      "0": 0.2109,
+      "1": 0.4883,
+      "2": 0.2606,
+      "3": 0.0373,
+      "4": 0.003
+     },
+     "score": 1.1332,
+     "type": "score"
+    },
+    "urgency": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.5811,
+     "confidence": 0.1346,
+     "margin": 0.308,
+     "probabilities": {
+      "0": 0.2731,
+      "1": 0.5811,
+      "2": 0.1459
+     },
+     "score": 0.8728,
+     "type": "score"
+    }
+   },
+   "input_tokens": 293
+  },
   "batch/17#0": {
    "answers": {
     "q": {
@@ -2822,48 +2491,6 @@
     }
    },
    "input_tokens": 70
-  },
-  "batch/17#10": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9796,
-     "choice": "opt0",
-     "confidence": 0.9339,
-     "margin": 0.9646,
-     "probabilities": {
-      "opt0": 0.9796,
-      "opt1": 0.015,
-      "opt2": 0.0024,
-      "opt3": 0.0012,
-      "opt4": 0.0007,
-      "opt5": 0.0011
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 63
-  },
-  "batch/17#11": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8509,
-     "choice": "opt1",
-     "confidence": 0.6958,
-     "margin": 0.7729,
-     "probabilities": {
-      "opt0": 0.0667,
-      "opt1": 0.8509,
-      "opt2": 0.078,
-      "opt3": 0.002,
-      "opt4": 0.0012,
-      "opt5": 0.0011
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 144
   },
   "batch/17#2": {
    "answers": {
@@ -2949,90 +2576,6 @@
    },
    "input_tokens": 75
   },
-  "batch/17#6": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8396,
-     "choice": "opt0",
-     "confidence": 0.6809,
-     "margin": 0.7243,
-     "probabilities": {
-      "opt0": 0.8396,
-      "opt1": 0.1153,
-      "opt2": 0.0342,
-      "opt3": 0.0055,
-      "opt4": 0.0028,
-      "opt5": 0.0026
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 83
-  },
-  "batch/17#7": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6738,
-     "choice": "opt1",
-     "confidence": 0.4595,
-     "margin": 0.4723,
-     "probabilities": {
-      "opt0": 0.2015,
-      "opt1": 0.6738,
-      "opt2": 0.0813,
-      "opt3": 0.0275,
-      "opt4": 0.0081,
-      "opt5": 0.0077
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 512
-  },
-  "batch/17#8": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3856,
-     "choice": "opt1",
-     "confidence": 0.2698,
-     "margin": 0.0597,
-     "probabilities": {
-      "opt0": 0.3259,
-      "opt1": 0.3856,
-      "opt2": 0.2229,
-      "opt3": 0.0383,
-      "opt4": 0.0173,
-      "opt5": 0.0099
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 79
-  },
-  "batch/17#9": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5437,
-     "choice": "opt1",
-     "confidence": 0.4596,
-     "margin": 0.1645,
-     "probabilities": {
-      "opt0": 0.3792,
-      "opt1": 0.5437,
-      "opt2": 0.0498,
-      "opt3": 0.0194,
-      "opt4": 0.0046,
-      "opt5": 0.0032
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 324
-  },
   "batch/18#0": {
    "answers": {
     "q": {
@@ -3075,131 +2618,26 @@
    },
    "input_tokens": 83
   },
-  "batch/18#10": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4703,
-     "choice": "opt1",
-     "confidence": 0.2431,
-     "margin": 0.2254,
-     "probabilities": {
-      "opt0": 0.1624,
-      "opt1": 0.4703,
-      "opt2": 0.2449,
-      "opt3": 0.0824,
-      "opt4": 0.0171,
-      "opt5": 0.0228
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 117
-  },
-  "batch/18#11": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9915,
-     "choice": "opt0",
-     "confidence": 0.9703,
-     "margin": 0.9841,
-     "probabilities": {
-      "opt0": 0.9915,
-      "opt1": 0.0074,
-      "opt2": 0.0006,
-      "opt3": 0.0002,
-      "opt4": 0.0001,
-      "opt5": 0.0001
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 70
-  },
-  "batch/18#12": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.507,
-     "choice": "opt2",
-     "confidence": 0.4587,
-     "margin": 0.0969,
-     "probabilities": {
-      "opt0": 0.0678,
-      "opt1": 0.4101,
-      "opt2": 0.507,
-      "opt3": 0.0091,
-      "opt4": 0.0035,
-      "opt5": 0.0025
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 118
-  },
-  "batch/18#13": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6235,
-     "choice": "opt1",
-     "confidence": 0.4417,
-     "margin": 0.3829,
-     "probabilities": {
-      "opt0": 0.1086,
-      "opt1": 0.6235,
-      "opt2": 0.2406,
-      "opt3": 0.0181,
-      "opt4": 0.0058,
-      "opt5": 0.0034
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 63
-  },
-  "batch/18#14": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3642,
-     "choice": "opt0",
-     "confidence": 0.2593,
-     "margin": 0.0207,
-     "probabilities": {
-      "opt0": 0.3642,
-      "opt1": 0.3435,
-      "opt2": 0.1446,
-      "opt3": 0.1414,
-      "opt4": 0.0032,
-      "opt5": 0.003
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 87
-  },
   "batch/18#2": {
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.6738,
+     "answer_confidence": 0.7307,
      "choice": "opt1",
-     "confidence": 0.4595,
-     "margin": 0.4723,
+     "confidence": 0.5286,
+     "margin": 0.5666,
      "probabilities": {
-      "opt0": 0.2015,
-      "opt1": 0.6738,
-      "opt2": 0.0813,
-      "opt3": 0.0275,
-      "opt4": 0.0081,
-      "opt5": 0.0077
+      "opt0": 0.1641,
+      "opt1": 0.7307,
+      "opt2": 0.0798,
+      "opt3": 0.0152,
+      "opt4": 0.0067,
+      "opt5": 0.0035
      },
      "type": "choice"
     }
    },
-   "input_tokens": 512
+   "input_tokens": 246
   },
   "batch/18#3": {
    "answers": {
@@ -3268,22 +2706,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8509,
+     "answer_confidence": 0.6445,
      "choice": "opt1",
-     "confidence": 0.6958,
-     "margin": 0.7729,
+     "confidence": 0.5541,
+     "margin": 0.3244,
      "probabilities": {
-      "opt0": 0.0667,
-      "opt1": 0.8509,
-      "opt2": 0.078,
-      "opt3": 0.002,
-      "opt4": 0.0012,
-      "opt5": 0.0011
+      "opt0": 0.3201,
+      "opt1": 0.6445,
+      "opt2": 0.0238,
+      "opt3": 0.0074,
+      "opt4": 0.0024,
+      "opt5": 0.0018
      },
      "type": "choice"
     }
    },
-   "input_tokens": 144
+   "input_tokens": 234
   },
   "batch/18#7": {
    "answers": {
@@ -3310,43 +2748,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5794,
+     "answer_confidence": 0.8509,
      "choice": "opt1",
-     "confidence": 0.3802,
-     "margin": 0.3186,
+     "confidence": 0.6958,
+     "margin": 0.7729,
      "probabilities": {
-      "opt0": 0.2608,
-      "opt1": 0.5794,
-      "opt2": 0.0894,
-      "opt3": 0.058,
-      "opt4": 0.0073,
-      "opt5": 0.0051
+      "opt0": 0.0667,
+      "opt1": 0.8509,
+      "opt2": 0.078,
+      "opt3": 0.002,
+      "opt4": 0.0012,
+      "opt5": 0.0011
      },
      "type": "choice"
     }
    },
-   "input_tokens": 512
-  },
-  "batch/18#9": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5942,
-     "choice": "opt1",
-     "confidence": 0.4512,
-     "margin": 0.3187,
-     "probabilities": {
-      "opt0": 0.2755,
-      "opt1": 0.5942,
-      "opt2": 0.1176,
-      "opt3": 0.008,
-      "opt4": 0.0029,
-      "opt5": 0.0018
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 66
+   "input_tokens": 144
   },
   "batch/19#0": {
    "answers": {
@@ -3407,56 +2824,56 @@
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.9616,
-     "confidence": 0.9616,
-     "margin": 0.9232,
-     "noul": 0.0384,
+     "answer_confidence": 0.8557,
+     "confidence": 0.8557,
+     "margin": 0.7114,
+     "noul": 0.1443,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8919,
+     "answer_confidence": 0.9052,
      "choice": "technical",
-     "confidence": 0.6679,
-     "margin": 0.8493,
+     "confidence": 0.7,
+     "margin": 0.8649,
      "probabilities": {
-      "billing": 0.0313,
-      "other": 0.0426,
-      "sales": 0.0342,
-      "technical": 0.8919
+      "billing": 0.0252,
+      "other": 0.0403,
+      "sales": 0.0293,
+      "technical": 0.9052
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.6571,
-     "confidence": 0.447,
-     "margin": 0.4243,
+     "answer_confidence": 0.6576,
+     "confidence": 0.4144,
+     "margin": 0.4641,
      "probabilities": {
-      "0": 0.1028,
-      "1": 0.6571,
-      "2": 0.2328,
-      "3": 0.004,
-      "4": 0.0032
+      "0": 0.1935,
+      "1": 0.6576,
+      "2": 0.1307,
+      "3": 0.0137,
+      "4": 0.0045
      },
-     "score": 1.1478,
+     "score": 0.9781,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.4794,
-     "confidence": 0.0467,
-     "margin": 0.1801,
+     "answer_confidence": 0.4037,
+     "confidence": 0.0128,
+     "margin": 0.0746,
      "probabilities": {
-      "0": 0.4794,
-      "1": 0.2993,
-      "2": 0.2214
+      "0": 0.4037,
+      "1": 0.3291,
+      "2": 0.2671
      },
-     "score": 0.742,
+     "score": 0.8634,
      "type": "score"
     }
    },
-   "input_tokens": 521
+   "input_tokens": 881
   },
   "batch/19#2": {
    "answers": {
@@ -3517,56 +2934,56 @@
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8715,
-     "confidence": 0.8715,
-     "margin": 0.743,
-     "noul": 0.1285,
+     "answer_confidence": 0.9616,
+     "confidence": 0.9616,
+     "margin": 0.9232,
+     "noul": 0.0384,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8155,
+     "answer_confidence": 0.8919,
      "choice": "technical",
-     "confidence": 0.5104,
-     "margin": 0.7412,
+     "confidence": 0.6679,
+     "margin": 0.8493,
      "probabilities": {
-      "billing": 0.0526,
-      "other": 0.0743,
-      "sales": 0.0576,
-      "technical": 0.8155
+      "billing": 0.0313,
+      "other": 0.0426,
+      "sales": 0.0342,
+      "technical": 0.8919
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5882,
-     "confidence": 0.3224,
-     "margin": 0.3824,
+     "answer_confidence": 0.6571,
+     "confidence": 0.447,
+     "margin": 0.4243,
      "probabilities": {
-      "0": 0.2058,
-      "1": 0.5882,
-      "2": 0.1615,
-      "3": 0.0369,
-      "4": 0.0075
+      "0": 0.1028,
+      "1": 0.6571,
+      "2": 0.2328,
+      "3": 0.004,
+      "4": 0.0032
      },
-     "score": 1.0521,
+     "score": 1.1478,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.3735,
-     "confidence": 0.0062,
-     "margin": 0.0285,
+     "answer_confidence": 0.4794,
+     "confidence": 0.0467,
+     "margin": 0.1801,
      "probabilities": {
-      "0": 0.345,
-      "1": 0.3735,
-      "2": 0.2815
+      "0": 0.4794,
+      "1": 0.2993,
+      "2": 0.2214
      },
-     "score": 0.9365,
+     "score": 0.742,
      "type": "score"
     }
    },
-   "input_tokens": 2048
+   "input_tokens": 521
   },
   "batch/19#4": {
    "answers": {
@@ -3623,116 +3040,6 @@
    },
    "input_tokens": 209
   },
-  "batch/19#5": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9996,
-     "confidence": 0.9996,
-     "margin": 0.9992,
-     "noul": 0.0004,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.7783,
-     "choice": "sales",
-     "confidence": 0.4664,
-     "margin": 0.6457,
-     "probabilities": {
-      "billing": 0.0497,
-      "other": 0.1326,
-      "sales": 0.7783,
-      "technical": 0.0394
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3955,
-     "confidence": 0.1768,
-     "margin": 0.0729,
-     "probabilities": {
-      "0": 0.158,
-      "1": 0.3955,
-      "2": 0.3226,
-      "3": 0.1104,
-      "4": 0.0136
-     },
-     "score": 1.4261,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5223,
-     "confidence": 0.086,
-     "margin": 0.2163,
-     "probabilities": {
-      "0": 0.306,
-      "1": 0.5223,
-      "2": 0.1717
-     },
-     "score": 0.8657,
-     "type": "score"
-    }
-   },
-   "input_tokens": 413
-  },
-  "batch/19#6": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.7684,
-     "confidence": 0.7684,
-     "margin": 0.5368,
-     "noul": 0.7684,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8681,
-     "choice": "technical",
-     "confidence": 0.6163,
-     "margin": 0.8107,
-     "probabilities": {
-      "billing": 0.0392,
-      "other": 0.0353,
-      "sales": 0.0574,
-      "technical": 0.8681
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8325,
-     "confidence": 0.6413,
-     "margin": 0.7055,
-     "probabilities": {
-      "0": 0.8325,
-      "1": 0.127,
-      "2": 0.0285,
-      "3": 0.007,
-      "4": 0.005
-     },
-     "score": 0.225,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9199,
-     "confidence": 0.7191,
-     "margin": 0.8495,
-     "probabilities": {
-      "0": 0.0097,
-      "1": 0.0704,
-      "2": 0.9199
-     },
-     "score": 1.9102,
-     "type": "score"
-    }
-   },
-   "input_tokens": 225
-  },
   "batch/2#0": {
    "answers": {
     "q": {
@@ -3774,27 +3081,6 @@
     }
    },
    "input_tokens": 70
-  },
-  "batch/2#10": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9796,
-     "choice": "opt0",
-     "confidence": 0.9339,
-     "margin": 0.9646,
-     "probabilities": {
-      "opt0": 0.9796,
-      "opt1": 0.015,
-      "opt2": 0.0024,
-      "opt3": 0.0012,
-      "opt4": 0.0007,
-      "opt5": 0.0011
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 63
   },
   "batch/2#2": {
    "answers": {
@@ -3905,22 +3191,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.6738,
+     "answer_confidence": 0.7307,
      "choice": "opt1",
-     "confidence": 0.4595,
-     "margin": 0.4723,
+     "confidence": 0.5286,
+     "margin": 0.5666,
      "probabilities": {
-      "opt0": 0.2015,
-      "opt1": 0.6738,
-      "opt2": 0.0813,
-      "opt3": 0.0275,
-      "opt4": 0.0081,
-      "opt5": 0.0077
+      "opt0": 0.1641,
+      "opt1": 0.7307,
+      "opt2": 0.0798,
+      "opt3": 0.0152,
+      "opt4": 0.0067,
+      "opt5": 0.0035
      },
      "type": "choice"
     }
    },
-   "input_tokens": 512
+   "input_tokens": 246
   },
   "batch/2#8": {
    "answers": {
@@ -4074,280 +3360,60 @@
    },
    "input_tokens": 277
   },
-  "batch/3#10": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9996,
-     "confidence": 0.9996,
-     "margin": 0.9992,
-     "noul": 0.0004,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.7783,
-     "choice": "sales",
-     "confidence": 0.4664,
-     "margin": 0.6457,
-     "probabilities": {
-      "billing": 0.0497,
-      "other": 0.1326,
-      "sales": 0.7783,
-      "technical": 0.0394
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3955,
-     "confidence": 0.1768,
-     "margin": 0.0729,
-     "probabilities": {
-      "0": 0.158,
-      "1": 0.3955,
-      "2": 0.3226,
-      "3": 0.1104,
-      "4": 0.0136
-     },
-     "score": 1.4261,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5223,
-     "confidence": 0.086,
-     "margin": 0.2163,
-     "probabilities": {
-      "0": 0.306,
-      "1": 0.5223,
-      "2": 0.1717
-     },
-     "score": 0.8657,
-     "type": "score"
-    }
-   },
-   "input_tokens": 413
-  },
-  "batch/3#11": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.7684,
-     "confidence": 0.7684,
-     "margin": 0.5368,
-     "noul": 0.7684,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8681,
-     "choice": "technical",
-     "confidence": 0.6163,
-     "margin": 0.8107,
-     "probabilities": {
-      "billing": 0.0392,
-      "other": 0.0353,
-      "sales": 0.0574,
-      "technical": 0.8681
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8325,
-     "confidence": 0.6413,
-     "margin": 0.7055,
-     "probabilities": {
-      "0": 0.8325,
-      "1": 0.127,
-      "2": 0.0285,
-      "3": 0.007,
-      "4": 0.005
-     },
-     "score": 0.225,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9199,
-     "confidence": 0.7191,
-     "margin": 0.8495,
-     "probabilities": {
-      "0": 0.0097,
-      "1": 0.0704,
-      "2": 0.9199
-     },
-     "score": 1.9102,
-     "type": "score"
-    }
-   },
-   "input_tokens": 225
-  },
-  "batch/3#12": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.588,
-     "confidence": 0.588,
-     "margin": 0.176,
-     "noul": 0.588,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8451,
-     "choice": "billing",
-     "confidence": 0.567,
-     "margin": 0.7886,
-     "probabilities": {
-      "billing": 0.8451,
-      "other": 0.0565,
-      "sales": 0.0548,
-      "technical": 0.0436
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5351,
-     "confidence": 0.4258,
-     "margin": 0.1387,
-     "probabilities": {
-      "0": 0.0563,
-      "1": 0.3964,
-      "2": 0.5351,
-      "3": 0.0087,
-      "4": 0.0034
-     },
-     "score": 1.5065,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4163,
-     "confidence": 0.0249,
-     "margin": 0.0644,
-     "probabilities": {
-      "0": 0.2318,
-      "1": 0.4163,
-      "2": 0.3519
-     },
-     "score": 1.12,
-     "type": "score"
-    }
-   },
-   "input_tokens": 417
-  },
-  "batch/3#13": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 1.0,
-     "confidence": 1.0,
-     "margin": 1.0,
-     "noul": 0.0,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.7979,
-     "choice": "billing",
-     "confidence": 0.4862,
-     "margin": 0.6952,
-     "probabilities": {
-      "billing": 0.7979,
-      "other": 0.0511,
-      "sales": 0.0483,
-      "technical": 0.1027
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6287,
-     "confidence": 0.416,
-     "margin": 0.3611,
-     "probabilities": {
-      "0": 0.0847,
-      "1": 0.6287,
-      "2": 0.2676,
-      "3": 0.0143,
-      "4": 0.0048
-     },
-     "score": 1.2258,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4388,
-     "confidence": 0.0703,
-     "margin": 0.0379,
-     "probabilities": {
-      "0": 0.4009,
-      "1": 0.4388,
-      "2": 0.1604
-     },
-     "score": 0.7595,
-     "type": "score"
-    }
-   },
-   "input_tokens": 197
-  },
   "batch/3#2": {
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.7976,
-     "confidence": 0.7976,
-     "margin": 0.5952,
-     "noul": 0.2024,
+     "answer_confidence": 0.6612,
+     "confidence": 0.6612,
+     "margin": 0.3224,
+     "noul": 0.3388,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8292,
+     "answer_confidence": 0.8625,
      "choice": "technical",
-     "confidence": 0.5412,
-     "margin": 0.7457,
+     "confidence": 0.6051,
+     "margin": 0.8033,
      "probabilities": {
-      "billing": 0.042,
-      "other": 0.0835,
-      "sales": 0.0453,
-      "technical": 0.8292
+      "billing": 0.0324,
+      "other": 0.0592,
+      "sales": 0.0459,
+      "technical": 0.8625
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5923,
-     "confidence": 0.3082,
-     "margin": 0.4099,
+     "answer_confidence": 0.6702,
+     "confidence": 0.4164,
+     "margin": 0.513,
      "probabilities": {
-      "0": 0.1687,
-      "1": 0.5923,
-      "2": 0.1824,
-      "3": 0.0439,
-      "4": 0.0127
+      "0": 0.151,
+      "1": 0.6702,
+      "2": 0.1572,
+      "3": 0.0163,
+      "4": 0.0053
      },
-     "score": 1.1395,
+     "score": 1.0547,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.3932,
-     "confidence": 0.0183,
-     "margin": 0.029,
+     "answer_confidence": 0.5024,
+     "confidence": 0.0687,
+     "margin": 0.1929,
      "probabilities": {
-      "0": 0.3932,
-      "1": 0.3642,
-      "2": 0.2425
+      "0": 0.5024,
+      "1": 0.3095,
+      "2": 0.1881
      },
-     "score": 0.8493,
+     "score": 0.6858,
      "type": "score"
     }
    },
-   "input_tokens": 2048
+   "input_tokens": 929
   },
   "batch/3#3": {
    "answers": {
@@ -4514,226 +3580,6 @@
    },
    "input_tokens": 197
   },
-  "batch/3#6": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9616,
-     "confidence": 0.9616,
-     "margin": 0.9232,
-     "noul": 0.0384,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8919,
-     "choice": "technical",
-     "confidence": 0.6679,
-     "margin": 0.8493,
-     "probabilities": {
-      "billing": 0.0313,
-      "other": 0.0426,
-      "sales": 0.0342,
-      "technical": 0.8919
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6571,
-     "confidence": 0.447,
-     "margin": 0.4243,
-     "probabilities": {
-      "0": 0.1028,
-      "1": 0.6571,
-      "2": 0.2328,
-      "3": 0.004,
-      "4": 0.0032
-     },
-     "score": 1.1478,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4794,
-     "confidence": 0.0467,
-     "margin": 0.1801,
-     "probabilities": {
-      "0": 0.4794,
-      "1": 0.2993,
-      "2": 0.2214
-     },
-     "score": 0.742,
-     "type": "score"
-    }
-   },
-   "input_tokens": 521
-  },
-  "batch/3#7": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 1.0,
-     "confidence": 1.0,
-     "margin": 1.0,
-     "noul": 0.0,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3362,
-     "choice": "other",
-     "confidence": 0.0321,
-     "margin": 0.0419,
-     "probabilities": {
-      "billing": 0.2247,
-      "other": 0.3362,
-      "sales": 0.1448,
-      "technical": 0.2943
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5328,
-     "confidence": 0.3444,
-     "margin": 0.196,
-     "probabilities": {
-      "0": 0.5328,
-      "1": 0.3368,
-      "2": 0.1022,
-      "3": 0.0148,
-      "4": 0.0134
-     },
-     "score": 0.6392,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5982,
-     "confidence": 0.176,
-     "margin": 0.302,
-     "probabilities": {
-      "0": 0.5982,
-      "1": 0.2962,
-      "2": 0.1056
-     },
-     "score": 0.5074,
-     "type": "score"
-    }
-   },
-   "input_tokens": 209
-  },
-  "batch/3#8": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8715,
-     "confidence": 0.8715,
-     "margin": 0.743,
-     "noul": 0.1285,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8155,
-     "choice": "technical",
-     "confidence": 0.5104,
-     "margin": 0.7412,
-     "probabilities": {
-      "billing": 0.0526,
-      "other": 0.0743,
-      "sales": 0.0576,
-      "technical": 0.8155
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5882,
-     "confidence": 0.3224,
-     "margin": 0.3824,
-     "probabilities": {
-      "0": 0.2058,
-      "1": 0.5882,
-      "2": 0.1615,
-      "3": 0.0369,
-      "4": 0.0075
-     },
-     "score": 1.0521,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3735,
-     "confidence": 0.0062,
-     "margin": 0.0285,
-     "probabilities": {
-      "0": 0.345,
-      "1": 0.3735,
-      "2": 0.2815
-     },
-     "score": 0.9365,
-     "type": "score"
-    }
-   },
-   "input_tokens": 2048
-  },
-  "batch/3#9": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9967,
-     "confidence": 0.9967,
-     "margin": 0.9934,
-     "noul": 0.0033,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.2879,
-     "choice": "billing",
-     "confidence": 0.0035,
-     "margin": 0.0349,
-     "probabilities": {
-      "billing": 0.2879,
-      "other": 0.253,
-      "sales": 0.2206,
-      "technical": 0.2385
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5572,
-     "confidence": 0.3841,
-     "margin": 0.2469,
-     "probabilities": {
-      "0": 0.1248,
-      "1": 0.5572,
-      "2": 0.3103,
-      "3": 0.005,
-      "4": 0.0027
-     },
-     "score": 1.2036,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5297,
-     "confidence": 0.1016,
-     "margin": 0.2111,
-     "probabilities": {
-      "0": 0.5297,
-      "1": 0.3186,
-      "2": 0.1516
-     },
-     "score": 0.6219,
-     "type": "score"
-    }
-   },
-   "input_tokens": 209
-  },
   "batch/4#0": {
    "answers": {
     "churn_risk": {
@@ -4793,56 +3639,56 @@
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.9616,
-     "confidence": 0.9616,
-     "margin": 0.9232,
-     "noul": 0.0384,
+     "answer_confidence": 0.8557,
+     "confidence": 0.8557,
+     "margin": 0.7114,
+     "noul": 0.1443,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8919,
+     "answer_confidence": 0.9052,
      "choice": "technical",
-     "confidence": 0.6679,
-     "margin": 0.8493,
+     "confidence": 0.7,
+     "margin": 0.8649,
      "probabilities": {
-      "billing": 0.0313,
-      "other": 0.0426,
-      "sales": 0.0342,
-      "technical": 0.8919
+      "billing": 0.0252,
+      "other": 0.0403,
+      "sales": 0.0293,
+      "technical": 0.9052
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.6571,
-     "confidence": 0.447,
-     "margin": 0.4243,
+     "answer_confidence": 0.6576,
+     "confidence": 0.4144,
+     "margin": 0.4641,
      "probabilities": {
-      "0": 0.1028,
-      "1": 0.6571,
-      "2": 0.2328,
-      "3": 0.004,
-      "4": 0.0032
+      "0": 0.1935,
+      "1": 0.6576,
+      "2": 0.1307,
+      "3": 0.0137,
+      "4": 0.0045
      },
-     "score": 1.1478,
+     "score": 0.9781,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.4794,
-     "confidence": 0.0467,
-     "margin": 0.1801,
+     "answer_confidence": 0.4037,
+     "confidence": 0.0128,
+     "margin": 0.0746,
      "probabilities": {
-      "0": 0.4794,
-      "1": 0.2993,
-      "2": 0.2214
+      "0": 0.4037,
+      "1": 0.3291,
+      "2": 0.2671
      },
-     "score": 0.742,
+     "score": 0.8634,
      "type": "score"
     }
    },
-   "input_tokens": 521
+   "input_tokens": 881
   },
   "batch/4#2": {
    "answers": {
@@ -4903,56 +3749,56 @@
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8715,
-     "confidence": 0.8715,
-     "margin": 0.743,
-     "noul": 0.1285,
+     "answer_confidence": 0.9616,
+     "confidence": 0.9616,
+     "margin": 0.9232,
+     "noul": 0.0384,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8155,
+     "answer_confidence": 0.8919,
      "choice": "technical",
-     "confidence": 0.5104,
-     "margin": 0.7412,
+     "confidence": 0.6679,
+     "margin": 0.8493,
      "probabilities": {
-      "billing": 0.0526,
-      "other": 0.0743,
-      "sales": 0.0576,
-      "technical": 0.8155
+      "billing": 0.0313,
+      "other": 0.0426,
+      "sales": 0.0342,
+      "technical": 0.8919
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5882,
-     "confidence": 0.3224,
-     "margin": 0.3824,
+     "answer_confidence": 0.6571,
+     "confidence": 0.447,
+     "margin": 0.4243,
      "probabilities": {
-      "0": 0.2058,
-      "1": 0.5882,
-      "2": 0.1615,
-      "3": 0.0369,
-      "4": 0.0075
+      "0": 0.1028,
+      "1": 0.6571,
+      "2": 0.2328,
+      "3": 0.004,
+      "4": 0.0032
      },
-     "score": 1.0521,
+     "score": 1.1478,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.3735,
-     "confidence": 0.0062,
-     "margin": 0.0285,
+     "answer_confidence": 0.4794,
+     "confidence": 0.0467,
+     "margin": 0.1801,
      "probabilities": {
-      "0": 0.345,
-      "1": 0.3735,
-      "2": 0.2815
+      "0": 0.4794,
+      "1": 0.2993,
+      "2": 0.2214
      },
-     "score": 0.9365,
+     "score": 0.742,
      "type": "score"
     }
    },
-   "input_tokens": 2048
+   "input_tokens": 521
   },
   "batch/4#4": {
    "answers": {
@@ -5064,6 +3910,171 @@
    },
    "input_tokens": 413
   },
+  "batch/4#6": {
+   "answers": {
+    "churn_risk": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.7684,
+     "confidence": 0.7684,
+     "margin": 0.5368,
+     "noul": 0.7684,
+     "type": "noul"
+    },
+    "department": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.8681,
+     "choice": "technical",
+     "confidence": 0.6163,
+     "margin": 0.8107,
+     "probabilities": {
+      "billing": 0.0392,
+      "other": 0.0353,
+      "sales": 0.0574,
+      "technical": 0.8681
+     },
+     "type": "choice"
+    },
+    "levels": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.8325,
+     "confidence": 0.6413,
+     "margin": 0.7055,
+     "probabilities": {
+      "0": 0.8325,
+      "1": 0.127,
+      "2": 0.0285,
+      "3": 0.007,
+      "4": 0.005
+     },
+     "score": 0.225,
+     "type": "score"
+    },
+    "urgency": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.9199,
+     "confidence": 0.7191,
+     "margin": 0.8495,
+     "probabilities": {
+      "0": 0.0097,
+      "1": 0.0704,
+      "2": 0.9199
+     },
+     "score": 1.9102,
+     "type": "score"
+    }
+   },
+   "input_tokens": 225
+  },
+  "batch/4#7": {
+   "answers": {
+    "churn_risk": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.588,
+     "confidence": 0.588,
+     "margin": 0.176,
+     "noul": 0.588,
+     "type": "noul"
+    },
+    "department": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.8451,
+     "choice": "billing",
+     "confidence": 0.567,
+     "margin": 0.7886,
+     "probabilities": {
+      "billing": 0.8451,
+      "other": 0.0565,
+      "sales": 0.0548,
+      "technical": 0.0436
+     },
+     "type": "choice"
+    },
+    "levels": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.5351,
+     "confidence": 0.4258,
+     "margin": 0.1387,
+     "probabilities": {
+      "0": 0.0563,
+      "1": 0.3964,
+      "2": 0.5351,
+      "3": 0.0087,
+      "4": 0.0034
+     },
+     "score": 1.5065,
+     "type": "score"
+    },
+    "urgency": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.4163,
+     "confidence": 0.0249,
+     "margin": 0.0644,
+     "probabilities": {
+      "0": 0.2318,
+      "1": 0.4163,
+      "2": 0.3519
+     },
+     "score": 1.12,
+     "type": "score"
+    }
+   },
+   "input_tokens": 417
+  },
+  "batch/4#8": {
+   "answers": {
+    "churn_risk": {
+     "act_probability": 1.0,
+     "answer_confidence": 1.0,
+     "confidence": 1.0,
+     "margin": 1.0,
+     "noul": 0.0,
+     "type": "noul"
+    },
+    "department": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.7979,
+     "choice": "billing",
+     "confidence": 0.4862,
+     "margin": 0.6952,
+     "probabilities": {
+      "billing": 0.7979,
+      "other": 0.0511,
+      "sales": 0.0483,
+      "technical": 0.1027
+     },
+     "type": "choice"
+    },
+    "levels": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.6287,
+     "confidence": 0.416,
+     "margin": 0.3611,
+     "probabilities": {
+      "0": 0.0847,
+      "1": 0.6287,
+      "2": 0.2676,
+      "3": 0.0143,
+      "4": 0.0048
+     },
+     "score": 1.2258,
+     "type": "score"
+    },
+    "urgency": {
+     "act_probability": 1.0,
+     "answer_confidence": 0.4388,
+     "confidence": 0.0703,
+     "margin": 0.0379,
+     "probabilities": {
+      "0": 0.4009,
+      "1": 0.4388,
+      "2": 0.1604
+     },
+     "score": 0.7595,
+     "type": "score"
+    }
+   },
+   "input_tokens": 197
+  },
   "batch/5#0": {
    "answers": {
     "q": {
@@ -5169,90 +4180,6 @@
    },
    "input_tokens": 87
   },
-  "batch/5#5": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9772,
-     "choice": "opt0",
-     "confidence": 0.9292,
-     "margin": 0.9593,
-     "probabilities": {
-      "opt0": 0.9772,
-      "opt1": 0.0179,
-      "opt2": 0.0024,
-      "opt3": 0.0011,
-      "opt4": 0.0006,
-      "opt5": 0.0007
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 75
-  },
-  "batch/5#6": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8396,
-     "choice": "opt0",
-     "confidence": 0.6809,
-     "margin": 0.7243,
-     "probabilities": {
-      "opt0": 0.8396,
-      "opt1": 0.1153,
-      "opt2": 0.0342,
-      "opt3": 0.0055,
-      "opt4": 0.0028,
-      "opt5": 0.0026
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 83
-  },
-  "batch/5#7": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6738,
-     "choice": "opt1",
-     "confidence": 0.4595,
-     "margin": 0.4723,
-     "probabilities": {
-      "opt0": 0.2015,
-      "opt1": 0.6738,
-      "opt2": 0.0813,
-      "opt3": 0.0275,
-      "opt4": 0.0081,
-      "opt5": 0.0077
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 512
-  },
-  "batch/5#8": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3856,
-     "choice": "opt1",
-     "confidence": 0.2698,
-     "margin": 0.0597,
-     "probabilities": {
-      "opt0": 0.3259,
-      "opt1": 0.3856,
-      "opt2": 0.2229,
-      "opt3": 0.0383,
-      "opt4": 0.0173,
-      "opt5": 0.0099
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 79
-  },
   "batch/6#0": {
    "answers": {
     "q": {
@@ -5295,68 +4222,26 @@
    },
    "input_tokens": 83
   },
-  "batch/6#10": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4703,
-     "choice": "opt1",
-     "confidence": 0.2431,
-     "margin": 0.2254,
-     "probabilities": {
-      "opt0": 0.1624,
-      "opt1": 0.4703,
-      "opt2": 0.2449,
-      "opt3": 0.0824,
-      "opt4": 0.0171,
-      "opt5": 0.0228
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 117
-  },
-  "batch/6#11": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9915,
-     "choice": "opt0",
-     "confidence": 0.9703,
-     "margin": 0.9841,
-     "probabilities": {
-      "opt0": 0.9915,
-      "opt1": 0.0074,
-      "opt2": 0.0006,
-      "opt3": 0.0002,
-      "opt4": 0.0001,
-      "opt5": 0.0001
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 70
-  },
   "batch/6#2": {
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.6738,
+     "answer_confidence": 0.7307,
      "choice": "opt1",
-     "confidence": 0.4595,
-     "margin": 0.4723,
+     "confidence": 0.5286,
+     "margin": 0.5666,
      "probabilities": {
-      "opt0": 0.2015,
-      "opt1": 0.6738,
-      "opt2": 0.0813,
-      "opt3": 0.0275,
-      "opt4": 0.0081,
-      "opt5": 0.0077
+      "opt0": 0.1641,
+      "opt1": 0.7307,
+      "opt2": 0.0798,
+      "opt3": 0.0152,
+      "opt4": 0.0067,
+      "opt5": 0.0035
      },
      "type": "choice"
     }
    },
-   "input_tokens": 512
+   "input_tokens": 246
   },
   "batch/6#3": {
    "answers": {
@@ -5425,22 +4310,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8509,
+     "answer_confidence": 0.6445,
      "choice": "opt1",
-     "confidence": 0.6958,
-     "margin": 0.7729,
+     "confidence": 0.5541,
+     "margin": 0.3244,
      "probabilities": {
-      "opt0": 0.0667,
-      "opt1": 0.8509,
-      "opt2": 0.078,
-      "opt3": 0.002,
-      "opt4": 0.0012,
-      "opt5": 0.0011
+      "opt0": 0.3201,
+      "opt1": 0.6445,
+      "opt2": 0.0238,
+      "opt3": 0.0074,
+      "opt4": 0.0024,
+      "opt5": 0.0018
      },
      "type": "choice"
     }
    },
-   "input_tokens": 144
+   "input_tokens": 234
   },
   "batch/6#7": {
    "answers": {
@@ -5457,48 +4342,6 @@
       "opt3": 0.0369,
       "opt4": 0.0181,
       "opt5": 0.0233
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 66
-  },
-  "batch/6#8": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5794,
-     "choice": "opt1",
-     "confidence": 0.3802,
-     "margin": 0.3186,
-     "probabilities": {
-      "opt0": 0.2608,
-      "opt1": 0.5794,
-      "opt2": 0.0894,
-      "opt3": 0.058,
-      "opt4": 0.0073,
-      "opt5": 0.0051
-     },
-     "type": "choice"
-    }
-   },
-   "input_tokens": 512
-  },
-  "batch/6#9": {
-   "answers": {
-    "q": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5942,
-     "choice": "opt1",
-     "confidence": 0.4512,
-     "margin": 0.3187,
-     "probabilities": {
-      "opt0": 0.2755,
-      "opt1": 0.5942,
-      "opt2": 0.1176,
-      "opt3": 0.008,
-      "opt4": 0.0029,
-      "opt5": 0.0018
      },
      "type": "choice"
     }
@@ -5564,331 +4407,56 @@
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.9616,
-     "confidence": 0.9616,
-     "margin": 0.9232,
-     "noul": 0.0384,
+     "answer_confidence": 0.8557,
+     "confidence": 0.8557,
+     "margin": 0.7114,
+     "noul": 0.1443,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8919,
+     "answer_confidence": 0.9052,
      "choice": "technical",
-     "confidence": 0.6679,
-     "margin": 0.8493,
+     "confidence": 0.7,
+     "margin": 0.8649,
      "probabilities": {
-      "billing": 0.0313,
-      "other": 0.0426,
-      "sales": 0.0342,
-      "technical": 0.8919
+      "billing": 0.0252,
+      "other": 0.0403,
+      "sales": 0.0293,
+      "technical": 0.9052
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.6571,
-     "confidence": 0.447,
-     "margin": 0.4243,
+     "answer_confidence": 0.6576,
+     "confidence": 0.4144,
+     "margin": 0.4641,
      "probabilities": {
-      "0": 0.1028,
-      "1": 0.6571,
-      "2": 0.2328,
-      "3": 0.004,
-      "4": 0.0032
+      "0": 0.1935,
+      "1": 0.6576,
+      "2": 0.1307,
+      "3": 0.0137,
+      "4": 0.0045
      },
-     "score": 1.1478,
+     "score": 0.9781,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.4794,
-     "confidence": 0.0467,
-     "margin": 0.1801,
+     "answer_confidence": 0.4037,
+     "confidence": 0.0128,
+     "margin": 0.0746,
      "probabilities": {
-      "0": 0.4794,
-      "1": 0.2993,
-      "2": 0.2214
+      "0": 0.4037,
+      "1": 0.3291,
+      "2": 0.2671
      },
-     "score": 0.742,
+     "score": 0.8634,
      "type": "score"
     }
    },
-   "input_tokens": 521
-  },
-  "batch/7#10": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.932,
-     "confidence": 0.932,
-     "margin": 0.864,
-     "noul": 0.932,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9718,
-     "choice": "billing",
-     "confidence": 0.8853,
-     "margin": 0.9611,
-     "probabilities": {
-      "billing": 0.9718,
-      "other": 0.0073,
-      "sales": 0.0107,
-      "technical": 0.0102
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8314,
-     "confidence": 0.6506,
-     "margin": 0.6939,
-     "probabilities": {
-      "0": 0.8314,
-      "1": 0.1375,
-      "2": 0.0197,
-      "3": 0.0062,
-      "4": 0.0052
-     },
-     "score": 0.2161,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4043,
-     "confidence": 0.0277,
-     "margin": 0.0307,
-     "probabilities": {
-      "0": 0.2221,
-      "1": 0.3736,
-      "2": 0.4043
-     },
-     "score": 1.1822,
-     "type": "score"
-    }
-   },
-   "input_tokens": 245
-  },
-  "batch/7#11": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8904,
-     "confidence": 0.8904,
-     "margin": 0.7808,
-     "noul": 0.1096,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5685,
-     "choice": "billing",
-     "confidence": 0.291,
-     "margin": 0.235,
-     "probabilities": {
-      "billing": 0.5685,
-      "other": 0.0492,
-      "sales": 0.0488,
-      "technical": 0.3335
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5519,
-     "confidence": 0.3611,
-     "margin": 0.2638,
-     "probabilities": {
-      "0": 0.2881,
-      "1": 0.5519,
-      "2": 0.1488,
-      "3": 0.0065,
-      "4": 0.0047
-     },
-     "score": 0.8879,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.781,
-     "confidence": 0.4071,
-     "margin": 0.6193,
-     "probabilities": {
-      "0": 0.0572,
-      "1": 0.1617,
-      "2": 0.781
-     },
-     "score": 1.7238,
-     "type": "score"
-    }
-   },
-   "input_tokens": 277
-  },
-  "batch/7#12": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.7976,
-     "confidence": 0.7976,
-     "margin": 0.5952,
-     "noul": 0.2024,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8292,
-     "choice": "technical",
-     "confidence": 0.5412,
-     "margin": 0.7457,
-     "probabilities": {
-      "billing": 0.042,
-      "other": 0.0835,
-      "sales": 0.0453,
-      "technical": 0.8292
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5923,
-     "confidence": 0.3082,
-     "margin": 0.4099,
-     "probabilities": {
-      "0": 0.1687,
-      "1": 0.5923,
-      "2": 0.1824,
-      "3": 0.0439,
-      "4": 0.0127
-     },
-     "score": 1.1395,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3932,
-     "confidence": 0.0183,
-     "margin": 0.029,
-     "probabilities": {
-      "0": 0.3932,
-      "1": 0.3642,
-      "2": 0.2425
-     },
-     "score": 0.8493,
-     "type": "score"
-    }
-   },
-   "input_tokens": 2048
-  },
-  "batch/7#13": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9216,
-     "confidence": 0.9216,
-     "margin": 0.8432,
-     "noul": 0.0784,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9522,
-     "choice": "billing",
-     "confidence": 0.8237,
-     "margin": 0.9341,
-     "probabilities": {
-      "billing": 0.9522,
-      "other": 0.0181,
-      "sales": 0.0153,
-      "technical": 0.0144
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4549,
-     "confidence": 0.2847,
-     "margin": 0.1346,
-     "probabilities": {
-      "0": 0.2004,
-      "1": 0.4549,
-      "2": 0.3203,
-      "3": 0.0161,
-      "4": 0.0083
-     },
-     "score": 1.177,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.546,
-     "confidence": 0.1155,
-     "margin": 0.2349,
-     "probabilities": {
-      "0": 0.3111,
-      "1": 0.546,
-      "2": 0.1429
-     },
-     "score": 0.8317,
-     "type": "score"
-    }
-   },
-   "input_tokens": 261
-  },
-  "batch/7#14": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8903,
-     "confidence": 0.8903,
-     "margin": 0.7806,
-     "noul": 0.1097,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8935,
-     "choice": "technical",
-     "confidence": 0.6738,
-     "margin": 0.8438,
-     "probabilities": {
-      "billing": 0.0281,
-      "other": 0.0497,
-      "sales": 0.0287,
-      "technical": 0.8935
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6116,
-     "confidence": 0.3647,
-     "margin": 0.3774,
-     "probabilities": {
-      "0": 0.2342,
-      "1": 0.6116,
-      "2": 0.1227,
-      "3": 0.0255,
-      "4": 0.006
-     },
-     "score": 0.9576,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4726,
-     "confidence": 0.0454,
-     "margin": 0.1617,
-     "probabilities": {
-      "0": 0.4726,
-      "1": 0.3109,
-      "2": 0.2165
-     },
-     "score": 0.7439,
-     "type": "score"
-    }
-   },
-   "input_tokens": 1241
+   "input_tokens": 881
   },
   "batch/7#2": {
    "answers": {
@@ -5949,386 +4517,56 @@
    "answers": {
     "churn_risk": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8715,
-     "confidence": 0.8715,
-     "margin": 0.743,
-     "noul": 0.1285,
+     "answer_confidence": 0.9616,
+     "confidence": 0.9616,
+     "margin": 0.9232,
+     "noul": 0.0384,
      "type": "noul"
     },
     "department": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8155,
+     "answer_confidence": 0.8919,
      "choice": "technical",
-     "confidence": 0.5104,
-     "margin": 0.7412,
+     "confidence": 0.6679,
+     "margin": 0.8493,
      "probabilities": {
-      "billing": 0.0526,
-      "other": 0.0743,
-      "sales": 0.0576,
-      "technical": 0.8155
+      "billing": 0.0313,
+      "other": 0.0426,
+      "sales": 0.0342,
+      "technical": 0.8919
      },
      "type": "choice"
     },
     "levels": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5882,
-     "confidence": 0.3224,
-     "margin": 0.3824,
+     "answer_confidence": 0.6571,
+     "confidence": 0.447,
+     "margin": 0.4243,
      "probabilities": {
-      "0": 0.2058,
-      "1": 0.5882,
-      "2": 0.1615,
-      "3": 0.0369,
-      "4": 0.0075
+      "0": 0.1028,
+      "1": 0.6571,
+      "2": 0.2328,
+      "3": 0.004,
+      "4": 0.0032
      },
-     "score": 1.0521,
+     "score": 1.1478,
      "type": "score"
     },
     "urgency": {
      "act_probability": 1.0,
-     "answer_confidence": 0.3735,
-     "confidence": 0.0062,
-     "margin": 0.0285,
+     "answer_confidence": 0.4794,
+     "confidence": 0.0467,
+     "margin": 0.1801,
      "probabilities": {
-      "0": 0.345,
-      "1": 0.3735,
-      "2": 0.2815
+      "0": 0.4794,
+      "1": 0.2993,
+      "2": 0.2214
      },
-     "score": 0.9365,
+     "score": 0.742,
      "type": "score"
     }
    },
-   "input_tokens": 2048
-  },
-  "batch/7#4": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9967,
-     "confidence": 0.9967,
-     "margin": 0.9934,
-     "noul": 0.0033,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.2879,
-     "choice": "billing",
-     "confidence": 0.0035,
-     "margin": 0.0349,
-     "probabilities": {
-      "billing": 0.2879,
-      "other": 0.253,
-      "sales": 0.2206,
-      "technical": 0.2385
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5572,
-     "confidence": 0.3841,
-     "margin": 0.2469,
-     "probabilities": {
-      "0": 0.1248,
-      "1": 0.5572,
-      "2": 0.3103,
-      "3": 0.005,
-      "4": 0.0027
-     },
-     "score": 1.2036,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5297,
-     "confidence": 0.1016,
-     "margin": 0.2111,
-     "probabilities": {
-      "0": 0.5297,
-      "1": 0.3186,
-      "2": 0.1516
-     },
-     "score": 0.6219,
-     "type": "score"
-    }
-   },
-   "input_tokens": 209
-  },
-  "batch/7#5": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9996,
-     "confidence": 0.9996,
-     "margin": 0.9992,
-     "noul": 0.0004,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.7783,
-     "choice": "sales",
-     "confidence": 0.4664,
-     "margin": 0.6457,
-     "probabilities": {
-      "billing": 0.0497,
-      "other": 0.1326,
-      "sales": 0.7783,
-      "technical": 0.0394
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.3955,
-     "confidence": 0.1768,
-     "margin": 0.0729,
-     "probabilities": {
-      "0": 0.158,
-      "1": 0.3955,
-      "2": 0.3226,
-      "3": 0.1104,
-      "4": 0.0136
-     },
-     "score": 1.4261,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5223,
-     "confidence": 0.086,
-     "margin": 0.2163,
-     "probabilities": {
-      "0": 0.306,
-      "1": 0.5223,
-      "2": 0.1717
-     },
-     "score": 0.8657,
-     "type": "score"
-    }
-   },
-   "input_tokens": 413
-  },
-  "batch/7#6": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.7684,
-     "confidence": 0.7684,
-     "margin": 0.5368,
-     "noul": 0.7684,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8681,
-     "choice": "technical",
-     "confidence": 0.6163,
-     "margin": 0.8107,
-     "probabilities": {
-      "billing": 0.0392,
-      "other": 0.0353,
-      "sales": 0.0574,
-      "technical": 0.8681
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8325,
-     "confidence": 0.6413,
-     "margin": 0.7055,
-     "probabilities": {
-      "0": 0.8325,
-      "1": 0.127,
-      "2": 0.0285,
-      "3": 0.007,
-      "4": 0.005
-     },
-     "score": 0.225,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.9199,
-     "confidence": 0.7191,
-     "margin": 0.8495,
-     "probabilities": {
-      "0": 0.0097,
-      "1": 0.0704,
-      "2": 0.9199
-     },
-     "score": 1.9102,
-     "type": "score"
-    }
-   },
-   "input_tokens": 225
-  },
-  "batch/7#7": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.588,
-     "confidence": 0.588,
-     "margin": 0.176,
-     "noul": 0.588,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8451,
-     "choice": "billing",
-     "confidence": 0.567,
-     "margin": 0.7886,
-     "probabilities": {
-      "billing": 0.8451,
-      "other": 0.0565,
-      "sales": 0.0548,
-      "technical": 0.0436
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5351,
-     "confidence": 0.4258,
-     "margin": 0.1387,
-     "probabilities": {
-      "0": 0.0563,
-      "1": 0.3964,
-      "2": 0.5351,
-      "3": 0.0087,
-      "4": 0.0034
-     },
-     "score": 1.5065,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4163,
-     "confidence": 0.0249,
-     "margin": 0.0644,
-     "probabilities": {
-      "0": 0.2318,
-      "1": 0.4163,
-      "2": 0.3519
-     },
-     "score": 1.12,
-     "type": "score"
-    }
-   },
-   "input_tokens": 417
-  },
-  "batch/7#8": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 1.0,
-     "confidence": 1.0,
-     "margin": 1.0,
-     "noul": 0.0,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.7979,
-     "choice": "billing",
-     "confidence": 0.4862,
-     "margin": 0.6952,
-     "probabilities": {
-      "billing": 0.7979,
-      "other": 0.0511,
-      "sales": 0.0483,
-      "technical": 0.1027
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.6287,
-     "confidence": 0.416,
-     "margin": 0.3611,
-     "probabilities": {
-      "0": 0.0847,
-      "1": 0.6287,
-      "2": 0.2676,
-      "3": 0.0143,
-      "4": 0.0048
-     },
-     "score": 1.2258,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4388,
-     "confidence": 0.0703,
-     "margin": 0.0379,
-     "probabilities": {
-      "0": 0.4009,
-      "1": 0.4388,
-      "2": 0.1604
-     },
-     "score": 0.7595,
-     "type": "score"
-    }
-   },
-   "input_tokens": 197
-  },
-  "batch/7#9": {
-   "answers": {
-    "churn_risk": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.8947,
-     "confidence": 0.8947,
-     "margin": 0.7894,
-     "noul": 0.1053,
-     "type": "noul"
-    },
-    "department": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4395,
-     "choice": "billing",
-     "confidence": 0.1044,
-     "margin": 0.151,
-     "probabilities": {
-      "billing": 0.4395,
-      "other": 0.1888,
-      "sales": 0.2885,
-      "technical": 0.0833
-     },
-     "type": "choice"
-    },
-    "levels": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.4883,
-     "confidence": 0.2739,
-     "margin": 0.2277,
-     "probabilities": {
-      "0": 0.2109,
-      "1": 0.4883,
-      "2": 0.2606,
-      "3": 0.0373,
-      "4": 0.003
-     },
-     "score": 1.1332,
-     "type": "score"
-    },
-    "urgency": {
-     "act_probability": 1.0,
-     "answer_confidence": 0.5811,
-     "confidence": 0.1346,
-     "margin": 0.308,
-     "probabilities": {
-      "0": 0.2731,
-      "1": 0.5811,
-      "2": 0.1459
-     },
-     "score": 0.8728,
-     "type": "score"
-    }
-   },
-   "input_tokens": 293
+   "input_tokens": 521
   },
   "batch/8#0": {
    "answers": {
@@ -6761,22 +4999,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.6738,
+     "answer_confidence": 0.7307,
      "choice": "opt1",
-     "confidence": 0.4595,
-     "margin": 0.4723,
+     "confidence": 0.5286,
+     "margin": 0.5666,
      "probabilities": {
-      "opt0": 0.2015,
-      "opt1": 0.6738,
-      "opt2": 0.0813,
-      "opt3": 0.0275,
-      "opt4": 0.0081,
-      "opt5": 0.0077
+      "opt0": 0.1641,
+      "opt1": 0.7307,
+      "opt2": 0.0798,
+      "opt3": 0.0152,
+      "opt4": 0.0067,
+      "opt5": 0.0035
      },
      "type": "choice"
     }
    },
-   "input_tokens": 512
+   "input_tokens": 246
   },
   "batch/9#3": {
    "answers": {
@@ -6845,22 +5083,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.8509,
+     "answer_confidence": 0.6445,
      "choice": "opt1",
-     "confidence": 0.6958,
-     "margin": 0.7729,
+     "confidence": 0.5541,
+     "margin": 0.3244,
      "probabilities": {
-      "opt0": 0.0667,
-      "opt1": 0.8509,
-      "opt2": 0.078,
-      "opt3": 0.002,
-      "opt4": 0.0012,
-      "opt5": 0.0011
+      "opt0": 0.3201,
+      "opt1": 0.6445,
+      "opt2": 0.0238,
+      "opt3": 0.0074,
+      "opt4": 0.0024,
+      "opt5": 0.0018
      },
      "type": "choice"
     }
    },
-   "input_tokens": 144
+   "input_tokens": 234
   },
   "batch/9#7": {
    "answers": {
@@ -6887,22 +5125,22 @@
    "answers": {
     "q": {
      "act_probability": 1.0,
-     "answer_confidence": 0.5794,
+     "answer_confidence": 0.8509,
      "choice": "opt1",
-     "confidence": 0.3802,
-     "margin": 0.3186,
+     "confidence": 0.6958,
+     "margin": 0.7729,
      "probabilities": {
-      "opt0": 0.2608,
-      "opt1": 0.5794,
-      "opt2": 0.0894,
-      "opt3": 0.058,
-      "opt4": 0.0073,
-      "opt5": 0.0051
+      "opt0": 0.0667,
+      "opt1": 0.8509,
+      "opt2": 0.078,
+      "opt3": 0.002,
+      "opt4": 0.0012,
+      "opt5": 0.0011
      },
      "type": "choice"
     }
    },
-   "input_tokens": 512
+   "input_tokens": 144
   },
   "batch/9#9": {
    "answers": {
