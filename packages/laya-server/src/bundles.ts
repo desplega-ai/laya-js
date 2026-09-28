@@ -2,7 +2,7 @@
 // cache, or fetch it from the artifact store and verify every file against the pinned SHA-256
 // map in `@desplega/laya` (artifacts.ts). Used by main.ts (checkpoints not baked into the
 // image) and by fetch-models.ts (the Docker models stage and the k8s initContainer).
-import { createHash } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { createReadStream, createWriteStream } from "node:fs";
 import { mkdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -156,7 +156,8 @@ export async function fetchBundle(spec: BundleSpec, dir: string, opts: FetchOpti
         `fetching ${spec.subfolder}/${file} from ${spec.repo}@${spec.revision}: HTTP ${res.status}`,
       );
     }
-    const tmp = `${target}.part-${process.pid}`;
+    // Unique per writer: replicas sharing a cache volume often run with the same PID.
+    const tmp = `${target}.part-${process.pid}-${randomBytes(4).toString("hex")}`;
     const h = createHash("sha256");
     try {
       const body = Readable.fromWeb(res.body as unknown as NodeWebReadableStream<Uint8Array>);
