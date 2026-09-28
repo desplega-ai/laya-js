@@ -11,6 +11,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./raw": {
+      "types": "./dist/raw.d.ts",
+      "import": "./dist/raw.js"
     }
   },
   "files": [
@@ -20,6 +24,10 @@
     "build": "tsc -b"
   },
   "dependencies": {
+    "@standard-schema/spec": "1.1.0",
     "onnxruntime-node": "1.30.0"
+  },
+  "devDependencies": {
+    "zod": "4.6.5"
   }
 }

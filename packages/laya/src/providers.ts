@@ -1,4 +1,4 @@
-// Modified by Desplega Labs, 2026: removed the browser path (createWebProvider, loadWebBundle, fetchArrayBuffer, onnxruntime-web); HF 401/403 throws LayaLoadError.
+// Modified by Desplega Labs, 2026: removed the browser path (createWebProvider, loadWebBundle, fetchArrayBuffer, onnxruntime-web); HF 401/403 throws LayaLoadError; SessionProvider.release frees the ONNX sessions.
 /** ONNX session shim: Node (onnxruntime-node).
  * Lazy imports only — unit tests with a fake provider never touch onnxruntime. */
 
@@ -65,6 +65,8 @@ export interface Batch {
 export interface SessionProvider {
   runEncoder(batch: Batch): Promise<{ lastHidden: number[][][] }>;
   runHead(hidden: number[][][] | unknown, batch: Batch): Promise<{ logits: number[][]; act: number[][] }>;
+  /** Free the underlying sessions; the provider is unusable afterwards. */
+  release?(): Promise<void>;
 }
 
 function toNested(data: ArrayLike<number | bigint | boolean>, dims: number[]): any {
@@ -403,5 +405,10 @@ export async function createNodeProvider(
         const at = pickOutput(out, ["act_logits", "act"]) ?? vals[1] ?? vals[0];
         return { logits: toNested(lt.data, lt.dims), act: toNested(at.data, at.dims) };
       }),
+    release: async () => {
+      const sessions = [...new Set([enc, head, cpuEnc, cpuHead].filter(Boolean))];
+      enc = head = cpuEnc = cpuHead = null;
+      await Promise.all(sessions.map((s) => s.release()));
+    },
   };
 }

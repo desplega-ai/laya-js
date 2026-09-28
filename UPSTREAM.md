@@ -16,9 +16,9 @@ To bump the pin, re-vendor at the new commit, then replay the changes below.
 
 | File | Change |
 |---|---|
-| `packages/laya/src/providers.ts` | Removed the browser path: `createWebProvider`, `loadWebBundle`, `WebBundle`, `baseUrlFor`, `fetchArrayBuffer` (onnxruntime-web). Edge targets are out of scope. Added `LayaLoadError`: an HF 401/403 on any bundle file throws `HF auth failed for <repo>` instead of "Incompatible model" or a silent skip. |
+| `packages/laya/src/providers.ts` | Removed the browser path: `createWebProvider`, `loadWebBundle`, `WebBundle`, `baseUrlFor`, `fetchArrayBuffer` (onnxruntime-web). Edge targets are out of scope. Added `LayaLoadError`: an HF 401/403 on any bundle file throws `HF auth failed for <repo>` instead of "Incompatible model" or a silent skip. Added optional `SessionProvider.release()`, which frees the ONNX sessions (used by `dispose()`). |
 | `packages/laya/src/agent.ts` | `Agent.load` always takes the Node path; the `window`-detected browser branch is gone. |
-| `packages/laya/src/index.ts` | Dropped the `createWebProvider`, `loadWebBundle` and `WebBundle` exports. Exports `LayaLoadError` and the pinned artifact map (`artifacts.ts`). |
+| `packages/laya/src/index.ts` | Dropped the `createWebProvider`, `loadWebBundle` and `WebBundle` exports. Exports `LayaLoadError` and the pinned artifact map (`artifacts.ts`). The vendored export list moved verbatim to `raw.ts` (`@desplega/laya/raw`); `index.ts` re-exports it and adds the typed API from `typed.ts`. |
 | `packages/laya/test/revision-pinning.test.ts` | Removed the one web-only test, "loadWebBundle reports the x-repo-commit header". |
 
 ## Removed files
