@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laya-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    spec:
+      # main.ts drains in-flight requests on SIGTERM and gives up after 25 s.
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: laya-server
+          image: ghcr.io/desplega-ai/laya-server:0.0.0
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            # Equal to the CPU request: onnxruntime oversubscription is a large regression.
+            - name: LAYA_THREADS
+              value: "1"
+            - name: LAYA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: laya-api
+                  key: api-key
+          # fp32 multilingual measured at ~1.9 GB RSS once loaded (Phase 8 local run); Phase 10
+          # measures under load and may correct these.
+          resources:
+            requests:
+              cpu: "1"
+              memory: 2560Mi
+            limits:
+              memory: 3Gi
+          # /health answers 503 until the model is loaded: allow up to 5 min for that.
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 4
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: cache
+              mountPath: /cache
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        # Target for checkpoints not baked into the image; overlays size or replace it.
+        - name: cache
+          emptyDir: {}
+        - name: tmp
+          emptyDir:
+            sizeLimit: 64Mi

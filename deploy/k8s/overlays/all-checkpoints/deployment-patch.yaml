@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laya-server
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: fetch-models
+          image: ghcr.io/desplega-ai/laya-server:0.0.0
+          command: ["node", "dist/fetch-models.js", "--dest", "/cache", "english", "typed-decisions"]
+          env:
+            - name: HF_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: laya-hf
+                  key: token
+          # Downloads stream to disk while hashing, so memory stays small.
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: cache
+              mountPath: /cache
+            - name: tmp
+              mountPath: /tmp
+      containers:
+        - name: laya-server
+          env:
+            - name: LAYA_MODELS
+              value: multilingual,english,typed-decisions
+            - name: LAYA_MAX_LOADED
+              value: "3"
+          # fp32, three checkpoints resident (was 3Gi / 4Gi for INT8).
+          resources:
+            requests:
+              memory: 6Gi
+            limits:
+              memory: 8Gi
+          # Three fp32 loads take longer than one: allow up to 10 min.
+          startupProbe:
+            failureThreshold: 60
+      volumes:
+        # english + typed-decisions fp32 are about 3.4 GB on disk.
+        - name: cache
+          emptyDir:
+            sizeLimit: 5Gi

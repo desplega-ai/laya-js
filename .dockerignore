@@ -1,0 +1,16 @@
+# Allow-list: the image build needs the manifests, the lockfile, the two packages' sources and
+# the licence files. Everything else (node_modules, dist, bundles, tools, .git) stays out of the
+# context, so a local build never ships a stray model file or secret.
+*
+!package.json
+!bun.lock
+!tsconfig.json
+!tsconfig.base.json
+!LICENSE
+!NOTICE
+!packages/laya/package.json
+!packages/laya/tsconfig.json
+!packages/laya/src/
+!packages/laya-server/package.json
+!packages/laya-server/tsconfig.json
+!packages/laya-server/src/
