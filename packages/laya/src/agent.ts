@@ -1,4 +1,4 @@
-// Modified by Desplega Labs, 2026: Agent.load always takes the Node path (browser branch removed); predictBatch, per-call maxLen/headMaxLen and minConfidence (agent.py).
+// Modified by Desplega Labs, 2026: Agent.load always takes the Node path (browser branch removed); predictBatch, predictLong, decideBatch, per-call maxLen/headMaxLen and minConfidence (agent.py).
 import {
   TEMP_MAX,
   TEMP_MIN,
@@ -15,8 +15,8 @@ import {
   tempBucket,
 } from "./common.js";
 import type { Batch, SessionProvider } from "./providers.js";
-import { encodeWithData, parseTokenizerJson, type TokenizerLike } from "./tokenizer.js";
-import { decide, type DecideOptions, type DecisionResult } from "./structured.js";
+import { decodeWithData, encodeWithData, parseTokenizerJson, type TokenizerLike } from "./tokenizer.js";
+import { decide, decideBatch, type DecideOptions, type DecisionResult } from "./structured.js";
 import {
   HookRegistry,
   PredictContext,
@@ -25,6 +25,7 @@ import {
   defaultsAlreadyRan,
   dispatchAsync,
   normaliseHooks,
+  type Hook,
   type HookArg,
   type PredictHook,
 } from "./hooks.js";
@@ -156,8 +157,61 @@ export interface PredictBatchOptions extends PredictOptions {
   sortByLength?: boolean;
 }
 
+/** Options of `Agent.predictLong`. The window, not `maxLen`, sizes what the model reads. */
+export interface PredictLongOptions extends Omit<PredictOptions, "maxLen" | "headMaxLen" | "minConfidence"> {
+  /** State tokens per window; default `max(64, maxLen - headMaxLen - 8)` from the config. */
+  window?: number | null;
+  /** Token step between windows; default `floor(window / 2)`. */
+  stride?: number | null;
+  /** Only "auto" (noul: max P(true); choice/score: the most confident window). */
+  aggregate?: "auto";
+  /** Windows per forward pass. */
+  batchSize?: number | null;
+}
+
+/** The deciding window of a `predictLong` answer, as token offsets into the tokenized state. */
+export interface WindowInfo {
+  index: number;
+  token_start: number;
+  token_end: number;
+  count: number;
+}
+
+/** `predictLong` result: `systemOne`'s shape, `answer.window` on scanned answers and `usage.windows`. */
+export interface LongResult {
+  model: string;
+  answers: Record<string, SystemAnswer & { window?: WindowInfo }>;
+  usage: SystemUsage & { windows: number };
+}
+
 type EncodedItem = { ids: number[]; markers: number[]; qtype: number };
 type Internal = ReturnType<typeof toInternal>;
+
+/**
+ * Recorder for `predictLong` (agent.py `_start_evidence`): what the start-hook chain left for
+ * inference. `answered` is whether a hook skipped inference; `states` snapshots the states that
+ * reached it, or stays null when no start chain ran.
+ */
+function startEvidence(): { probe: Hook; evidence: { answered: boolean; states: unknown[] | null } } {
+  const evidence: { answered: boolean; states: unknown[] | null } = { answered: false, states: null };
+  const probe: Hook = {
+    onPredictStart(ctx) {
+      evidence.answered = ctx.results !== null;
+      evidence.states = Array.isArray(ctx.states) ? [...ctx.states] : [ctx.states];
+    },
+  };
+  return { probe, evidence };
+}
+
+/** The caller's hook options with `probe` after their own start hooks (agent.py `_with_start_probe`). */
+function withStartProbe(opts: PredictLongOptions, probe: Hook): PredictOptions {
+  return {
+    lang: opts.lang,
+    hooksRaise: opts.hooksRaise,
+    hooks: [...normaliseHooks(opts.hooks, opts.onPredictStart), probe],
+    onPredictEnd: opts.onPredictEnd,
+  };
+}
 
 function typeName(v: unknown): string {
   if (v === null) return "null";
@@ -292,7 +346,7 @@ export function defaultTokenizer(): TokenizerLike {
 function tokenizerFromHF(tokenizerJson: unknown): TokenizerLike | null {
   const data = parseTokenizerJson(tokenizerJson);
   if (!data) return null;
-  return {
+  const tok: TokenizerLike = {
     clsId: data.ids.cls,
     sepId: data.ids.sep,
     maskId: data.ids.mask,
@@ -300,6 +354,8 @@ function tokenizerFromHF(tokenizerJson: unknown): TokenizerLike | null {
     maskToken: data.maskToken,
     encode: (text: string) => encodeWithData(data, text),
   };
+  if (decodeWithData(data, []) !== null) tok.decode = (ids: number[]) => decodeWithData(data, ids) ?? "";
+  return tok;
 }
 
 const r4 = (v: number): number => Math.round(v * 1e4) / 1e4;
@@ -656,6 +712,114 @@ export class Agent extends HookRegistry {
   }
 
   /**
+   * Evaluate questions over a state longer than the context window: tokenize it once, split it
+   * into overlapping windows, score them all through `predictBatch`, and aggregate per question
+   * (noul: max P(true); choice/score: the most confident window). Port of agent.py `predict_long`.
+   *
+   * The returned probability is the deciding window's, not a calibrated document-level number;
+   * `answer.window` names that window. A state that fits one window goes to `systemOne`.
+   * Hooks wrap the one `predictBatch` over the windows (`ctx.states` holds the window texts):
+   * `ctx.skip([result])` answers the document with `usage.windows === 0`, and a rewritten scan is
+   * aggregated without `answer.window`.
+   */
+  async predictLong(
+    state: unknown,
+    questions: Record<string, QuestionDef>,
+    opts: PredictLongOptions = {},
+  ): Promise<LongResult> {
+    if ((opts.aggregate ?? "auto") !== "auto") throw new Error("predictLong: only aggregate='auto' is supported");
+    const budget = opts.window && opts.window > 0 ? opts.window : Math.max(64, this.maxLen - this.headMaxLen - 8);
+    const stateIds = this.tok.encode(serializeState(state).split(this.tok.maskToken).join(" "));
+
+    if (stateIds.length <= budget) {
+      const { probe, evidence } = startEvidence();
+      const single = { ...(await this.systemOne(state, questions, withStartProbe(opts, probe))) };
+      single.usage = { ...(single.usage ?? {}), windows: evidence.answered ? 0 : 1 } as LongResult["usage"];
+      return single as LongResult;
+    }
+
+    const decode = this.tok.decode?.bind(this.tok);
+    if (!decode) throw new Error("predictLong: this tokenizer cannot decode ids, so a long state cannot be windowed");
+    const step = opts.stride && opts.stride > 0 ? opts.stride : Math.max(1, Math.floor(budget / 2));
+    const windows: string[] = [];
+    const starts: number[] = [];
+    for (let i = 0; i < stateIds.length; i += step) {
+      windows.push(decode(stateIds.slice(i, i + budget)));
+      starts.push(i);
+      if (i + budget >= stateIds.length) break;
+    }
+
+    const { probe, evidence } = startEvidence();
+    // A copy, so a start hook that mutates `ctx.states` in place cannot shift `starts`.
+    const results = await this.predictBatch([...windows], questions, {
+      ...withStartProbe(opts, probe),
+      batchSize: opts.batchSize,
+    });
+
+    if (evidence.answered) {
+      if (results.length !== 1) {
+        throw new Error(
+          `predictLong: a start hook answered this state with ${results.length} results; ctx.skip()` +
+            " takes one result for the document, not one per window",
+        );
+      }
+      console.warn(
+        "laya: predictLong: a hook answered the state before it was scanned, so no window decided the result and none is reported",
+      );
+      const document = { ...results[0] } as LongResult;
+      document.usage = { ...(document.usage ?? {}), windows: 0 };
+      return document;
+    }
+
+    const rewritten =
+      evidence.states !== null &&
+      (evidence.states.length !== windows.length || evidence.states.some((s, i) => s !== windows[i]));
+    if (results.length !== windows.length && !rewritten) {
+      throw new Error(
+        `predictLong: the state was split into ${windows.length} windows and the call returned ${results.length} results`,
+      );
+    }
+    if (results.length === 0) {
+      console.warn(
+        "laya: predictLong: a start hook left no states to score, so the call aggregated nothing and returns no answers",
+      );
+      return { model: "laya-rl-agent", answers: {}, usage: { ...aggregateUsage([]), windows: 0 } } as LongResult;
+    }
+
+    const answers: LongResult["answers"] = {};
+    for (const qid of Object.keys(questions)) {
+      const per = results.map((r) => r.answers[qid] as SystemAnswer & { window?: WindowInfo });
+      // noul: the strongest window decides; choice/score: the most confident window, so a
+      // localized signal is not out-voted by the neutral majority (agent.py:1252-1262).
+      const key = toInternal(questions[qid]).t === "noul" ? "noul" : "answer_confidence";
+      let best = 0;
+      for (let j = 1; j < per.length; j++) {
+        if (Number(per[j][key as keyof SystemAnswer]) > Number(per[best][key as keyof SystemAnswer])) best = j;
+      }
+      const ans = per[best];
+      if (!rewritten) {
+        ans.window = {
+          index: best,
+          token_start: starts[best],
+          token_end: Math.min(starts[best] + budget, stateIds.length),
+          count: results.length,
+        };
+      }
+      answers[qid] = ans;
+    }
+    // Sum numeric usage fields across windows and carry the rest, then record the window count.
+    const usage: Record<string, unknown> = {};
+    for (const r of results) {
+      for (const [k, v] of Object.entries(r.usage ?? {})) {
+        usage[k] = typeof v === "number" ? ((usage[k] as number | undefined) ?? 0) + v : v;
+      }
+    }
+    usage.output_tokens = 0;
+    usage.windows = results.length;
+    return { model: "laya-rl-agent", answers, usage: usage as unknown as LongResult["usage"] };
+  }
+
+  /**
    * Answer `state` against a JSON schema (or explicit `opts.questions`) and return typed
    * values — see `structured.ts`. Pass exactly one of `schema` or `opts.questions`; other
    * options are forwarded to `predict`.
@@ -676,6 +840,29 @@ export class Agent extends HookRegistry {
     opts: DecideOptions & PredictOptions = {},
   ): Promise<Record<string, unknown> | DecisionResult> {
     return decide(this, state, schema, opts);
+  }
+
+  /**
+   * The batched `decide`: plan the schema once, answer every state through `predictBatch`
+   * (shared forward passes, input order), then project each result as `decide` does. Other
+   * options (`batchSize`, `lang`, hooks, ...) are forwarded to `predictBatch`.
+   */
+  async decideBatch(
+    states: unknown[],
+    schema: unknown,
+    opts: DecideOptions & PredictBatchOptions & { returnDetails: true },
+  ): Promise<DecisionResult[]>;
+  async decideBatch(
+    states: unknown[],
+    schema?: unknown,
+    opts?: DecideOptions & PredictBatchOptions,
+  ): Promise<Record<string, unknown>[]>;
+  async decideBatch(
+    states: unknown[],
+    schema?: unknown,
+    opts: DecideOptions & PredictBatchOptions = {},
+  ): Promise<Array<Record<string, unknown> | DecisionResult>> {
+    return decideBatch(this, states, schema, opts);
   }
 
   static async load(

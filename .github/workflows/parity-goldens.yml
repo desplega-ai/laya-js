@@ -18,7 +18,7 @@ jobs:
       max-parallel: 1
       matrix:
         checkpoint: [english, multilingual, typed-decisions]
-        kind: [single, batch]
+        kind: [single, batch, long]
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6

@@ -1,4 +1,4 @@
-// Modified by Desplega Labs, 2026: decide takes minConfidence, and an abstained field projects to null (structured.py).
+// Modified by Desplega Labs, 2026: decide takes minConfidence (an abstained field projects to null) and decideBatch is ported (structured.py).
 /**
  * Schema-driven decisions: turn a JSON schema into Laya questions.
  *
@@ -66,6 +66,16 @@ export interface DecideRunner {
     questions: Record<string, QuestionDef>,
     opts?: Record<string, unknown>,
   ): Promise<{ answers?: Record<string, Record<string, any> | undefined>; usage?: unknown; routing?: unknown }>;
+}
+
+/** Anything with a batched predict: an Agent takes `(states, questions)`; a Router (one with `routeBatch`) takes requests. */
+export interface BatchDecideRunner {
+  predictBatch(
+    statesOrRequests: unknown[],
+    questionsOrOpts?: unknown,
+    opts?: Record<string, unknown>,
+  ): Promise<Array<{ answers?: Record<string, Record<string, any> | undefined>; usage?: unknown; routing?: unknown }>>;
+  routeBatch?: unknown;
 }
 
 export interface DecideOptions {
@@ -344,3 +354,57 @@ export async function decide(
   return values;
 }
 
+/**
+ * Answer many states against one schema in one batched call, in input order: the throughput form
+ * of `decide`. The schema is planned once and its questions run over every state through
+ * `runner.predictBatch`; each result is projected as `decide` does. A Router-like runner (one with
+ * `routeBatch`) gets one `{ state, questions }` request per state, so states may route to
+ * different checkpoints. `minConfidence` works as in `decide`. Other options are forwarded to
+ * `runner.predictBatch`.
+ */
+export async function decideBatch(
+  runner: BatchDecideRunner,
+  states: unknown[],
+  schema: unknown,
+  opts: DecideOptions & { returnDetails: true },
+): Promise<DecisionResult[]>;
+export async function decideBatch(
+  runner: BatchDecideRunner,
+  states: unknown[],
+  schema?: unknown,
+  opts?: DecideOptions,
+): Promise<Record<string, unknown>[]>;
+export async function decideBatch(
+  runner: BatchDecideRunner,
+  states: unknown[],
+  schema?: unknown,
+  opts: DecideOptions = {},
+): Promise<Array<Record<string, unknown> | DecisionResult>> {
+  const { questions, returnDetails = false, minConfidence, ...predictOpts } = opts;
+  if ((schema == null) === (questions == null)) {
+    throw new Error("pass exactly one of schema= or questions=");
+  }
+  if (!Array.isArray(states)) {
+    throw new TypeError(`states must be an array of states, not ${states === null ? "null" : typeof states}`);
+  }
+  const mc = minConfidence !== null && minConfidence !== undefined ? checkMinConfidence(minConfidence) : null;
+  let fields: PlannedField[] | null = null;
+  let qs = questions;
+  if (schema != null) {
+    fields = planFromJsonSchema(schemaOf(schema));
+    qs = Object.fromEntries(fields.map((f) => [f.name, f.question]));
+  }
+  if (typeof runner?.predictBatch !== "function") {
+    throw new TypeError(`${(runner as object)?.constructor?.name ?? typeof runner} has no predictBatch; loop decide() over the states instead`);
+  }
+  const results = "routeBatch" in runner
+    ? await runner.predictBatch(states.map((state) => ({ state, questions: qs })), predictOpts)
+    : await runner.predictBatch(states, qs, predictOpts);
+  // Flagged here rather than passed down, so a runner that predates the option projects the same.
+  if (mc !== null) flagLowConfidence(results.filter((r) => r && typeof r === "object"), mc);
+  return results.map((r) => {
+    const answers = r?.answers ?? {};
+    const values = fields ? project(answers, fields) : { ...answers };
+    return returnDetails ? detailsOf(values, answers, r ?? {}) : values;
+  });
+}

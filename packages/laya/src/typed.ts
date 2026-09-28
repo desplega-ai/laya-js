@@ -8,14 +8,25 @@ import {
   checkQuestion,
   type NoulAnswer,
   type PredictBatchOptions,
+  type PredictLongOptions,
   type PredictOptions,
   type QuestionDef,
   type ScoreAnswer,
   type SystemOneResult,
+  type SystemUsage,
+  type WindowInfo,
 } from "./agent.js";
 import { ARTIFACT_REPO, ARTIFACT_REVISION, ARTIFACTS, type CheckpointName, type Precision } from "./artifacts.js";
 import type { SessionProvider } from "./providers.js";
-import { type ModelName, type ModelSpec, type RouteDecision, Router } from "./router.js";
+import {
+  type ModelName,
+  type ModelSpec,
+  type RouteDecision,
+  type RouteOptions,
+  Router,
+  type RouterBatchOptions,
+  type RouterRequest,
+} from "./router.js";
 import { SchemaError } from "./structured.js";
 
 // ---- Question definitions ------------------------------------------------------------------
@@ -68,6 +79,30 @@ export type Answers<Q extends QuestionMap> = { [K in keyof Q]: AnswerOf<Q[K]> & 
 export type PredictResult<Q extends QuestionMap> = Omit<SystemOneResult, "answers"> & { answers: Answers<Q> };
 
 export type RoutedPredictResult<Q extends QuestionMap> = PredictResult<Q> & { routing: RouteDecision };
+
+/** `predictLong` answers: the deciding window's answer, with `window` naming it when the scan was not rewritten. */
+export type LongAnswers<Q extends QuestionMap> = {
+  [K in keyof Q]: AnswerOf<Q[K]> & AbstentionFlag & { window?: WindowInfo };
+};
+
+export type LongPredictResult<Q extends QuestionMap> = {
+  model: string;
+  answers: LongAnswers<Q>;
+  /** `windows`: windows the model scored (1 for a state that fit one, 0 when a hook answered). */
+  usage: SystemUsage & { windows: number };
+};
+
+export type RoutedLongPredictResult<Q extends QuestionMap> = LongPredictResult<Q> & { routing: RouteDecision };
+
+/** A typed `Router.predictBatch` request: its answers narrow to its own `questions`. */
+export type TypedRouterRequest<Q extends QuestionMap = QuestionMap> = Omit<RouterRequest, "questions"> & {
+  questions: Q;
+};
+
+/** One routed result per request, in input order, each narrowed to that request's questions. */
+export type RoutedBatchResults<R extends readonly TypedRouterRequest[]> = {
+  -readonly [K in keyof R]: RoutedPredictResult<R[K] extends { questions: infer Q extends QuestionMap } ? Q : never>;
+};
 
 /**
  * Validate a question map once and keep its literal types, so answers narrow to the labels.
@@ -133,6 +168,26 @@ async function typedDecide<S extends StandardSchemaV1>(
   return validateDecision(schema, await runner.decide(state, jsonSchemaOf(schema), opts));
 }
 
+type BatchDecider = {
+  decideBatch(states: unknown[], schema?: unknown, opts?: object): Promise<Record<string, unknown>[]>;
+};
+
+async function typedDecideBatch<S extends StandardSchemaV1>(
+  runner: BatchDecider,
+  states: readonly unknown[],
+  schema: S,
+  opts?: object,
+): Promise<StandardSchemaV1.InferOutput<S>[]> {
+  const values = await runner.decideBatch(states as unknown[], jsonSchemaOf(schema), opts);
+  return Promise.all(
+    values.map((v, i) =>
+      validateDecision(schema, v).catch((e: unknown) => {
+        throw e instanceof SchemaError ? new SchemaError(`state ${i}: ${e.message}`) : e;
+      }),
+    ),
+  );
+}
+
 // ---- Factories -----------------------------------------------------------------------------
 
 export type { CheckpointName, Precision };
@@ -186,11 +241,26 @@ export interface LayaAgent {
     questions: Q,
     opts?: PredictBatchOptions,
   ): Promise<PredictResult<Q>[]>;
+  /**
+   * Answer a state longer than the context window: score overlapping windows and aggregate per
+   * question (noul: max P(true); choice/score: the most confident window).
+   */
+  predictLong<const Q extends QuestionMap>(
+    state: unknown,
+    questions: Q,
+    opts?: PredictLongOptions,
+  ): Promise<LongPredictResult<Q>>;
   decide<S extends StandardSchemaV1>(
     state: unknown,
     schema: S,
     opts?: DecideCallOptions,
   ): Promise<StandardSchemaV1.InferOutput<S>>;
+  /** `decide` over many states in shared forward passes; one validated output per state, in input order. */
+  decideBatch<S extends StandardSchemaV1>(
+    states: readonly unknown[],
+    schema: S,
+    opts?: Omit<PredictBatchOptions, "minConfidence">,
+  ): Promise<StandardSchemaV1.InferOutput<S>[]>;
   /** Release the ONNX sessions. The agent is unusable afterwards. */
   dispose(): Promise<void>;
 }
@@ -252,7 +322,10 @@ function wrapAgent(raw: Agent, checkpoint: CheckpointName, precision: Precision)
         questions as unknown as Record<string, QuestionDef>,
         opts,
       ) as Promise<never>,
+    predictLong: (state, questions, opts) =>
+      raw.predictLong(state, questions as unknown as Record<string, QuestionDef>, opts) as Promise<never>,
     decide: (state, schema, opts) => typedDecide(raw, state, schema, opts),
+    decideBatch: (states, schema, opts) => typedDecideBatch(raw, states, schema, opts),
     dispose: () => releaseAgent(raw),
   };
 }
@@ -286,6 +359,8 @@ export interface LayaRouter {
   readonly precision: Precision;
   /** Checkpoints currently held in memory, least recently used first. */
   readonly loaded: string[];
+  /** Commit SHA each loaded checkpoint came from (null for a local `modelDir`). */
+  readonly loadedRevisions: Readonly<Record<string, string | null>>;
   /** The untyped vendored Router, as an escape hatch. */
   readonly raw: Router;
   predict<const Q extends QuestionMap>(
@@ -298,6 +373,28 @@ export interface LayaRouter {
     schema: S,
     opts?: DecideCallOptions & { model?: string | null },
   ): Promise<StandardSchemaV1.InferOutput<S>>;
+  /** Route requests without loading anything; decisions keep input order. */
+  routeBatch(requests: readonly TypedRouterRequest[]): RouteDecision[];
+  /**
+   * Route requests, group them by checkpoint (one load each) and question schema, and run each
+   * group as one batched pass. Results keep input order and narrow to each request's questions.
+   */
+  predictBatch<const R extends readonly TypedRouterRequest[]>(
+    requests: R,
+    opts?: RouterBatchOptions,
+  ): Promise<RoutedBatchResults<R>>;
+  /** Route, then scan every window of the state with the routed agent's `predictLong`. */
+  predictLong<const Q extends QuestionMap>(
+    state: unknown,
+    questions: Q,
+    opts?: PredictLongOptions & Omit<RouteOptions, "hooks" | "hooksRaise">,
+  ): Promise<RoutedLongPredictResult<Q>>;
+  /** `decide` over many states; each state routes on its own. */
+  decideBatch<S extends StandardSchemaV1>(
+    states: readonly unknown[],
+    schema: S,
+    opts?: Omit<RouterBatchOptions, "minConfidence">,
+  ): Promise<StandardSchemaV1.InferOutput<S>[]>;
   /** Release every loaded checkpoint's ONNX sessions. */
   dispose(): Promise<void>;
 }
@@ -334,10 +431,18 @@ export async function createRouter(opts: CreateRouterOptions = {}): Promise<Laya
     get loaded() {
       return raw.loaded;
     },
+    get loadedRevisions() {
+      return raw.loadedRevisions;
+    },
     raw,
     predict: (state, questions, o) =>
       raw.predict(state, questions as unknown as Record<string, QuestionDef>, o ?? {}) as Promise<never>,
     decide: (state, schema, o) => typedDecide(raw as unknown as Decider, state, schema, o),
+    routeBatch: (requests) => raw.routeBatch(requests as unknown as RouterRequest[]),
+    predictBatch: (requests, o) => raw.predictBatch(requests as unknown as RouterRequest[], o) as Promise<never>,
+    predictLong: (state, questions, o) =>
+      raw.predictLong(state, questions as unknown as Record<string, QuestionDef>, o) as Promise<never>,
+    decideBatch: (states, schema, o) => typedDecideBatch(raw as unknown as BatchDecider, states, schema, o),
     dispose: async () => {
       const held = [...agents.values()];
       raw.unload();

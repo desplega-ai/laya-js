@@ -3,7 +3,8 @@
 Runs the pinned Python `laya` torch Agent (CPU, fp32, deterministic) on every fixture case and
 writes packages/laya/test/parity/golden/<checkpoint>.json (`--kind single`, `system_one`) or
 <checkpoint>.batch.json (`--kind batch`, `predict_batch`; result i of case `batch/n` is stored as
-`batch/n#i`). Run once per pin bump, by hand or via the `parity-goldens` workflow. The
+`batch/n#i`) or <checkpoint>.long.json (`--kind long`, `predict_long`, with each answer's deciding
+`window` and `usage.windows`). Run once per pin bump, by hand or via the `parity-goldens` workflow. The
 checkpoints are public, so no token is needed.
 
     uv run --project tools/export python tools/parity/make_goldens.py --checkpoint multilingual --kind batch
@@ -19,7 +20,7 @@ from laya.agent import Agent
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 FIXTURES = os.path.join(ROOT, "tools", "parity", "fixtures")
-KINDS = {"single": ("cases.jsonl", ""), "batch": ("batch.jsonl", ".batch")}
+KINDS = {"single": ("cases.jsonl", ""), "batch": ("batch.jsonl", ".batch"), "long": ("long.jsonl", ".long")}
 GOLDEN_DIR = os.path.join(ROOT, "packages", "laya", "test", "parity", "golden")
 UPSTREAM_SHA = "9d955671415fc19f069b9cc998928075c1f255ec"
 
@@ -78,10 +79,16 @@ def main():
         cases = [json.loads(line) for line in f if line.strip()]
 
     def record(r: dict) -> dict:
-        return {
+        out = {
             "input_tokens": r["usage"]["input_tokens"],
             "answers": {qid: golden_answer(a) for qid, a in r["answers"].items()},
         }
+        if args.kind == "long":
+            out["windows"] = r["usage"].get("windows")
+            for qid, a in r["answers"].items():
+                if "window" in a:
+                    out["answers"][qid]["window"] = a["window"]
+        return out
 
     results = {}
     for c in cases:
@@ -92,6 +99,10 @@ def main():
                                          sort_by_length=opts.get("sort_by_length", False), lang=opts.get("lang"))
                 for i, r in enumerate(rs):
                     results[f"{c['id']}#{i}"] = record(r)
+            elif args.kind == "long":
+                results[c["id"]] = record(agent.predict_long(
+                    c["state"], c["questions"], window=opts.get("window"), stride=opts.get("stride"),
+                    batch_size=opts.get("batch_size"), lang=opts.get("lang")))
             else:
                 results[c["id"]] = record(agent.system_one(c["state"], c["questions"], lang=opts.get("lang")))
         except Exception as e:  # recorded, so the TS side must fail the same case too

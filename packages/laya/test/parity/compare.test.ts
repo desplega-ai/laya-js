@@ -122,4 +122,22 @@ describe("parity compare", () => {
     delete o.bad;
     expect(compareCheckpoint(golden(), o).failures).toEqual([{ id: "bad", reason: "case not run" }]);
   });
+
+  it("gates predictLong's deciding window and window count", () => {
+    const g = golden();
+    const ga = g.cases.a as { windows?: number; answers: Record<string, { window?: unknown }> };
+    ga.windows = 3;
+    ga.answers.dept.window = { count: 3, index: 1, token_end: 700, token_start: 350 };
+    const o = observed();
+    const oa = o.a as { usage: { windows?: number }; answers: Record<string, Record<string, unknown>> };
+    oa.usage.windows = 3;
+    oa.answers.dept.window = { index: 1, token_start: 350, token_end: 700, count: 3 };
+    expect(compareCheckpoint(g, o).pass).toBe(true);
+
+    oa.usage.windows = 2;
+    oa.answers.dept.window = { index: 2, token_start: 700, token_end: 900, count: 3 };
+    const reasons = compareCheckpoint(g, o).failures.map((f) => f.reason);
+    expect(reasons).toContain("usage.windows 2 vs Python 3");
+    expect(reasons.some((r) => r.startsWith("dept: window"))).toBe(true);
+  });
 });

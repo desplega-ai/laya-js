@@ -1,8 +1,11 @@
+// Modified by Desplega Labs, 2026: added decodeWithData (HF decoder chain) for predictLong windows.
 export interface TokenizerLike {
   readonly clsId: number; readonly sepId: number;
   readonly maskId: number; readonly padId: number;
   readonly maskToken: string;
   encode(text: string): number[];
+  /** Ids back to text, as HF `tokenizer.decode` (needed by `Agent.predictLong` to window a state). */
+  decode?(ids: number[]): string;
 }
 
 /** Special ids of the laya ModernBERT checkpoint (HF added_tokens). */
@@ -25,6 +28,8 @@ export interface TokenizerData {
   ids: TokenizerIds;
   kind: PreTokenizerKind;
   maskToken: string;
+  /** The HF `decoder` node, used by `decodeWithData`. */
+  decoder?: unknown;
   /** Normalizer Replace rules (pattern -> content) applied in order before pre-tokenizing. */
   replaces: Array<[string, string]>;
   /** A character the vocab lacks becomes its `<0xNN>` byte tokens instead of unk (HF byte_fallback). */
@@ -463,10 +468,122 @@ export function parseTokenizerJson(raw: unknown): TokenizerData | null {
       replaces,
       byteFallback: r.model?.byte_fallback === true,
       added: addedTokens,
+      decoder: (r as { decoder?: unknown }).decoder ?? null,
     };
   } catch {
     return null;
   }
+}
+
+type DecodeStep = (tokens: string[]) => string[];
+
+/** One HF decoder node as a step over the token strings; null when the node is not supported. */
+function decoderStep(node: unknown): DecodeStep | null {
+  if (!node || typeof node !== "object") return null;
+  const o = node as Record<string, unknown>;
+  switch (o["type"]) {
+    case "Sequence": {
+      const steps = (Array.isArray(o["decoders"]) ? o["decoders"] : []).map(decoderStep);
+      if (steps.some((st) => st === null)) return null;
+      return (tokens) => (steps as DecodeStep[]).reduce((acc, st) => st(acc), tokens);
+    }
+    case "ByteLevel":
+      return (tokens) => {
+        const { u2b } = maps();
+        const bytes: number[] = [];
+        for (const t of tokens) {
+          const chars = Array.from(t);
+          if (chars.every((c) => u2b.has(c))) for (const c of chars) bytes.push(u2b.get(c)!);
+          else bytes.push(...(sharedEncoder ??= new TextEncoder()).encode(t));
+        }
+        return [new TextDecoder("utf-8").decode(Uint8Array.from(bytes))];
+      };
+    case "Replace": {
+      const from = (o["pattern"] as Record<string, unknown> | undefined)?.["String"];
+      const to = o["content"];
+      if (typeof from !== "string" || typeof to !== "string") return null;
+      return (tokens) => tokens.map((t) => t.split(from).join(to));
+    }
+    case "ByteFallback":
+      return (tokens) => {
+        const out: string[] = [];
+        let pending: number[] = [];
+        const flush = (): void => {
+          if (!pending.length) return;
+          try {
+            out.push(new TextDecoder("utf-8", { fatal: true }).decode(Uint8Array.from(pending)));
+          } catch {
+            for (let i = 0; i < pending.length; i++) out.push("\uFFFD");
+          }
+          pending = [];
+        };
+        for (const t of tokens) {
+          const m = /^<0x([0-9A-Fa-f]{2})>$/.exec(t);
+          if (m) {
+            pending.push(Number.parseInt(m[1], 16));
+          } else {
+            flush();
+            out.push(t);
+          }
+        }
+        flush();
+        return out;
+      };
+    case "Fuse":
+      return (tokens) => [tokens.join("")];
+    case "Strip": {
+      const content = typeof o["content"] === "string" ? o["content"] : " ";
+      const start = Number(o["start"] ?? 0);
+      const stop = Number(o["stop"] ?? 0);
+      return (tokens) =>
+        tokens.map((t) => {
+          const chars = Array.from(t);
+          let a = 0;
+          while (a < Math.min(start, chars.length) && chars[a] === content) a++;
+          let b = chars.length;
+          for (let i = 0; i < stop && b > a && chars[b - 1] === content; i++) b--;
+          return chars.slice(a, b).join("");
+        });
+    }
+    case "Metaspace": {
+      const rep = typeof o["replacement"] === "string" ? o["replacement"] : METASPACE_REPLACEMENT;
+      const scheme = o["prepend_scheme"] ?? (o["add_prefix_space"] === false ? "never" : "always");
+      return (tokens) =>
+        tokens.map((t, i) =>
+          Array.from(t)
+            .map((c) => (c !== rep ? c : i === 0 && scheme !== "never" ? "" : " "))
+            .join(""),
+        );
+    }
+    default:
+      return null;
+  }
+}
+
+const idToToken = new WeakMap<TokenizerData, Map<number, string>>();
+
+/**
+ * HF `tokenizer.decode(ids)` with special tokens kept: ids map to tokens (added tokens first,
+ * unknown ids dropped) and the tokenizer.json `decoder` chain joins them. Supports the
+ * ByteLevel, Metaspace, Replace (string pattern), ByteFallback, Fuse, Strip and Sequence nodes;
+ * returns null for any other decoder. No `clean_up_tokenization_spaces` step: transformers 5
+ * (pinned in tools/export) skips it for BPE tokenizers, which all three checkpoints use.
+ */
+export function decodeWithData(data: TokenizerData, ids: readonly number[]): string | null {
+  const step = decoderStep(data.decoder);
+  if (!step) return null;
+  let rev = idToToken.get(data);
+  if (!rev) {
+    rev = new Map([...data.vocab].map(([t, id]) => [id, t]));
+    for (const t of data.added ?? []) rev.set(t.id, t.content);
+    idToToken.set(data, rev);
+  }
+  const tokens: string[] = [];
+  for (const id of ids) {
+    const t = rev.get(id);
+    if (t !== undefined) tokens.push(t);
+  }
+  return step(tokens).join("");
 }
 
 /** Load an HF tokenizer.json from a local path (node) or URL into vocab/merges/ids. */

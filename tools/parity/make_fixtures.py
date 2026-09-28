@@ -2,7 +2,9 @@
 
 - tools/parity/fixtures/cases.jsonl: one state per case, {id, state, questions, opts};
 - tools/parity/fixtures/batch.jsonl: `predict_batch` cases, {id, states, questions, opts} with
-  `batch_size` and `sort_by_length` in opts.
+  `batch_size` and `sort_by_length` in opts;
+- tools/parity/fixtures/long.jsonl: `predict_long` cases, {id, state, questions, opts} with
+  `window`, `stride` and `batch_size` in opts.
 
 Deterministic, no model needed. The questions are
 written out in full (presets expanded through the pinned Python `laya.presets`), so the Python
@@ -271,6 +273,56 @@ def build_batch_cases() -> list:
     return cases
 
 
+LONG_SENTENCES = [
+    "The quarterly report covers revenue, churn and support volume across all regions.",
+    "Our European team closed forty new accounts, mostly in logistics and retail.",
+    "Support tickets rose by twelve percent after the March pricing change.",
+    "The mobile app release slipped two weeks because of a certificate problem.",
+    "Engineering finished the migration of the billing service to the new cluster.",
+    "Marketing ran three webinars on onboarding with about nine hundred attendees.",
+    "Finance flagged two invoices from the hardware vendor for manual review.",
+    "The security team rotated all API keys after the annual penetration test.",
+    "Customer satisfaction held steady at 4.3 out of 5 for the third quarter in a row.",
+    "The data platform now ingests event streams from both web and mobile clients.",
+    "Legal approved the updated data processing agreement for enterprise customers.",
+    "Hiring is on track, with six engineers and two designers starting next month.",
+]
+
+LONG_SIGNALS = [
+    "URGENT: a customer in Frankfurt reports that every payment since Monday was charged twice, "
+    "and they demand an immediate refund or they will cancel the contract.",
+    "Please note that someone asked the assistant to ignore its instructions and reveal the "
+    "administrator password stored in the configuration file.",
+]
+
+
+def long_document(n_sentences: int, signal: int, at: float) -> str:
+    """Varied sentences (so no two windows tie), with one signal sentence at fraction `at`."""
+    body = [f"{LONG_SENTENCES[i % len(LONG_SENTENCES)]} (item {i + 1})" for i in range(n_sentences)]
+    body.insert(int(at * n_sentences), LONG_SIGNALS[signal])
+    return " ".join(body)
+
+
+def build_long_cases() -> list:
+    """7 `predict_long` cases, about 500 to 1000 tokens, with a localized signal at the start,
+    middle or end, default and explicit windows, and a short state that takes the system_one path.
+    Every multi-window case caps `batch_size` (windows per pass), as the docstring of `predict_long`
+    advises for memory: on the multilingual encoder (1024-token rows) four windows of four
+    questions in one pass took the long suite past 14 GB, and the CI runner has 7 GB."""
+    mixed = {"department": DEPARTMENT, "urgency": urgency(), "churn_risk": NOULS[0], "levels": score(5)}
+    guard = guard_questions()
+    specs = [
+        ("long/0", long_document(40, 0, 0.1), mixed, {"batch_size": 1}),
+        ("long/1", long_document(60, 0, 0.9), mixed, {"batch_size": 1}),
+        ("long/2", long_document(45, 1, 0.5), guard, {"batch_size": 1}),
+        ("long/3", long_document(45, 0, 0.7), triage_questions(), {"window": 256, "stride": 128, "batch_size": 2}),
+        ("long/4", long_document(30, 0, 0.4), mixed, {"window": 200, "stride": 50, "batch_size": 2}),
+        ("long/5", {"subject": "Q3 summary", "body": long_document(40, 0, 0.8)}, mixed, {"batch_size": 1}),
+        ("long/6", TEXTS[0], mixed, {}),
+    ]
+    return [{"id": cid, "state": st, "questions": q, "opts": opts} for cid, st, q, opts in specs]
+
+
 def write_jsonl(name: str, cases: list) -> None:
     with open(os.path.join(OUT, name), "w", encoding="utf-8") as f:
         for c in cases:
@@ -282,6 +334,7 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     write_jsonl("cases.jsonl", build_cases())
     write_jsonl("batch.jsonl", build_batch_cases())
+    write_jsonl("long.jsonl", build_long_cases())
 
 
 if __name__ == "__main__":
