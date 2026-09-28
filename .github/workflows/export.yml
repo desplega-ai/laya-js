@@ -37,7 +37,6 @@ jobs:
             revision: 1a793eb568e6718f15941d08f85432581df534e3
             verify_len: 1024
     env:
-      HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
       OUT: ${{ github.workspace }}/bundles/${{ matrix.checkpoint }}/fp32
     defaults:
       run:
@@ -56,6 +55,9 @@ jobs:
           --repo ${{ matrix.repo }} --revision ${{ matrix.revision }}
       - name: Upload to the artifact store
         if: inputs.upload
+        # Write-scoped token on this step only, so uv sync and the export never see it.
+        env:
+          HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
         run: |
           test -n "$HF_TOKEN" || { echo "::error::Actions secret HF_ACCESS_TOKEN is empty"; exit 1; }
           uv run python upload_bundle.py --bundles "${{ github.workspace }}/bundles" --checkpoints ${{ matrix.checkpoint }}

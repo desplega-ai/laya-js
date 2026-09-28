@@ -16,6 +16,7 @@ from the manifests at the repo's current head (the export workflow uploads one
 checkpoint per job, then pins once).
 """
 import argparse
+import hashlib
 import json
 import os
 
@@ -46,9 +47,21 @@ def load_manifest(bundles, checkpoint):
 
 
 def remote_sha256(api, repo, revision, paths):
+    """SHA-256 of every path at `revision`. Non-LFS files are downloaded and hashed;
+    a path missing from the remote is an error, never a silent skip."""
     out = {}
     for info in api.get_paths_info(repo, paths, revision=revision, expand=True):
-        out[info.path] = info.lfs.sha256 if info.lfs else None
+        if info.lfs:
+            out[info.path] = info.lfs.sha256
+        else:
+            h = hashlib.sha256()
+            with open(api.hf_hub_download(repo, info.path, revision=revision), "rb") as f:
+                for chunk in iter(lambda: f.read(1 << 20), b""):
+                    h.update(chunk)
+            out[info.path] = h.hexdigest()
+    missing = sorted(set(paths) - set(out))
+    if missing:
+        raise SystemExit("missing from %s@%s: %s" % (repo, revision, ", ".join(missing)))
     return out
 
 
@@ -135,8 +148,8 @@ def main(argv=None):
         remote = remote_sha256(api, args.repo, revision, paths)
         for name in BUNDLE_FILES:
             want = m["files"][name]["sha256"]
-            got = remote.get("%s/fp32/%s" % (ckpt, name))
-            if got is not None and got != want:
+            got = remote["%s/fp32/%s" % (ckpt, name)]
+            if got != want:
                 raise SystemExit("%s/fp32/%s: remote sha256 %s != manifest %s" % (ckpt, name, got, want))
         manifests[ckpt] = m
     with open(ARTIFACTS_TS, "w", encoding="utf-8") as f:
