@@ -12,7 +12,8 @@
     "lint:fix": "biome check --write .",
     "test": "vitest run",
     "test:bun-smoke": "bun run --filter @desplega/laya build && bun packages/laya/test/bun-smoke.ts",
-    "check-vendor": "bun scripts/check-vendor.ts"
+    "check-vendor": "bun scripts/check-vendor.ts",
+    "parity": "bun packages/laya/test/parity/run.ts"
   },
   "devDependencies": {
     "@desplega/laya": "workspace:*",

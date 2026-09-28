@@ -1,0 +1,87 @@
+name: parity
+
+# Python-vs-TS probability parity gate (plan, Phase 3). Runs every fixture in
+# tools/parity/fixtures/cases.jsonl through the TS lib on the pinned fp32 bundle and compares
+# to the committed Python goldens: max |Δp| ≤ 1e-4, top-1 agreement 100%. One checkpoint per
+# job, so a runner never holds two models. INT8 is deferred (plan, 2026-09-28).
+#
+# The `parity` job always runs so it can be a required check; on PRs that touch none of the
+# gated paths it reports success without loading a model.
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      gated: ${{ steps.filter.outputs.gated }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: filter
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then echo "gated=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          changed=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}")
+          if echo "$changed" | grep -qE '^(packages/laya/src/|packages/laya/test/parity/|tools/export/|tools/parity/|\.github/workflows/parity\.yml$|package\.json$|bun\.lock$)'; then
+            echo "gated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "gated=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  cell:
+    needs: changes
+    if: needs.changes.outputs.gated == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        checkpoint: [english, multilingual, typed-decisions]
+    env:
+      HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require the HF token
+        run: test -n "$HF_TOKEN" || { echo "::error::Actions secret HF_ACCESS_TOKEN is empty or not available"; exit 1; }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/laya-ts/hf
+          key: laya-bundle-${{ matrix.checkpoint }}-${{ hashFiles('packages/laya/src/artifacts.ts') }}
+      - run: bun install --frozen-lockfile
+      - name: Parity (fp32 vs Python)
+        run: bun run parity --checkpoint ${{ matrix.checkpoint }} --report parity-report/${{ matrix.checkpoint }}-fp32.json
+      - name: Negative control (--perturb 0.01 must fail the gate)
+        run: |
+          set +e
+          bun run parity --checkpoint ${{ matrix.checkpoint }} --perturb 0.01 --report parity-report/${{ matrix.checkpoint }}-fp32-perturb.json > perturb.log 2>&1
+          code=$?
+          tail -n 30 perturb.log
+          test "$code" -eq 1 || { echo "::error::negative control exited $code, expected 1 (gate failure)"; exit 1; }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: parity-report-${{ matrix.checkpoint }}
+          path: parity-report/
+
+  parity:
+    needs: [changes, cell]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          if [ "${{ needs.changes.outputs.gated }}" != "true" ]; then echo "No gated paths changed"; exit 0; fi
+          test "${{ needs.cell.result }}" = "success" || { echo "::error::parity cells: ${{ needs.cell.result }}"; exit 1; }
