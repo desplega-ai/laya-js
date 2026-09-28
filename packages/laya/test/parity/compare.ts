@@ -23,9 +23,13 @@ export interface GoldenAnswer {
   answer_confidence: number;
   act_probability: number;
   margin: number;
+  /** predictLong: the window that decided the answer. */
+  window?: { index: number; token_start: number; token_end: number; count: number };
 }
 
-export type GoldenCase = { error: string } | { input_tokens: number; answers: Record<string, GoldenAnswer> };
+export type GoldenCase =
+  | { error: string }
+  | { input_tokens: number; answers: Record<string, GoldenAnswer>; windows?: number | null };
 
 export interface Golden {
   meta: Record<string, unknown> & { checkpoint: string; precision: string };
@@ -33,7 +37,9 @@ export interface Golden {
 }
 
 /** What the TS side produced for one case: a SystemOneResult, or the error it threw. */
-export type Observed = { error: string } | { usage: { input_tokens: number }; answers: Record<string, unknown> };
+export type Observed =
+  | { error: string }
+  | { usage: { input_tokens: number; windows?: number }; answers: Record<string, unknown> };
 
 export interface Failure {
   id: string;
@@ -112,6 +118,9 @@ export function compareCheckpoint(golden: Golden, observed: Record<string, Obser
     if (o.usage.input_tokens !== g.input_tokens) {
       failures.push({ id, reason: `input_tokens ${o.usage.input_tokens} vs Python ${g.input_tokens}` });
     }
+    if (g.windows !== undefined && (o.usage.windows ?? null) !== g.windows) {
+      failures.push({ id, reason: `usage.windows ${o.usage.windows} vs Python ${g.windows}` });
+    }
     let caseMax = 0;
     let caseWhere = "";
     const note = (d: number, where: string) => {
@@ -131,6 +140,12 @@ export function compareCheckpoint(golden: Golden, observed: Record<string, Obser
       const ga = g.answers[qid];
       const oa = o.answers[qid] as Record<string, unknown>;
       answers++;
+      const ow = oa.window as GoldenAnswer["window"];
+      const sameWindow = (a: GoldenAnswer["window"], b: NonNullable<GoldenAnswer["window"]>) =>
+        a?.index === b.index && a.token_start === b.token_start && a.token_end === b.token_end && a.count === b.count;
+      if (ga.window && !sameWindow(ow, ga.window)) {
+        failures.push({ id, reason: `${qid}: window ${JSON.stringify(ow)} vs Python ${JSON.stringify(ga.window)}` });
+      }
       if (oa.type !== ga.type) {
         failures.push({ id, reason: `${qid}: type ${String(oa.type)} vs Python ${ga.type}` });
         continue;

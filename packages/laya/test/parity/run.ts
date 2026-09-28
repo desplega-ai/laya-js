@@ -1,7 +1,7 @@
 // Python-vs-TS parity gate for one checkpoint. Loads the fp32 bundle, runs every fixture in
-// tools/parity/fixtures/cases.jsonl through Agent.systemOne and every batch.jsonl case through
-// Agent.predictBatch, compares to the committed Python goldens (<checkpoint>.json and
-// <checkpoint>.batch.json) and exits non-zero on any failure.
+// tools/parity/fixtures/cases.jsonl through Agent.systemOne, every batch.jsonl case through
+// Agent.predictBatch and every long.jsonl case through Agent.predictLong, compares to the committed
+// Python goldens (<checkpoint>.json, .batch.json, .long.json) and exits non-zero on any failure.
 //
 //   bun run parity -- --checkpoint multilingual [--precision fp32] [--bundle-dir <dir>]
 //                     [--perturb 0.01] [--report <path.json>]
@@ -43,7 +43,13 @@ if (!Number.isFinite(perturb)) {
   process.exit(2);
 }
 
-type Opts = { lang?: string; batch_size?: number | null; sort_by_length?: boolean };
+type Opts = {
+  lang?: string;
+  batch_size?: number | null;
+  sort_by_length?: boolean;
+  window?: number | null;
+  stride?: number | null;
+};
 const readJsonl = <T>(name: string): T[] =>
   readFileSync(resolve(root, "tools/parity/fixtures", name), "utf8")
     .split("\n")
@@ -54,8 +60,12 @@ const readGolden = (suffix: string): Golden =>
 
 const single = readGolden("");
 // Batch results are keyed `<case id>#<index>`, as make_goldens.py --kind batch writes them.
-const golden: Golden = { meta: single.meta, cases: { ...single.cases, ...readGolden(".batch").cases } };
+const golden: Golden = {
+  meta: single.meta,
+  cases: { ...single.cases, ...readGolden(".batch").cases, ...readGolden(".long").cases },
+};
 const cases = readJsonl<{ id: string; state: unknown; questions: Record<string, never>; opts: Opts }>("cases.jsonl");
+const longCases = readJsonl<{ id: string; state: unknown; questions: Record<string, never>; opts: Opts }>("long.jsonl");
 const batchCases = readJsonl<{ id: string; states: unknown[]; questions: Record<string, never>; opts: Opts }>(
   "batch.jsonl",
 );
@@ -106,6 +116,18 @@ for (const c of batchCases) {
     rs.forEach((r, i) => {
       observed[`${c.id}#${i}`] = r as Observed;
     });
+  } catch (e) {
+    observed[c.id] = { error: e instanceof Error ? e.message : String(e) };
+  }
+}
+for (const c of longCases) {
+  try {
+    observed[c.id] = (await agent.predictLong(c.state, c.questions, {
+      lang: c.opts?.lang ?? null,
+      window: c.opts?.window ?? null,
+      stride: c.opts?.stride ?? null,
+      batchSize: c.opts?.batch_size ?? null,
+    })) as Observed;
   } catch (e) {
     observed[c.id] = { error: e instanceof Error ? e.message : String(e) };
   }
