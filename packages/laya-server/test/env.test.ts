@@ -1,4 +1,4 @@
-import { ARTIFACT_REPO, ARTIFACT_REVISION } from "@desplega/laya";
+import { ARTIFACT_REPO, ARTIFACT_REVISION } from "@desplega/laya/raw";
 import { describe, expect, it } from "vitest";
 import { describeEnv, EnvError, loadEnv } from "../src/env.js";
 
@@ -109,6 +109,7 @@ describe("loadEnv", () => {
     ["LAYA_MAX_CONCURRENT", "0", /LAYA_MAX_CONCURRENT/],
     ["LAYA_MAX_CONCURRENT", "16x", /LAYA_MAX_CONCURRENT/],
     ["LAYA_MAX_TOKEN_BUDGET", "1e4", /LAYA_MAX_TOKEN_BUDGET/],
+    ["LAYA_MAX_TOKEN_BUDGET", "8193", /LAYA_MAX_TOKEN_BUDGET.*1-8192/],
     ["LAYA_PRELOAD", "maybe", /LAYA_PRELOAD/],
     ["LAYA_AUTO_TASK", "2", /LAYA_AUTO_TASK/],
     ["LAYA_LOG_LEVEL", "loud", /LAYA_LOG_LEVEL/],

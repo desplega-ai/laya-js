@@ -1,12 +1,13 @@
 // laya-server entry point: read the environment, start listening (health answers 503 while
 // loading), fetch any listed checkpoint that is not baked, preload, then serve. SIGTERM and
 // SIGINT drain in-flight requests before exiting.
-import { createAgent, type LayaAgent, Router } from "@desplega/laya";
+import { createAgent, type LayaAgent } from "@desplega/laya";
+import { Router } from "@desplega/laya/raw";
 import { serve } from "@hono/node-server";
 import { createApp, type ServerRouter } from "./app.js";
 import { createBundleStore } from "./bundles.js";
 import { describeEnv, EnvError, type LogLevel, loadEnv, type ServerEnv } from "./env.js";
-import { routeWithin, toServerRouter } from "./routing.js";
+import { agentRegistry, routeWithin, toServerRouter } from "./routing.js";
 
 const RANK: Record<LogLevel, number> = { trace: 0, debug: 1, info: 2, warning: 3, error: 4, critical: 5 };
 
@@ -40,7 +41,7 @@ function buildRouter(env: ServerEnv, log: Log): { router: Router; server: Server
     endpoint: env.hfEndpoint,
     log: (m) => log.info(m),
   });
-  const agents = new Map<string, LayaAgent>();
+  const agents = agentRegistry<LayaAgent>();
   const revisions = new Map<string, string | null>();
   const names = ["english", "multilingual", "typed-decisions"] as const;
   const repos = Object.fromEntries(names.map((n) => [n, `${env.onnxRepo}/${n}/${env.precision}`]));
@@ -63,20 +64,18 @@ function buildRouter(env: ServerEnv, log: Log): { router: Router; server: Server
         // Baked bundles were verified at image build, cached ones when fetched.
         verify: false,
       });
-      agents.set(name, agent);
+      agents.track(name, agent);
       revisions.set(name, bundle.revision);
       return agent.raw;
     },
     hooks: [
       routeWithin(env.models, env.defaultModel, repos),
+      // Frees the evicted checkpoint's ONNX sessions; the lib Router only drops its reference.
+      agents.hook,
       {
-        onEvict: async (ctx) => {
-          const name = String(ctx.model);
-          const agent = agents.get(name);
-          agents.delete(name);
-          revisions.delete(name);
-          log.info(`evicted ${name}`);
-          await agent?.dispose();
+        onEvict: (ctx) => {
+          revisions.delete(String(ctx.model));
+          log.info(`evicted ${ctx.model}; ONNX sessions released`);
         },
       },
     ],
@@ -86,10 +85,8 @@ function buildRouter(env: ServerEnv, log: Log): { router: Router; server: Server
     router,
     server,
     dispose: async () => {
-      const held = [...agents.values()];
-      agents.clear();
       router.unload();
-      await Promise.all(held.map((a) => a.dispose()));
+      await agents.disposeAll();
     },
   };
 }

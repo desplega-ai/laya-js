@@ -1,7 +1,7 @@
-import { Router } from "@desplega/laya";
+import { Router } from "@desplega/laya/raw";
 import { describe, expect, it } from "vitest";
 import { createApp } from "../src/app.js";
-import { fallbackReason, routeWithin, toServerRouter } from "../src/routing.js";
+import { agentRegistry, fallbackReason, routeWithin, toServerRouter } from "../src/routing.js";
 
 const ENGLISH = "The server is down and none of our customers can log in. Please help us today.";
 const QUESTIONS = { urgent: { type: "noul", instructions: "Does `state` need a reply today?" } };
@@ -96,5 +96,63 @@ describe("routing outside LAYA_MODELS", () => {
     const r = await post({ state: ENGLISH, questions: QUESTIONS, model: "english" });
     expect(r.status).toBe(400);
     expect(loads).toEqual([]);
+  });
+});
+
+describe("eviction releases ONNX sessions", () => {
+  function fakeAgent(name: string, released: string[]) {
+    return {
+      systemOne: async () => ({ model: name, answers: {}, usage: { input_tokens: 1, output_tokens: 0 } }),
+      dispose: async () => {
+        released.push(name);
+      },
+    };
+  }
+
+  it("control: the lib Router alone evicts without releasing", async () => {
+    const released: string[] = [];
+    const router = new Router({ maxLoaded: 1, loader: (name) => fakeAgent(name, released) });
+    await router.load("english");
+    await router.load("multilingual");
+    expect(router.loaded).toEqual(["multilingual"]);
+    expect(released).toEqual([]);
+  });
+
+  it("the registry hook disposes each evicted agent once, and disposeAll the rest", async () => {
+    const released: string[] = [];
+    const agents = agentRegistry<ReturnType<typeof fakeAgent>>();
+    const router = new Router({
+      maxLoaded: 1,
+      hooks: [agents.hook],
+      loader: (name) => {
+        const a = fakeAgent(name, released);
+        agents.track(name, a);
+        return a;
+      },
+    });
+    await router.load("english");
+    await router.load("multilingual");
+    await router.load("multilingual");
+    expect(released).toEqual(["english"]);
+    expect(agents.get("english")).toBeUndefined();
+    await router.load("english");
+    expect(released).toEqual(["english", "multilingual"]);
+    router.unload();
+    await agents.disposeAll();
+    expect(released).toEqual(["english", "multilingual", "english"]);
+  });
+
+  it("forwards per-call token budgets to the lib Router", async () => {
+    const seen: unknown[] = [];
+    const router = new Router({
+      loader: (name) => ({
+        systemOne: async (_s: unknown, _q: unknown, o: unknown) => {
+          seen.push(o);
+          return { model: name, answers: {}, usage: { input_tokens: 1, output_tokens: 0 } };
+        },
+      }),
+    });
+    await toServerRouter(router, () => null).predict("hi", {}, { model: "english", maxLen: 256, headMaxLen: 64 });
+    expect(seen[0]).toMatchObject({ maxLen: 256, headMaxLen: 64 });
   });
 });

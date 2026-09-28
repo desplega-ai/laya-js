@@ -10,7 +10,8 @@
 // than run a server with a different concurrency cap or token budget than the operator wrote.
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { ARTIFACT_REPO, ARTIFACT_REVISION, type CheckpointName, normaliseName, type Precision } from "@desplega/laya";
+import type { CheckpointName, Precision } from "@desplega/laya";
+import { ARTIFACT_REPO, ARTIFACT_REVISION, MAX_TOKEN_BUDGET, normaliseName } from "@desplega/laya/raw";
 
 export const DEFAULT_PORT = 8000;
 export const DEFAULT_MAX_CONCURRENT = 16;
@@ -147,7 +148,11 @@ export function loadEnv(env: Env = process.env): ServerEnv {
     apiKey: env.LAYA_API_KEY ? env.LAYA_API_KEY : null,
     logLevel: logLevel as LogLevel,
     maxConcurrent: int(env, "LAYA_MAX_CONCURRENT", positive, "a positive integer") ?? DEFAULT_MAX_CONCURRENT,
-    maxTokenBudget: int(env, "LAYA_MAX_TOKEN_BUDGET", positive, "a positive integer") ?? DEFAULT_MAX_TOKEN_BUDGET,
+    // The lib refuses any per-call budget above its MAX_TOKEN_BUDGET, so a higher server cap would
+    // only turn valid-looking requests into 500s.
+    maxTokenBudget:
+      int(env, "LAYA_MAX_TOKEN_BUDGET", (n) => n > 0 && n <= MAX_TOKEN_BUDGET, `an integer 1-${MAX_TOKEN_BUDGET}`) ??
+      DEFAULT_MAX_TOKEN_BUDGET,
     precision,
     modelDir: str(env, "LAYA_MODEL_DIR") ?? DEFAULT_MODEL_DIR,
     cacheDir: str(env, "LAYA_CACHE_DIR") ?? defaultCacheDir(env),

@@ -9,7 +9,8 @@ import { join } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import type { ReadableStream as NodeWebReadableStream } from "node:stream/web";
-import { ARTIFACTS, type CheckpointName, type Precision } from "@desplega/laya";
+import type { CheckpointName, Precision } from "@desplega/laya";
+import { ARTIFACTS } from "@desplega/laya/raw";
 
 /** Written next to the files once every one of them verified. */
 export const MANIFEST = "laya-bundle.json";
