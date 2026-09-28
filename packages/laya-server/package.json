@@ -2,7 +2,21 @@
   "name": "@desplega/laya-server",
   "version": "0.0.0",
   "private": true,
-  "description": "HTTP server for @desplega/laya (stub; built in Phase 8).",
+  "description": "HTTP server for @desplega/laya, mirroring laya-serve's /v1/systemone contract (Hono on Node).",
   "license": "Apache-2.0",
-  "type": "module"
+  "type": "module",
+  "main": "./dist/main.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node dist/main.js",
+    "fetch-models": "node dist/fetch-models.js"
+  },
+  "dependencies": {
+    "@desplega/laya": "workspace:*",
+    "@hono/node-server": "2.1.1",
+    "hono": "4.13.10"
+  }
 }
