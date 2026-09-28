@@ -11,7 +11,7 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,3 +26,10 @@ jobs:
       - run: bun run check-vendor
       - run: bun run test
       - run: bun run test:bun-smoke
+      - name: Bun smoke on the real multilingual fp32 bundle (createAgent -> predict -> dispose)
+        env:
+          HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
+          LAYA_SMOKE_CHECKPOINT: multilingual
+        run: |
+          test -n "$HF_TOKEN" || { echo "::error::Actions secret HF_ACCESS_TOKEN is empty or not available"; exit 1; }
+          bun packages/laya/test/bun-smoke.ts
