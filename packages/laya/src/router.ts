@@ -1,5 +1,8 @@
+// Modified by Desplega Labs, 2026: predict forwards per-call maxLen/headMaxLen and flags minConfidence (router.py).
 import { analyse, type AnalyseResult } from "./lang.js";
 import type { PredictOptions, QuestionDef, SystemOneResult } from "./agent.js";
+import { checkTokenBudget } from "./budget.js";
+import { checkMinConfidence, flagLowConfidence } from "./confidence.js";
 import { decide, type DecideOptions, type DecisionResult } from "./structured.js";
 import {
   HookRegistry,
@@ -479,6 +482,11 @@ export class Router extends HookRegistry {
     questions: Record<string, QuestionDef>,
     opts: RouteOptions & PredictOptions = {},
   ): Promise<RoutedResult> {
+    const mc = opts.minConfidence !== null && opts.minConfidence !== undefined
+      ? checkMinConfidence(opts.minConfidence)
+      : null;
+    checkTokenBudget("maxLen", opts.maxLen);
+    checkTokenBudget("headMaxLen", opts.headMaxLen);
     const active = composeHooks(this.hooks, opts.hooks, opts.onPredictStart, opts.onPredictEnd);
     const raiseErrors = opts.hooksRaise ?? this.hooksRaise;
 
@@ -488,7 +496,7 @@ export class Router extends HookRegistry {
       systemOne(
         s: unknown,
         q: Record<string, QuestionDef>,
-        opts?: { lang?: string | null },
+        opts?: PredictOptions,
       ): Promise<SystemOneResult>;
     };
     const ctx = new PredictContext({
@@ -498,6 +506,8 @@ export class Router extends HookRegistry {
       model: decision.model,
       agent,
       router: this,
+      maxLen: opts.maxLen ?? null,
+      headMaxLen: opts.headMaxLen ?? null,
     });
     try {
       await dispatchAsync(active, "onPredictStart", ctx, { raiseErrors });
@@ -510,7 +520,10 @@ export class Router extends HookRegistry {
         // explicit lang="en" can select an "en" override.
         const detected = decision.detection?.language;
         const effectiveLang = opts.lang ?? (detected && detected !== "en" ? detected : null);
-        const agentOpts = { lang: effectiveLang };
+        // Budget overrides only when set, so an Agent-like object that does not take them still works.
+        const agentOpts: PredictOptions = { lang: effectiveLang };
+        if (ctx.maxLen !== null) agentOpts.maxLen = ctx.maxLen;
+        if (ctx.headMaxLen !== null) agentOpts.headMaxLen = ctx.headMaxLen;
         markDefaultsRan(agentOpts);
         const result = (await agent.systemOne(
           ctx.states[0],
@@ -538,7 +551,10 @@ export class Router extends HookRegistry {
       throw err;
     } finally {
       ctx.markElapsed();
-      if (ctx.results !== null) ctx.usage = aggregateUsage(ctx.results);
+      if (ctx.results !== null) {
+        ctx.usage = aggregateUsage(ctx.results);
+        if (mc !== null) flagLowConfidence(ctx.results, mc);
+      }
       try {
         await dispatchAsync(active, "onPredictEnd", ctx, { raiseErrors });
       } catch (hookErr) {

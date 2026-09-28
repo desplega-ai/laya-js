@@ -18,13 +18,14 @@ jobs:
       max-parallel: 1
       matrix:
         checkpoint: [english, multilingual, typed-decisions]
+        kind: [single, batch]
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --frozen
         working-directory: tools/export
-      - run: uv run --project tools/export python tools/parity/make_goldens.py --checkpoint ${{ matrix.checkpoint }}
+      - run: uv run --project tools/export python tools/parity/make_goldens.py --checkpoint ${{ matrix.checkpoint }} --kind ${{ matrix.kind }}
       - uses: actions/upload-artifact@v4
         with:
-          name: golden-${{ matrix.checkpoint }}
-          path: packages/laya/test/parity/golden/${{ matrix.checkpoint }}.json
+          name: golden-${{ matrix.checkpoint }}-${{ matrix.kind }}
+          path: packages/laya/test/parity/golden/${{ matrix.checkpoint }}*.json

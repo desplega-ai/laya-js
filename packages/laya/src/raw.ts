@@ -7,6 +7,7 @@ export type {
   AgentOptions,
   ChoiceAnswer,
   NoulAnswer,
+  PredictBatchOptions,
   PredictOptions,
   QuestionDef,
   ScoreAnswer,
@@ -17,6 +18,7 @@ export type {
 export { Agent, checkQuestion, defaultTokenizer, toInternal } from "./agent.js";
 export type { BundleArtifact, CheckpointName, Precision } from "./artifacts.js";
 export { ARTIFACT_REPO, ARTIFACT_REVISION, ARTIFACTS } from "./artifacts.js";
+export { checkTokenBudget, MAX_TOKEN_BUDGET } from "./budget.js";
 export type { CollatedBatch, CollateItem, InternalQ, QType, QuestionPrefix } from "./common.js";
 export {
   answerConfidence,
@@ -33,6 +35,7 @@ export {
   TEMP_MIN,
   tempBucket,
 } from "./common.js";
+export { checkMinConfidence, flagLowConfidence } from "./confidence.js";
 export { cleanEmailBody, emailState } from "./email.js";
 export type { Hook, HookArg, HookEvent, PredictHook, PredictHookArg } from "./hooks.js";
 export {
