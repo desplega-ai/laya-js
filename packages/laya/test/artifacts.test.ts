@@ -4,7 +4,7 @@
 // LAYA_ARTIFACTS takes a comma list of checkpoints, or "all".
 import { describe, expect, it } from "vitest";
 import { ARTIFACT_REPO, ARTIFACT_REVISION, ARTIFACTS, type CheckpointName } from "../src/artifacts.js";
-import { Agent, triageQuestions } from "../src/index.js";
+import { Agent, triageQuestions } from "../src/raw.js";
 
 const ALL = Object.keys(ARTIFACTS) as CheckpointName[];
 const wanted = (process.env.LAYA_ARTIFACTS ?? "")

@@ -6,8 +6,10 @@ import { resolve } from "node:path";
 if (typeof Bun === "undefined") throw new Error("bun-smoke must run under Bun");
 
 const laya = await import("@desplega/laya");
-assert.equal(typeof laya.Agent, "function", "Agent export missing");
-assert.equal(typeof laya.loadNodeBundle, "function", "loadNodeBundle export missing");
+assert.equal(typeof laya.createAgent, "function", "createAgent export missing");
+const raw = await import("@desplega/laya/raw");
+assert.equal(typeof raw.Agent, "function", "Agent export missing");
+assert.equal(typeof raw.loadNodeBundle, "function", "loadNodeBundle export missing");
 
 const ort = await import("onnxruntime-node");
 const session = await ort.InferenceSession.create(resolve(import.meta.dir, "fixtures/tiny.onnx"));

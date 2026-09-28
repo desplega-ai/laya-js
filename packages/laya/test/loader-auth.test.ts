@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LayaLoadError, loadNodeBundle } from "../src/index.js";
+import { LayaLoadError, loadNodeBundle } from "../src/raw.js";
 
 class StubResponse {
   constructor(

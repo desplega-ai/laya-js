@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import {
   CHECKPOINTS,
-  checkQuestion,
   createAgent,
   createRouter,
   defineQuestions,
@@ -10,6 +9,7 @@ import {
   SchemaError,
   validateDecision,
 } from "../src/index.js";
+import { checkQuestion } from "../src/raw.js";
 
 describe("defineQuestions", () => {
   it("returns the map unchanged", () => {
