@@ -11,7 +11,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { ARTIFACT_REPO, ARTIFACT_REVISION, ARTIFACTS, type CheckpointName } from "../../src/artifacts.js";
-import { Agent } from "../../src/index.js";
+import { Agent } from "../../src/raw.js";
 import { compareCheckpoint, formatReport, type Golden, type Observed } from "./compare.js";
 
 const here = dirname(new URL(import.meta.url).pathname);
