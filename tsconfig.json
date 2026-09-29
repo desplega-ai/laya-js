@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "packages/laya" }]
+  "references": [{ "path": "packages/laya" }, { "path": "packages/laya-server" }]
 }

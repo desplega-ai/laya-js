@@ -15,7 +15,8 @@
     "check-vendor": "bun scripts/check-vendor.ts",
     "parity": "bun packages/laya/test/parity/run.ts",
     "api:check": "bun run --filter @desplega/laya build && api-extractor run -c packages/laya/api-extractor.json",
-    "api:update": "bun run --filter @desplega/laya build && api-extractor run --local -c packages/laya/api-extractor.json"
+    "api:update": "bun run --filter @desplega/laya build && api-extractor run --local -c packages/laya/api-extractor.json",
+    "smoke:server": "bun run --filter @desplega/laya-server build && bun packages/laya-server/test/smoke.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",

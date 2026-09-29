@@ -1,0 +1,44 @@
+name: server
+
+# Real-bundle smoke for @desplega/laya-server: start `node dist/main.js` with
+# LAYA_MODELS=multilingual (fp32 bundle fetched from the private artifact store and verified
+# against the pinned SHA-256 map), wait for /health 200, POST /v1/systemone, SIGTERM.
+on:
+  pull_request:
+    paths:
+      - packages/laya-server/**
+      - packages/laya/src/**
+      - bun.lock
+      - .github/workflows/server.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
+      LAYA_CACHE_DIR: ${{ github.workspace }}/.laya-cache
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require the HF token
+        run: test -n "$HF_TOKEN" || { echo "::error::Actions secret HF_ACCESS_TOKEN is empty or not available (fork PRs do not get secrets)"; exit 1; }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
+      - uses: actions/cache@v4
+        with:
+          path: .laya-cache
+          key: laya-server-multilingual-fp32-${{ hashFiles('packages/laya/src/artifacts.ts') }}
+      - run: bun install --frozen-lockfile
+      - run: bun run smoke:server

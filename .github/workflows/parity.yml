@@ -33,8 +33,10 @@ jobs:
       - id: filter
         run: |
           if [ "${{ github.event_name }}" != "pull_request" ]; then echo "gated=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          # The lib's own package.json, not the root one (scripts and dev tools); bun.lock catches
+          # every dependency version change.
           changed=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}")
-          if echo "$changed" | grep -qE '^(packages/laya/src/|packages/laya/test/parity/|tools/export/|tools/parity/|\.github/workflows/parity\.yml$|package\.json$|bun\.lock$)'; then
+          if echo "$changed" | grep -qE '^(packages/laya/src/|packages/laya/test/parity/|tools/export/|tools/parity/|\.github/workflows/parity\.yml$|packages/laya/package\.json$|bun\.lock$)'; then
             echo "gated=true" >> "$GITHUB_OUTPUT"
           else
             echo "gated=false" >> "$GITHUB_OUTPUT"
