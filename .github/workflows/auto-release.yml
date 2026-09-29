@@ -12,11 +12,14 @@ name: auto-release
 # If the tag exists but nothing was published (the dispatch failed), run `publish` by hand from
 # that tag with `dry_run` unticked; it skips any package already on npm.
 #
-# workflow_dispatch is a dry run unless you untick `dry_run`, and a real run only from main. A dry
-# run does the version check and reports what it would do, and creates and starts nothing.
+# A pull request runs the same job as a dry run, so a partial bump fails on the PR instead of after
+# the merge. workflow_dispatch is a dry run unless you untick `dry_run`, and a real run only from
+# main. A dry run does the version check and reports what it would do, and creates and starts
+# nothing.
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
     inputs:
       dry_run:
@@ -27,9 +30,10 @@ on:
 permissions:
   contents: read
 
+# Pull requests get their own group: a queued dry run must never replace a queued release run.
 concurrency:
-  group: auto-release
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('auto-release-pr-{0}', github.event.pull_request.number) || 'auto-release' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   auto-release:
@@ -39,7 +43,7 @@ jobs:
       contents: write # push the tag
       actions: write # dispatch publish.yml
     env:
-      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+      DRY_RUN: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
     steps:
       - name: Refuse a real run from a branch other than main
         if: env.DRY_RUN != 'true'
@@ -85,7 +89,7 @@ jobs:
         if: env.DRY_RUN == 'true' && steps.state.outputs.needed == 'true'
         env:
           TAG: ${{ steps.version.outputs.tag }}
-        run: echo "::notice title=Dry run::Would tag $GITHUB_SHA as $TAG and dispatch publish on it. Created and started nothing."
+        run: echo "::notice title=Dry run::A real run on main would tag the commit as $TAG and dispatch publish on it. Created and started nothing."
 
       - name: Tag main and push the tag
         if: env.DRY_RUN != 'true' && steps.state.outputs.needed == 'true'
