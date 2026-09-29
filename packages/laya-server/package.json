@@ -1,6 +1,6 @@
 {
   "name": "@desplega.ai/laya-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "HTTP server for @desplega.ai/laya, mirroring laya-serve's /v1/systemone contract (Hono on Node).",
   "license": "Apache-2.0",
   "author": "Desplega Labs",
