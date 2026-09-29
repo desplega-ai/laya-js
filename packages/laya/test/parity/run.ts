@@ -12,7 +12,7 @@
 // the first 20 single cases. --no-arena turns off the
 // onnxruntime CPU memory arena: it never shrinks, and the long suite's 1024-token windows grow it
 // past the 7 GB runner (about 8 GB with it, 4.5 GB without, at about 2.5x the run time).
-// Without --bundle-dir the bundle comes from the private artifact store (needs HF_TOKEN).
+// Without --bundle-dir the bundle comes from the public artifact store (HF_TOKEN is optional).
 // --perturb adds the value to the first logit of every head call: the negative control.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -104,10 +104,6 @@ const golden: Golden = {
 const t0 = performance.now();
 const bundleDir = values["bundle-dir"];
 const artifact = ARTIFACTS[ckpt].fp32;
-if (!bundleDir && !process.env.HF_TOKEN) {
-  console.error("HF_TOKEN is empty; the artifact store is private (or pass --bundle-dir)");
-  process.exit(2);
-}
 if (values["no-arena"]) {
   // Test-only: the lib exposes no session options, so patch the one the provider calls.
   const ort = (await import("onnxruntime-node")) as unknown as {

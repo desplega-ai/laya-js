@@ -55,8 +55,6 @@ jobs:
       HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - name: Require the HF token
-        run: test -n "$HF_TOKEN" || { echo "::error::Actions secret HF_ACCESS_TOKEN is empty or not available"; exit 1; }
       - uses: actions/setup-node@v4
         with:
           node-version: 22

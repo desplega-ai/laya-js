@@ -7,3 +7,7 @@ __pycache__/
 packages/laya/temp/
 /evals/datasets/build/
 /evals/out/
+# copied in by scripts/copy-legal.mjs at pack time
+/packages/*/LICENSE
+/packages/*/NOTICE
+/.pack/

@@ -64,8 +64,8 @@ The server is a plain Node process. On an Ubuntu VM with Node 22 and Bun 1.4:
 ```sh
 git clone https://github.com/desplega-ai/laya-js && cd laya-js
 ONNXRUNTIME_NODE_INSTALL=skip bun install --frozen-lockfile   # skip the CUDA download; CPU binaries ship in the package
-bun run --filter @desplega/laya-server build
-HF_TOKEN=<read token> node packages/laya-server/dist/fetch-models.js --dest /var/lib/laya/models multilingual
+bun run --filter @desplega.ai/laya-server build
+node packages/laya-server/dist/fetch-models.js --dest /var/lib/laya/models multilingual
 LAYA_MODEL_DIR=/var/lib/laya/models LAYA_CACHE_DIR=/var/lib/laya/cache \
   LAYA_API_KEY=<key> LAYA_THREADS=4 node packages/laya-server/dist/main.js
 ```

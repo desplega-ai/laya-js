@@ -1,6 +1,6 @@
 # tools/export
 
-Split-graph fp32 ONNX export of the three laya checkpoints into the private artifact store `desplega/laya-onnx`.
+Split-graph fp32 ONNX export of the three laya checkpoints into the public artifact store `desplega/laya-onnx`.
 INT8 was deferred on 2026-09-28: the split INT8 encoder missed the approved parity bar. The quantize step stays on the `phase-2-export-wip` branch for a later spike.
 
 | Step | Script |
@@ -26,7 +26,7 @@ The token is read from `HF_TOKEN` (or `HF_ACCESS_TOKEN`) only, never from a flag
 
 ## Export for your own use
 
-The source checkpoints are public and Apache-2.0, so the export and finalize steps need no token; only `upload_bundle.py` touches the private store. Needs Python and [uv](https://docs.astral.sh/uv/); torch runs on the CPU. Run from `tools/export`, once per checkpoint you want:
+The source checkpoints are public and Apache-2.0, so the export and finalize steps need no token; only `upload_bundle.py` writes to the artifact store (it needs a write token). Needs Python and [uv](https://docs.astral.sh/uv/); torch runs on the CPU. Run from `tools/export`, once per checkpoint you want:
 
 | Checkpoint | `--repo` | `--revision` | `--verify-len` |
 |---|---|---|---|

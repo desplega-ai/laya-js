@@ -21,7 +21,7 @@ To bump the pin, re-vendor at the new commit, then replay the changes below.
 | `packages/laya/src/router.ts` | `predict` forwards per-call `maxLen`/`headMaxLen` (and a start hook's `ctx.maxLen`) to the agent and flags `minConfidence`, as `router.py` `predict` does. Phase 7: `routeBatch`, `predictBatch` (group by checkpoint, then by question schema/budget/lang; per-request hooks; reverse-order ends), `predictLong` (scan hook appended after the caller's start hooks), `decideBatch` and `loadedRevisions`, matching `router.py:817-1214`. |
 | `packages/laya/src/tokenizer.ts` | Added `decodeWithData` and the optional `TokenizerLike.decode`: the tokenizer.json `decoder` chain (ByteLevel, Metaspace, Replace, ByteFallback, Fuse, Strip, Sequence), needed by `predictLong` to turn token windows back into text. No `clean_up_tokenization_spaces`, matching transformers 5.17 (pinned in `tools/export`), which skips it for BPE. |
 | `packages/laya/src/structured.ts` | `decide` takes `minConfidence`; an abstained field projects to `null`, as `structured.py` does. Phase 7: ported `decide_batch` as `decideBatch` (Router-like runners get one request per state). |
-| `packages/laya/src/index.ts` | Dropped the `createWebProvider`, `loadWebBundle` and `WebBundle` exports. Exports `LayaLoadError` and the pinned artifact map (`artifacts.ts`). The vendored export list moved verbatim to `raw.ts` (`@desplega/laya/raw`); `index.ts` exports only the typed API from `typed.ts`, the answer types, `VERSION`, `SchemaError` and `LayaLoadError`; everything else is reached through `@desplega/laya/raw`. |
+| `packages/laya/src/index.ts` | Dropped the `createWebProvider`, `loadWebBundle` and `WebBundle` exports. Exports `LayaLoadError` and the pinned artifact map (`artifacts.ts`). The vendored export list moved verbatim to `raw.ts` (`@desplega.ai/laya/raw`); `index.ts` exports only the typed API from `typed.ts`, the answer types, `VERSION`, `SchemaError` and `LayaLoadError`; everything else is reached through `@desplega.ai/laya/raw`. |
 | `packages/laya/test/maxlen.test.ts` | Added per-call token-budget cases: call opts vs config, `ctx.maxLen` from a start hook, `headMaxLen`, the 8192 cap, and Router forwarding. |
 | `packages/laya/test/revision-pinning.test.ts` | Removed the one web-only test, "loadWebBundle reports the x-repo-commit header". |
 
@@ -29,7 +29,7 @@ To bump the pin, re-vendor at the new commit, then replay the changes below.
 
 | File | Reason |
 |---|---|
-| `packages/laya/test/package-e2e.mjs` | npm-pack test for upstream's `laya-ts` package name and its optional onnxruntime-node/web deps. This package is private and depends on onnxruntime-node directly. |
+| `packages/laya/test/package-e2e.mjs` | npm-pack test for upstream's `laya-ts` package name and its optional onnxruntime-node/web deps. This package is published as `@desplega.ai/laya` and depends on onnxruntime-node directly. |
 
 ## Vendored tools
 

@@ -1,0 +1,96 @@
+name: publish
+
+# Publishes @desplega.ai/laya, then @desplega.ai/laya-server, to npm with provenance.
+#
+# - A `v*` tag push publishes for real. The tag must equal both package versions (v0.1.0 for 0.1.0).
+# - workflow_dispatch is a dry run unless you untick `dry_run`, and a real run only from a tag or main.
+#
+# Needs the Actions secret NPM_TOKEN: the desplega-ai organization secret, which must be shared with
+# this repository (see README, "Releasing"). Tarballs are made with
+# `bun pm pack`, never `npm pack`: only bun rewrites laya-server's `workspace:*` dependency on laya
+# to the real version. `scripts/pack-check.ts` fails the job if a tarball still carries one.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Pack and check only, publish nothing"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write # npm provenance (Sigstore) signs with the workflow's OIDC identity
+    env:
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+    steps:
+      # First, before anything is installed. Do not test NODE_AUTH_TOKEN instead: setup-node fills it
+      # with a placeholder when the secret is empty, so it is never empty after that step.
+      - name: Require NPM_TOKEN
+        if: env.DRY_RUN != 'true'
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "::error title=NPM_TOKEN is empty::The secret NPM_TOKEN is not available to this run, so nothing was published. Share the desplega-ai organization secret NPM_TOKEN with laya-js (Organization settings > Secrets and variables > Actions > NPM_TOKEN > repository access; this repo is public, so 'Private repositories' does not cover it), or add a repository secret with that name, then re-run."
+            exit 1
+          fi
+      - name: Refuse to publish from a branch other than main
+        if: env.DRY_RUN != 'true'
+        run: |
+          if [ "$GITHUB_REF_TYPE" != "tag" ] && [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error title=Wrong ref::A real publish runs from a v* tag or from main, not from $GITHUB_REF. Nothing was published."
+            exit 1
+          fi
+
+      # Pinned by SHA: this job holds the npm token.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.0
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run test
+
+      - name: Build and pack both packages, and check the tarballs
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            bun run pack:check -- --expect-tag "$GITHUB_REF_NAME"
+          else
+            bun run pack:check
+          fi
+
+      - name: Publish laya, then laya-server
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./packages/laya/package.json').version")"
+          tag=latest
+          case "$version" in *-*) tag=next ;; esac
+          flags=(--access public --tag "$tag")
+          if [ "$DRY_RUN" = "true" ]; then flags+=(--dry-run); else flags+=(--provenance); fi
+          for pkg in laya laya-server; do
+            name="@desplega.ai/$pkg"
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "::warning::$name@$version is already on npm, skipping"
+              continue
+            fi
+            npm publish ".pack/desplega.ai-$pkg-$version.tgz" "${flags[@]}"
+          done

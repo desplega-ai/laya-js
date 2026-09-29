@@ -36,8 +36,6 @@ jobs:
       HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - name: Require the HF token
-        run: test -n "$HF_TOKEN" || { echo "::error::Actions secret HF_ACCESS_TOKEN is empty or not available (fork PRs do not get secrets)"; exit 1; }
       - uses: docker/setup-buildx-action@v3
       - name: Build (no push)
         uses: docker/build-push-action@v6

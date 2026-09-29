@@ -5,9 +5,9 @@ import { resolve } from "node:path";
 
 if (typeof Bun === "undefined") throw new Error("bun-smoke must run under Bun");
 
-const laya = await import("@desplega/laya");
+const laya = await import("@desplega.ai/laya");
 assert.equal(typeof laya.createAgent, "function", "createAgent export missing");
-const raw = await import("@desplega/laya/raw");
+const raw = await import("@desplega.ai/laya/raw");
 assert.equal(typeof raw.Agent, "function", "Agent export missing");
 assert.equal(typeof raw.loadNodeBundle, "function", "loadNodeBundle export missing");
 
@@ -17,7 +17,7 @@ const out = await session.run({ x: new ort.Tensor("float32", Float32Array.from([
 assert.deepEqual(Array.from(out.y.data as Float32Array), [2, 3]);
 await session.release();
 
-// With LAYA_SMOKE_CHECKPOINT (and HF_TOKEN for the private store), also run the typed API on a
+// With LAYA_SMOKE_CHECKPOINT (HF_TOKEN is optional: the store is public), also run the typed API on a
 // real fp32 bundle: createAgent -> predict -> dispose.
 const checkpoint = process.env.LAYA_SMOKE_CHECKPOINT;
 if (checkpoint) {

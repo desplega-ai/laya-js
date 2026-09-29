@@ -6,7 +6,7 @@
       "name": "laya-js",
       "devDependencies": {
         "@biomejs/biome": "2.5.14",
-        "@desplega/laya": "workspace:*",
+        "@desplega.ai/laya": "workspace:*",
         "@microsoft/api-extractor": "7.59.2",
         "@types/node": "22.20.4",
         "typescript": "5.9.3",
@@ -15,8 +15,8 @@
       },
     },
     "packages/laya": {
-      "name": "@desplega/laya",
-      "version": "0.0.0",
+      "name": "@desplega.ai/laya",
+      "version": "0.1.0",
       "dependencies": {
         "@standard-schema/spec": "1.1.0",
         "onnxruntime-node": "1.30.0",
@@ -26,10 +26,10 @@
       },
     },
     "packages/laya-server": {
-      "name": "@desplega/laya-server",
-      "version": "0.0.0",
+      "name": "@desplega.ai/laya-server",
+      "version": "0.1.0",
       "dependencies": {
-        "@desplega/laya": "workspace:*",
+        "@desplega.ai/laya": "workspace:*",
         "@hono/node-server": "2.1.1",
         "hono": "4.13.10",
       },
@@ -54,9 +54,9 @@
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@2.5.14", "", { "os": "win32", "cpu": "x64" }, "sha512-oJWmBhoHsnhUKIke+0gXDX0mltJrWHA1UyHsrTlXwX0TL64ilVZAo+TYZm97baecV0esBdpzy3k96q+09JaZUQ=="],
 
-    "@desplega/laya": ["@desplega/laya@workspace:packages/laya"],
+    "@desplega.ai/laya": ["@desplega.ai/laya@workspace:packages/laya"],
 
-    "@desplega/laya-server": ["@desplega/laya-server@workspace:packages/laya-server"],
+    "@desplega.ai/laya-server": ["@desplega.ai/laya-server@workspace:packages/laya-server"],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.28.2", "", { "os": "aix", "cpu": "ppc64" }, "sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ=="],
 

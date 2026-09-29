@@ -1,9 +1,32 @@
 {
-  "name": "@desplega/laya",
-  "version": "0.0.0",
-  "private": true,
+  "name": "@desplega.ai/laya",
+  "version": "0.1.0",
   "description": "Typesafe TypeScript runtime for laya decision models (Node, Bun).",
   "license": "Apache-2.0",
+  "author": "Desplega Labs",
+  "homepage": "https://github.com/desplega-ai/laya-js#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/desplega-ai/laya-js.git",
+    "directory": "packages/laya"
+  },
+  "bugs": {
+    "url": "https://github.com/desplega-ai/laya-js/issues"
+  },
+  "keywords": [
+    "laya",
+    "onnx",
+    "onnxruntime",
+    "decision-model",
+    "classification",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,10 +41,14 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/.tsbuildinfo",
+    "LICENSE",
+    "NOTICE"
   ],
   "scripts": {
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "prepack": "node ../../scripts/copy-legal.mjs"
   },
   "dependencies": {
     "@standard-schema/spec": "1.1.0",

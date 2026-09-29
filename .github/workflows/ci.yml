@@ -30,6 +30,7 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run typecheck
       - run: bun run api:check
+      - run: bun run pack:check
       - run: bun run lint
       - run: bun run check-vendor
       - run: bun run test
@@ -38,6 +39,4 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
           LAYA_SMOKE_CHECKPOINT: multilingual
-        run: |
-          test -n "$HF_TOKEN" || { echo "::error::Actions secret HF_ACCESS_TOKEN is empty or not available"; exit 1; }
-          bun packages/laya/test/bun-smoke.ts
+        run: bun packages/laya/test/bun-smoke.ts

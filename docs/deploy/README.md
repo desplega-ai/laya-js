@@ -1,6 +1,6 @@
 # Deploying laya-server
 
-`@desplega/laya-server` is a Hono server on Node 22 that serves `POST /v1/systemone` from a CPU `onnxruntime-node` session over a 1.3 GB fp32 ONNX bundle. It deploys anywhere that runs a 1.6 GB Linux container with 3 GB of RAM and waits a few seconds for `/health`. It does not fit serverless function bundles or edge isolates.
+`@desplega.ai/laya-server` is a Hono server on Node 22 that serves `POST /v1/systemone` from a CPU `onnxruntime-node` session over a 1.3 GB fp32 ONNX bundle. It deploys anywhere that runs a 1.6 GB Linux container with 3 GB of RAM and waits a few seconds for `/health`. It does not fit serverless function bundles or edge isolates.
 
 Every page below deploys the image built in [docker.md](docker.md#build). Provider limits were checked against the linked provider docs on **2026-09-29**. "Tested" means we ran it; everything else is a config written from the docs and has never been deployed.
 
@@ -64,8 +64,8 @@ The server reads `LAYA_*` variables, not `PORT`. On platforms that inject `PORT`
 | `LAYA_API_KEY` | unset | Bearer token for `POST /v1/systemone`. Unset means no auth. Store it as a secret. |
 | `LAYA_PORT` | `8000` | |
 | `LAYA_THREADS` | onnxruntime default | Match your vCPUs. |
-| `LAYA_MODELS` | `multilingual` | Comma list of checkpoints to serve. Anything not baked is fetched into `LAYA_CACHE_DIR` at startup and needs `HF_TOKEN`. |
-| `HF_TOKEN` | unset | Read token for `desplega/laya-onnx`. Only needed when `LAYA_MODELS` lists a checkpoint that is not baked. Secret. |
+| `LAYA_MODELS` | `multilingual` | Comma list of checkpoints to serve. Anything not baked is fetched into `LAYA_CACHE_DIR` at startup. |
+| `HF_TOKEN` | unset | Optional Hugging Face read token. `desplega/laya-onnx` is public, so it is only for rate limits or a private mirror. Secret. |
 | `LAYA_CACHE_DIR` | `/cache` | Must be writable. Mount a volume here to keep fetched checkpoints across restarts. |
 | `LAYA_MAX_LOADED` | unset | Cap on resident checkpoints. |
 | `LAYA_MAX_CONCURRENT` | `16` | Requests beyond this get 503 with `Retry-After`. |

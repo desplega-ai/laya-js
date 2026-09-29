@@ -1,4 +1,4 @@
-// Phase 4 TS runner: score every suite with @desplega/laya and write the same schema as
+// Phase 4 TS runner: score every suite with @desplega.ai/laya and write the same schema as
 // evals/python/reference.py.
 //
 //   bun run eval:accuracy --checkpoint multilingual --bundle-dir bundles/multilingual/fp32

@@ -1,6 +1,6 @@
 # Using laya-js
 
-Two ways to run laya decision models from TypeScript: call `@desplega/laya` in your process, or call `@desplega/laya-server` over HTTP. Every output below was produced by the scripts in [`examples/`](../examples) on the machine listed under [How the numbers were measured](#how-the-numbers-were-measured). Nothing is rounded up or re-run to look better.
+Two ways to run laya decision models from TypeScript: call `@desplega.ai/laya` in your process, or call `@desplega.ai/laya-server` over HTTP. Every output below was produced by the scripts in [`examples/`](../examples) on the machine listed under [How the numbers were measured](#how-the-numbers-were-measured). Nothing is rounded up or re-run to look better.
 
 ## What laya does
 
@@ -25,11 +25,11 @@ bun run build
 Checkpoints are fp32 ONNX bundles exported from upstream's public Hugging Face checkpoints. Sizes: `multilingual` 1.32 GB, `english` and `typed-decisions` 1.69 GB each. Two ways to get them:
 
 - Export them yourself from the public checkpoints, no token needed: [tools/export](../tools/export/README.md#export-for-your-own-use).
-- Download Desplega's prebuilt bundles from the private artifact store `desplega/laya-onnx`, pinned by revision and SHA-256. This needs a Hugging Face read token with access to that repo:
+- Download Desplega's prebuilt bundles from the public Hugging Face repo `desplega/laya-onnx`, pinned by revision and SHA-256. No token is needed (`HF_TOKEN` is optional, for rate limits or a private mirror):
 
   ```sh
   # Download once into a directory, verified against the pinned hashes
-  HF_TOKEN=... node packages/laya-server/dist/fetch-models.js --dest ./bundles multilingual english
+  node packages/laya-server/dist/fetch-models.js --dest ./bundles multilingual english
   ```
 
 Either way, point every example, and your own code, at the directory:
@@ -38,7 +38,7 @@ Either way, point every example, and your own code, at the directory:
 export LAYA_MODEL_DIR=$PWD/bundles     # layout: <dir>/<checkpoint>/fp32/{encoder.onnx,head.onnx,...}
 ```
 
-Without `modelDir`, `createAgent` fetches from the artifact store and needs `HF_TOKEN` (a 401 raises `LayaLoadError`). `LAYA_THREADS` sets the ONNX thread count for the library as well as the server.
+Without `modelDir`, `createAgent` fetches from the public artifact store (`HF_TOKEN` is optional; a rejected token raises `LayaLoadError`). `LAYA_THREADS` sets the ONNX thread count for the library as well as the server.
 
 | Checkpoint | Encoder | Use it for |
 | --- | --- | --- |
@@ -49,7 +49,7 @@ Without `modelDir`, `createAgent` fetches from the artifact store and needs `HF_
 ## Load a checkpoint and ask
 
 ```ts
-import { createAgent, defineQuestions } from "@desplega/laya";
+import { createAgent, defineQuestions } from "@desplega.ai/laya";
 
 const agent = await createAgent({ checkpoint: "english", modelDir: "./bundles/english/fp32" });
 
@@ -218,7 +218,7 @@ Routing is the same as in the library: the English request went to `english`, th
 
 ## Library or server
 
-| | Library (`@desplega/laya`) | Server (`@desplega/laya-server`) |
+| | Library (`@desplega.ai/laya`) | Server (`@desplega.ai/laya-server`) |
 | --- | --- | --- |
 | Caller | TypeScript or Bun code | any language, any number of services |
 | Calls | `predict`, `predictBatch`, `predictLong`, `decide`, `decideBatch`, Router | `POST /v1/systemone` only: one state per request, no batch, no long, no `decide` |

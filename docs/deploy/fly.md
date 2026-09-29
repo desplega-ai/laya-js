@@ -63,7 +63,7 @@ To escape the rootfs cap, fetch the checkpoint into a volume once and load it fr
 
 ```sh
 fly volumes create laya_cache --size 10 --region <region>
-fly secrets set HF_TOKEN=<read token for desplega/laya-onnx>
+fly secrets set HF_TOKEN=<optional: Hugging Face read token, only for rate limits>
 ```
 
 ```toml

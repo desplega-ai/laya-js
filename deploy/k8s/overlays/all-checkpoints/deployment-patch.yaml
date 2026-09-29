@@ -15,6 +15,7 @@ spec:
                 secretKeyRef:
                   name: laya-hf
                   key: token
+                  optional: true
           # Downloads stream to disk while hashing, so memory stays small.
           resources:
             requests:

@@ -1,6 +1,6 @@
-// Loads the exported fp32 bundles from the private artifact store and runs one
+// Loads the exported fp32 bundles from the public artifact store and runs one
 // systemOne call on each. Opt-in, since each bundle is 1.3 to 1.7 GB:
-//   LAYA_ARTIFACTS=multilingual HF_TOKEN=... bun run test -- artifacts
+//   LAYA_ARTIFACTS=multilingual bun run test -- artifacts
 // LAYA_ARTIFACTS takes a comma list of checkpoints, or "all".
 import { describe, expect, it } from "vitest";
 import { ARTIFACT_REPO, ARTIFACT_REVISION, ARTIFACTS, type CheckpointName } from "../src/artifacts.js";
@@ -34,7 +34,6 @@ describe.skipIf(selected.length === 0)("artifact bundles (real weights)", () => 
   it.each(selected)(
     "%s fp32 loads with expectedSha256 and answers one systemOne call",
     async (ckpt) => {
-      if (!process.env.HF_TOKEN) throw new Error("HF_TOKEN is empty; the artifact store is private");
       const a = ARTIFACTS[ckpt].fp32;
       const agent = await Agent.load(ARTIFACT_REPO, {
         subfolder: a.subfolder,

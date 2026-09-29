@@ -6,10 +6,13 @@ Every other page in this guide deploys the image you build here.
 
 ## Build
 
-The build context is the repo root. The `models` stage downloads `multilingual/fp32` from the private artifact store, so it needs a Hugging Face read token with access to `desplega/laya-onnx`. It is passed as a BuildKit secret and never lands in a layer.
+The build context is the repo root. The `models` stage downloads `multilingual/fp32` from the public Hugging Face repo `desplega/laya-onnx` and verifies it against the pinned SHA-256s, so no token is needed. An optional `HF_TOKEN` (rate limits, or a private mirror) is passed as a BuildKit secret and never lands in a layer.
 
 ```sh
-export HF_TOKEN=hf_...   # read token scoped to desplega/laya-onnx
+DOCKER_BUILDKIT=1 docker build -f packages/laya-server/Dockerfile -t laya-server:local .
+
+# optional: authenticate the download
+export HF_TOKEN=hf_...
 DOCKER_BUILDKIT=1 docker build -f packages/laya-server/Dockerfile \
   --secret id=hf_token,env=HF_TOKEN -t laya-server:local .
 ```
@@ -18,12 +21,12 @@ For arm64 hosts (Graviton, Ampere, Hetzner CAX), build for that platform. The Do
 
 ```sh
 docker buildx build --platform linux/arm64 -f packages/laya-server/Dockerfile \
-  --secret id=hf_token,env=HF_TOKEN -t laya-server:local-arm64 --load .
+  -t laya-server:local-arm64 --load .
 ```
 
-### Without access to the artifact store
+### Without network access to Hugging Face
 
-Export the bundles yourself ([tools/export](../../tools/export/README.md#export-for-your-own-use)) and replace the `models` stage with a local directory. A named build context with the same name as a stage overrides that stage, so no token is needed. The runtime stage copies `/models` out of it, so the directory must hold `models/<checkpoint>/fp32/`:
+Export the bundles yourself ([tools/export](../../tools/export/README.md#export-for-your-own-use)) and replace the `models` stage with a local directory. A named build context with the same name as a stage overrides that stage, so the build makes no download. The runtime stage copies `/models` out of it, so the directory must hold `models/<checkpoint>/fp32/`:
 
 ```sh
 mkdir -p ctx/models && cp -r bundles/multilingual ctx/models/
@@ -31,7 +34,7 @@ docker buildx build -f packages/laya-server/Dockerfile \
   --build-context models=./ctx -t laya-server:local --load .
 ```
 
-This is how the eval image is built; CI does not cover it. Keep `LAYA_MODELS` to the checkpoints you baked: anything else is fetched from the artifact store at startup and fails without a token.
+This is how the eval image is built; CI does not cover it. Keep `LAYA_MODELS` to the checkpoints you baked: anything else is fetched from the artifact store at startup and fails without network access to it.
 
 Push it to the registry your platform pulls from:
 

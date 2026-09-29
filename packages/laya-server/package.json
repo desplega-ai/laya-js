@@ -1,21 +1,48 @@
 {
-  "name": "@desplega/laya-server",
-  "version": "0.0.0",
-  "private": true,
-  "description": "HTTP server for @desplega/laya, mirroring laya-serve's /v1/systemone contract (Hono on Node).",
+  "name": "@desplega.ai/laya-server",
+  "version": "0.1.0",
+  "description": "HTTP server for @desplega.ai/laya, mirroring laya-serve's /v1/systemone contract (Hono on Node).",
   "license": "Apache-2.0",
+  "author": "Desplega Labs",
+  "homepage": "https://github.com/desplega-ai/laya-js#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/desplega-ai/laya-js.git",
+    "directory": "packages/laya-server"
+  },
+  "bugs": {
+    "url": "https://github.com/desplega-ai/laya-js/issues"
+  },
+  "keywords": [
+    "laya",
+    "onnx",
+    "hono",
+    "http-server",
+    "decision-model",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./dist/main.js",
   "files": [
-    "dist"
+    "dist",
+    "!dist/.tsbuildinfo",
+    "LICENSE",
+    "NOTICE"
   ],
   "scripts": {
     "build": "tsc -b",
+    "prepack": "node ../../scripts/copy-legal.mjs",
     "start": "node dist/main.js",
     "fetch-models": "node dist/fetch-models.js"
   },
   "dependencies": {
-    "@desplega/laya": "workspace:*",
+    "@desplega.ai/laya": "workspace:*",
     "@hono/node-server": "2.1.1",
     "hono": "4.13.10"
   }

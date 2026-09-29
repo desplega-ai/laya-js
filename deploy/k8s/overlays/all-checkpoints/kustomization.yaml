@@ -1,8 +1,9 @@
 # All three checkpoints resident: multilingual from the image, english and typed-decisions
 # fetched by an initContainer into the `cache` emptyDir (SHA-256 verified against the pinned map).
 #
-# Needs, besides base's `laya-api`, a Secret `laya-hf` with key `token`: a read-only HF token
-# scoped to desplega/laya-onnx (not the CI publish token; see the plan, Phase 9).
+# Optionally, besides base's `laya-api`, a Secret `laya-hf` with key `token`: a Hugging Face read
+# token. desplega/laya-onnx is public, so it is only for rate limits or a private mirror; without
+# the Secret the initContainer downloads anonymously.
 #   kubectl create secret generic laya-hf --from-file=token=./hf-read-token.txt
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization

@@ -1,7 +1,7 @@
 // Structured decisions: describe the outcome you want as a zod schema, get a validated, typed
 // object back. Enums become choice questions, booleans yes/no, bounded integers a score scale.
 //   LAYA_MODEL_DIR=/path/to/bundles bun examples/02-structured-decisions.ts
-import { SchemaError } from "@desplega/laya";
+import { SchemaError } from "@desplega.ai/laya";
 import { z } from "zod";
 import { loadAgent, ms, timed } from "./_lib.ts";
 
