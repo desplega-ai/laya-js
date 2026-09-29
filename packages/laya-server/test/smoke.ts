@@ -3,7 +3,7 @@
 //   bun run --filter @desplega.ai/laya-server build && bun packages/laya-server/test/smoke.ts
 //
 // Starts `node packages/laya-server/dist/main.js` with LAYA_MODELS=multilingual (fetching the
-// fp32 bundle from the private artifact store, so HF_TOKEN must be set), waits for /health 200,
+// fp32 bundle from the public artifact store; HF_TOKEN is optional), waits for /health 200,
 // sends one POST /v1/systemone, checks auth and that no secret leaks into /health, then sends
 // SIGTERM and expects a clean exit. With LAYA_SMOKE_URL set it only runs the HTTP checks against
 // an already-running server (used by the image smoke).
@@ -122,11 +122,6 @@ async function main() {
     console.log("smoke: ok");
     return;
   }
-  if (!process.env.HF_TOKEN) {
-    throw new Error(
-      "HF_TOKEN is not set: the smoke fetches the multilingual fp32 bundle from the private artifact store",
-    );
-  }
   const here = dirname(fileURLToPath(import.meta.url));
   const entry = resolve(here, "../dist/main.js");
   const port = String(18000 + Math.floor(Math.random() * 1000));
@@ -153,15 +148,17 @@ async function main() {
   child.stdout?.on("data", capture);
   child.stderr?.on("data", capture);
   const base = `http://127.0.0.1:${port}`;
+  // HF_TOKEN is optional (the artifact store is public); an empty one would match every string.
+  const secrets = [apiKey, process.env.HF_TOKEN].filter((s): s is string => !!s);
   try {
     await waitForHealth(base, 15 * 60_000, () => child.exitCode === null);
-    await checkServer(base, { apiKey, secrets: [apiKey, process.env.HF_TOKEN] });
+    await checkServer(base, { apiKey, secrets });
   } catch (e) {
     await stop(child);
     throw e;
   }
   const code = await stop(child);
-  for (const s of [apiKey, process.env.HF_TOKEN]) assert.ok(!logs.includes(s), "server log contains a secret");
+  for (const s of secrets) assert.ok(!logs.includes(s), "server log contains a secret");
   assert.equal(code, 0, `server exited ${code} on SIGTERM`);
   console.log("smoke: ok");
 }

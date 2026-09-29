@@ -112,7 +112,7 @@ export class BundleFetchError extends Error {
 }
 
 export interface FetchOptions {
-  /** Read token for the private artifact store. Sent as a bearer header, never logged. */
+  /** Read token for the public artifact store. Sent as a bearer header, never logged. */
   token?: string | null;
   /** Hub base URL (default https://huggingface.co). */
   endpoint?: string;
@@ -150,7 +150,7 @@ export async function fetchBundle(spec: BundleSpec, dir: string, opts: FetchOpti
       if (res.status === 401 || res.status === 403) {
         throw new BundleFetchError(
           `artifact store auth failed for ${spec.repo} (HTTP ${res.status} on ${spec.subfolder}/${file}); ` +
-            "check that HF_TOKEN is set and can read the repo",
+            "check that HF_TOKEN is valid and can read the repo (it is optional: the repo is public, so unset it to download anonymously)",
         );
       }
       throw new BundleFetchError(

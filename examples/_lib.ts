@@ -1,6 +1,6 @@
 // Shared helpers for the examples: load a checkpoint from a local bundle root when
 // LAYA_MODEL_DIR is set (layout `<root>/<checkpoint>/fp32`), else from the artifact store
-// (needs HF_TOKEN). Not part of the library API.
+// (public; HF_TOKEN is optional). Not part of the library API.
 import { join } from "node:path";
 import { type CheckpointName, type CreateAgentOptions, createAgent, createRouter } from "@desplega.ai/laya";
 

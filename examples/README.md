@@ -4,7 +4,7 @@ Runnable scenarios for `@desplega.ai/laya` and `@desplega.ai/laya-server`. Setup
 
 ```sh
 bun install && bun run build
-node packages/laya-server/dist/fetch-models.js --dest ./bundles english multilingual   # needs HF_TOKEN; or export them, see tools/export/README.md
+node packages/laya-server/dist/fetch-models.js --dest ./bundles english multilingual   # public repo, no token; or export them, see tools/export/README.md
 LAYA_MODEL_DIR=$PWD/bundles LAYA_THREADS=4 bun examples/01-support-triage.ts
 ```
 

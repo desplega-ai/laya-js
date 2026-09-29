@@ -16,7 +16,7 @@ const questions = defineQuestions({
 const [result] = await agent.predictBatch(["I was charged twice"], questions);
 ```
 
-Node 22+ or Bun 1.4+. You supply the fp32 ONNX checkpoint bundle: export it from upstream's public checkpoints with [tools/export](https://github.com/desplega-ai/laya-js/blob/main/tools/export/README.md#export-for-your-own-use) and pass its directory as `modelDir`. Without `modelDir`, `createAgent` downloads Desplega's private artifact store and needs an `HF_TOKEN` with access to it.
+Node 22+ or Bun 1.4+. Pass a local fp32 ONNX bundle as `modelDir` (export one from upstream's public checkpoints with [tools/export](https://github.com/desplega-ai/laya-js/blob/main/tools/export/README.md#export-for-your-own-use)), or omit `modelDir` and `createAgent` downloads Desplega's prebuilt bundle from the public Hugging Face repo `desplega/laya-onnx`, verified against pinned SHA-256s. No token is needed; `HF_TOKEN` is optional (rate limits, or a private mirror).
 
 The untyped vendored surface is available as `@desplega.ai/laya/raw`.
 

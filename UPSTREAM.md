@@ -29,7 +29,7 @@ To bump the pin, re-vendor at the new commit, then replay the changes below.
 
 | File | Reason |
 |---|---|
-| `packages/laya/test/package-e2e.mjs` | npm-pack test for upstream's `laya-ts` package name and its optional onnxruntime-node/web deps. This package is private and depends on onnxruntime-node directly. |
+| `packages/laya/test/package-e2e.mjs` | npm-pack test for upstream's `laya-ts` package name and its optional onnxruntime-node/web deps. This package is published as `@desplega.ai/laya` and depends on onnxruntime-node directly. |
 
 ## Vendored tools
 

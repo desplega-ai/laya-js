@@ -4,7 +4,7 @@
 //   1. the image is under LAYA_SMOKE_MAX_BYTES (default 2.0 GB) and runs as a non-root user;
 //   2. `docker run` with the baked multilingual fp32 bundle: /health 200, then one
 //      POST /v1/systemone (with bearer auth on), and /health never echoes the key;
-//   3. with LAYA_SMOKE_EXTRA=<checkpoint> (needs HF_TOKEN): LAYA_MODELS=multilingual,<checkpoint>
+//   3. with LAYA_SMOKE_EXTRA=<checkpoint> (HF_TOKEN optional): LAYA_MODELS=multilingual,<checkpoint>
 //      and a cache volume fetches the extra checkpoint, and /health lists both.
 // Secrets reach `docker run` as bare `-e NAME` pass-throughs, never as values on the command line.
 import assert from "node:assert/strict";
@@ -64,7 +64,7 @@ async function main() {
   );
 
   if (extra) {
-    if (!process.env.HF_TOKEN) throw new Error("LAYA_SMOKE_EXTRA needs HF_TOKEN to fetch the extra checkpoint");
+    const token = process.env.HF_TOKEN; // optional: the artifact store is public
     const volume = `laya-smoke-cache-${process.pid}`;
     try {
       await withContainer(
@@ -73,7 +73,7 @@ async function main() {
         {},
         async (base) => {
           const text = await (await fetch(`${base}/health`)).text();
-          assert.ok(!text.includes(process.env.HF_TOKEN as string), "/health echoes HF_TOKEN");
+          if (token) assert.ok(!text.includes(token), "/health echoes HF_TOKEN");
           const health = JSON.parse(text);
           assert.ok(health.loaded.includes("multilingual") && health.loaded.includes(extra), `loaded: ${text}`);
           console.log(`smoke:image: cache volume fetched ${extra}; /health lists ${health.loaded.join(",")}`);

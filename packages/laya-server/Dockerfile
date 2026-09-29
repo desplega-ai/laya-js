@@ -2,12 +2,14 @@
 #
 # laya-server with the multilingual fp32 bundle baked in (plan, Phase 9).
 #
-#   DOCKER_BUILDKIT=1 docker build -f packages/laya-server/Dockerfile \
-#     --secret id=hf_token,env=HF_TOKEN -t laya-server .
+#   DOCKER_BUILDKIT=1 docker build -f packages/laya-server/Dockerfile -t laya-server .
 #
-# The build context is the repo root. The HF read token is a BuildKit secret mounted only in the
-# `models` stage: it is never an ARG or ENV, so it is absent from every layer and from the image
-# history. No torch in any stage; only onnxruntime-node's CPU binaries for the target arch ship.
+# The build context is the repo root. The artifact store is public, so the build needs no token.
+# An optional HF read token (rate limits, or a private mirror) goes in as a BuildKit secret:
+#   --secret id=hf_token,env=HF_TOKEN
+# It is mounted only in the `models` stage: never an ARG or ENV, so it is absent from every layer
+# and from the image history. No torch in any stage; only onnxruntime-node's CPU binaries for the
+# target arch ship.
 
 ARG NODE_IMAGE=node:22-slim
 ARG BUN_IMAGE=oven/bun:1.4.0
@@ -48,8 +50,8 @@ RUN bun install --frozen-lockfile --production \
 # ---- models: fetch multilingual/fp32 at the pinned revision, verify SHA-256 ---------------------
 FROM build AS models
 # fetch-models reads HF_TOKEN from its environment only; the secret file never lands in a layer.
-RUN --mount=type=secret,id=hf_token,required=true \
-    HF_TOKEN="$(cat /run/secrets/hf_token)" \
+RUN --mount=type=secret,id=hf_token,required=false \
+    if [ -s /run/secrets/hf_token ]; then HF_TOKEN="$(cat /run/secrets/hf_token)"; export HF_TOKEN; fi; \
     node packages/laya-server/dist/fetch-models.js --dest /models multilingual
 
 # ---- runtime ------------------------------------------------------------------------------------

@@ -200,7 +200,7 @@ export interface CheckpointInfo {
   sha256: Record<string, string>;
 }
 
-/** Where each checkpoint's fp32 bundle lives in the private artifact store, pinned by SHA-256. */
+/** Where each checkpoint's fp32 bundle lives in the public artifact store, pinned by SHA-256. */
 export const CHECKPOINTS: Record<CheckpointName, CheckpointInfo> = Object.fromEntries(
   (Object.keys(ARTIFACTS) as CheckpointName[]).map((name) => {
     const a = ARTIFACTS[name].fp32;
@@ -219,7 +219,7 @@ export interface CreateAgentOptions {
   modelDir?: string;
   /** Artifact-store revision. The pinned SHA-256 map is only enforced at the pinned revision. */
   revision?: string;
-  /** Read token for the private artifact store; defaults to `HF_TOKEN`. */
+  /** Read token for the public artifact store; defaults to `HF_TOKEN`. */
   token?: string;
   numThreads?: number;
   /** Verify the bundle's SHA-256 against `artifacts.ts` (default: true at the pinned revision). */

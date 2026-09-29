@@ -64,8 +64,8 @@ The server reads `LAYA_*` variables, not `PORT`. On platforms that inject `PORT`
 | `LAYA_API_KEY` | unset | Bearer token for `POST /v1/systemone`. Unset means no auth. Store it as a secret. |
 | `LAYA_PORT` | `8000` | |
 | `LAYA_THREADS` | onnxruntime default | Match your vCPUs. |
-| `LAYA_MODELS` | `multilingual` | Comma list of checkpoints to serve. Anything not baked is fetched into `LAYA_CACHE_DIR` at startup and needs `HF_TOKEN`. |
-| `HF_TOKEN` | unset | Read token for `desplega/laya-onnx`. Only needed when `LAYA_MODELS` lists a checkpoint that is not baked. Secret. |
+| `LAYA_MODELS` | `multilingual` | Comma list of checkpoints to serve. Anything not baked is fetched into `LAYA_CACHE_DIR` at startup. |
+| `HF_TOKEN` | unset | Optional Hugging Face read token. `desplega/laya-onnx` is public, so it is only for rate limits or a private mirror. Secret. |
 | `LAYA_CACHE_DIR` | `/cache` | Must be writable. Mount a volume here to keep fetched checkpoints across restarts. |
 | `LAYA_MAX_LOADED` | unset | Cap on resident checkpoints. |
 | `LAYA_MAX_CONCURRENT` | `16` | Requests beyond this get 503 with `Retry-After`. |

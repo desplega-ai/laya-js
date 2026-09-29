@@ -17,7 +17,7 @@ const out = await session.run({ x: new ort.Tensor("float32", Float32Array.from([
 assert.deepEqual(Array.from(out.y.data as Float32Array), [2, 3]);
 await session.release();
 
-// With LAYA_SMOKE_CHECKPOINT (and HF_TOKEN for the private store), also run the typed API on a
+// With LAYA_SMOKE_CHECKPOINT (HF_TOKEN is optional: the store is public), also run the typed API on a
 // real fp32 bundle: createAgent -> predict -> dispose.
 const checkpoint = process.env.LAYA_SMOKE_CHECKPOINT;
 if (checkpoint) {

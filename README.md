@@ -29,8 +29,8 @@ LAYA_MODEL_DIR=$PWD/bundles LAYA_THREADS=4 bun examples/01-support-triage.ts
 
 The runtime needs fp32 ONNX bundles (`encoder.onnx`, `head.onnx`, `tokenizer.json`, `rl_agent_config.json`) in `<dir>/<checkpoint>/fp32/`. They are exported from upstream's public, Apache-2.0 Hugging Face checkpoints: [`convaiinnovations/laya`](https://huggingface.co/convaiinnovations/laya) (`english`), [`convaiinnovations/laya-multilingual`](https://huggingface.co/convaiinnovations/laya-multilingual) and [`convaiinnovations/laya-typed-decisions`](https://huggingface.co/convaiinnovations/laya-typed-decisions).
 
-- **Export them yourself (no token).** [tools/export](tools/export/README.md#export-for-your-own-use) turns the public checkpoints into bundles with Python and `uv`. This is the path for anyone outside Desplega.
-- **Download the prebuilt bundles.** Desplega's exports live in the private Hugging Face repo `desplega/laya-onnx`, pinned by revision and SHA-256 in `packages/laya/src/artifacts.ts`. `fetch-models` and the default Docker build download from it and need a read token with access to that repo; without one they fail with an auth error (HTTP 401).
+- **Export them yourself (no token).** [tools/export](tools/export/README.md#export-for-your-own-use) turns the public checkpoints into bundles with Python and `uv`. Use it to build from the source checkpoints yourself instead of the prebuilt bundles.
+- **Download the prebuilt bundles.** Desplega's exports live in the public Hugging Face repo [`desplega/laya-onnx`](https://huggingface.co/desplega/laya-onnx), pinned by revision and SHA-256 in `packages/laya/src/artifacts.ts`. `fetch-models`, `createAgent` and the default Docker build download from it with no token. `HF_TOKEN` is optional: set it to lift Hugging Face's anonymous rate limits, or to read a private mirror. A rejected token fails with an auth error (HTTP 401), even on a public repo.
 
 ## Docs
 

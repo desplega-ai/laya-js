@@ -18,7 +18,7 @@
    ```sh
    kubectl create namespace laya
    kubectl -n laya create secret generic laya-api --from-literal=api-key="$(openssl rand -hex 16)"
-   # all-checkpoints and pvc only: a read-only HF token scoped to desplega/laya-onnx
+   # optional, all-checkpoints and pvc only: a Hugging Face read token (desplega/laya-onnx is public; the token only lifts rate limits)
    kubectl -n laya create secret generic laya-hf --from-file=token=./hf-read-token.txt
    # private registry only
    kubectl -n laya create secret docker-registry ghcr --docker-server=ghcr.io \

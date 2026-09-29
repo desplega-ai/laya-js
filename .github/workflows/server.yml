@@ -1,8 +1,9 @@
 name: server
 
 # Real-bundle smoke for @desplega.ai/laya-server: start `node dist/main.js` with
-# LAYA_MODELS=multilingual (fp32 bundle fetched from the private artifact store and verified
-# against the pinned SHA-256 map), wait for /health 200, POST /v1/systemone, SIGTERM.
+# LAYA_MODELS=multilingual (fp32 bundle fetched from the public artifact store and verified
+# against the pinned SHA-256 map; HF_ACCESS_TOKEN is optional and only lifts rate limits),
+# wait for /health 200, POST /v1/systemone, SIGTERM.
 on:
   pull_request:
     paths:
@@ -28,8 +29,6 @@ jobs:
       LAYA_CACHE_DIR: ${{ github.workspace }}/.laya-cache
     steps:
       - uses: actions/checkout@v4
-      - name: Require the HF token
-        run: test -n "$HF_TOKEN" || { echo "::error::Actions secret HF_ACCESS_TOKEN is empty or not available (fork PRs do not get secrets)"; exit 1; }
       - uses: actions/setup-node@v4
         with:
           node-version: 22
