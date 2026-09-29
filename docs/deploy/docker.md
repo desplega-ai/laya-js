@@ -21,6 +21,18 @@ docker buildx build --platform linux/arm64 -f packages/laya-server/Dockerfile \
   --secret id=hf_token,env=HF_TOKEN -t laya-server:local-arm64 --load .
 ```
 
+### Without access to the artifact store
+
+Export the bundles yourself ([tools/export](../../tools/export/README.md#export-for-your-own-use)) and replace the `models` stage with a local directory. A named build context with the same name as a stage overrides that stage, so no token is needed. The runtime stage copies `/models` out of it, so the directory must hold `models/<checkpoint>/fp32/`:
+
+```sh
+mkdir -p ctx/models && cp -r bundles/multilingual ctx/models/
+docker buildx build -f packages/laya-server/Dockerfile \
+  --build-context models=./ctx -t laya-server:local --load .
+```
+
+This is how the eval image is built; CI does not cover it. Keep `LAYA_MODELS` to the checkpoints you baked: anything else is fetched from the artifact store at startup and fails without a token.
+
 Push it to the registry your platform pulls from:
 
 ```sh
