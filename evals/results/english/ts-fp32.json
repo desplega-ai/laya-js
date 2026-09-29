@@ -33,7 +33,7 @@
       "moderation_toxicity": "e36c7750426c607561056581fc2483a6d44a5a15c2f4d3043d8e7555c77ed76a",
       "rag_relevance": "567435bb97a8c577e5c97c959907d4d81d8fe5d84207c6ed54e1ff59929de789",
       "model_routing": "cd9aa34a45866045e44b8e446c7b8e77890812690fa608bc90e5b30cbf3bdb2f",
-      "typed_decisions": "afab61997c7dc87fda9e036075ea185d85d8e587b9aea1b8073853e205a1c216"
+      "typed_decisions": "ab70c8287f60b50364a48628c02a959a27c49e70ebb554279c6f99d22bfbd8d9"
     },
     "host": {
       "cpu": "AMD EPYC-Milan Processor",
@@ -43,7 +43,7 @@
       "onnxruntime": "1.30.0",
       "threads": 2
     },
-    "load_s": 3.2,
+    "load_s": 3.9,
     "seconds_by_suite": {
       "ag_news": 313.2,
       "emotion": 159,
@@ -54,8 +54,19 @@
       "moderation_toxicity": 356.9,
       "rag_relevance": 399.2,
       "model_routing": 403.2,
-      "typed_decisions": 3541.2
-    }
+      "typed_decisions": 4411.1
+    },
+    "reused_suites": [
+      "ag_news",
+      "emotion",
+      "support_triage",
+      "email_spam",
+      "phishing",
+      "guardrails_jailbreak",
+      "moderation_toxicity",
+      "rag_relevance",
+      "model_routing"
+    ]
   },
   "metrics": {
     "overall": {

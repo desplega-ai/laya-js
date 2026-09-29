@@ -46,7 +46,9 @@
       "!packages/laya/test/sequence-prefix.test.ts",
       "!packages/laya/test/shortlist.test.ts",
       "!packages/laya/test/structured.test.ts",
-      "!packages/laya/test/tokenizer-parity.test.ts"
+      "!packages/laya/test/tokenizer-parity.test.ts",
+      "!evals/manifest.json",
+      "!evals/results"
     ]
   },
   "formatter": {

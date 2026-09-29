@@ -10,8 +10,21 @@
       "torch": "2.14.0+cpu"
     },
     "limit": 0,
-    "load_s": 11.9,
+    "load_s": 7.1,
     "precision": "fp32",
+    "reused_suites": [
+      "ag_news",
+      "emotion",
+      "support_triage",
+      "email_spam",
+      "phishing",
+      "guardrails_jailbreak",
+      "moderation_toxicity",
+      "rag_relevance",
+      "model_routing",
+      "massive_intent",
+      "zh_decision_bench"
+    ],
     "runtime": "python-torch",
     "seconds_by_suite": {
       "ag_news": 338.4,
@@ -24,7 +37,7 @@
       "phishing": 588.8,
       "rag_relevance": 159.3,
       "support_triage": 267.9,
-      "typed_decisions": 2096.5,
+      "typed_decisions": 2623.8,
       "zh_decision_bench": 50.0
     },
     "source": {
@@ -42,7 +55,7 @@
       "phishing": "06b7557e10c5f7b6f602466920ef74403fb133bfb394f5a494778a87fe1dc892",
       "rag_relevance": "567435bb97a8c577e5c97c959907d4d81d8fe5d84207c6ed54e1ff59929de789",
       "support_triage": "32b0a09ff7436cc5524a5d4f25860671cdea47fa33553910f32127c058dfc211",
-      "typed_decisions": "afab61997c7dc87fda9e036075ea185d85d8e587b9aea1b8073853e205a1c216",
+      "typed_decisions": "ab70c8287f60b50364a48628c02a959a27c49e70ebb554279c6f99d22bfbd8d9",
       "zh_decision_bench": "4d97c3c9ca3b24c57ee139727ece92efc5fbc46dea7238d110e61e8c105055fc"
     },
     "suites": [
@@ -268,16 +281,16 @@
         "n": 400
       },
       "typed_decisions": {
-        "accuracy": 0.3958333333333333,
-        "brier": 0.9059013639666667,
-        "choice_accuracy": 0.295,
-        "ece": 0.36900041666666666,
+        "accuracy": 0.3883333333333333,
+        "brier": 0.9085078427083333,
+        "choice_accuracy": 0.2833333333333333,
+        "ece": 0.37724316666666663,
         "errors": 0,
-        "macro_f1": 0.2871853928481087,
-        "mean_confidence": 0.66289345,
+        "macro_f1": 0.28363195847201744,
+        "mean_confidence": 0.6632091,
         "n": 2000,
-        "noul_accuracy": 0.49666666666666665,
-        "score_mae": 0.7603941325
+        "noul_accuracy": 0.49333333333333335,
+        "score_mae": 0.7601513824999999
       },
       "zh_decision_bench": {
         "accuracy": 0.7683397683397684,
@@ -2646,16 +2659,16 @@
         "n": 179
       },
       "workflow:agent_trace_observability": {
-        "accuracy": 0.3,
-        "brier": 0.9542910430999999,
-        "choice_accuracy": 0.195,
-        "ece": 0.3917676666666667,
+        "accuracy": 0.29,
+        "brier": 0.9553141937333334,
+        "choice_accuracy": 0.19,
+        "ece": 0.3998216666666667,
         "errors": 0,
-        "macro_f1": 0.18428680885424828,
-        "mean_confidence": 0.6335008,
+        "macro_f1": 0.1797352524397537,
+        "mean_confidence": 0.6336076,
         "n": 500,
-        "noul_accuracy": 0.51,
-        "score_mae": 0.965014175
+        "noul_accuracy": 0.49,
+        "score_mae": 0.965185175
       },
       "workflow:customer_service": {
         "accuracy": 0.4533333333333333,
@@ -2670,16 +2683,16 @@
         "score_mae": 0.628728335
       },
       "workflow:invoice_processing": {
-        "accuracy": 0.35333333333333333,
-        "brier": 1.1208283317666667,
-        "choice_accuracy": 0.41,
-        "ece": 0.477963,
+        "accuracy": 0.3333333333333333,
+        "brier": 1.1302310961000002,
+        "choice_accuracy": 0.35,
+        "ece": 0.4923693333333333,
         "errors": 0,
-        "macro_f1": 0.23041136199030937,
-        "mean_confidence": 0.6985435999999999,
+        "macro_f1": 0.21922199422199423,
+        "mean_confidence": 0.6996994,
         "n": 500,
         "noul_accuracy": 0.325,
-        "score_mae": 0.784946575
+        "score_mae": 0.783804575
       },
       "workflow:security_incidents": {
         "accuracy": 0.4766666666666667,
@@ -2695,16 +2708,16 @@
       }
     },
     "overall": {
-      "accuracy": 0.626939584021129,
-      "brier": 0.5686053107197094,
-      "choice_accuracy": 0.5574493094328533,
-      "ece": 0.21934777154176294,
+      "accuracy": 0.6254539451964345,
+      "brier": 0.5691216155216243,
+      "choice_accuracy": 0.5553923009109609,
+      "ece": 0.2207578573786729,
       "errors": 0,
-      "macro_f1": 0.3842336896695967,
-      "mean_confidence": 0.8050698823187564,
+      "macro_f1": 0.38327602650440895,
+      "mean_confidence": 0.8051616010460555,
       "n": 6883,
-      "noul_accuracy": 0.7160075329566855,
-      "score_mae": 0.7525847345454545
+      "noul_accuracy": 0.7152542372881356,
+      "score_mae": 0.7523493406060606
     }
   }
 }

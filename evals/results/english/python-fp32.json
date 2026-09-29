@@ -10,8 +10,19 @@
       "torch": "2.14.0+cpu"
     },
     "limit": 0,
-    "load_s": 7.7,
+    "load_s": 4.1,
     "precision": "fp32",
+    "reused_suites": [
+      "ag_news",
+      "emotion",
+      "support_triage",
+      "email_spam",
+      "phishing",
+      "guardrails_jailbreak",
+      "moderation_toxicity",
+      "rag_relevance",
+      "model_routing"
+    ],
     "runtime": "python-torch",
     "seconds_by_suite": {
       "ag_news": 631.6,
@@ -23,7 +34,7 @@
       "phishing": 989.8,
       "rag_relevance": 455.5,
       "support_triage": 1026.9,
-      "typed_decisions": 4019.0
+      "typed_decisions": 5176.6
     },
     "source": {
       "repo": "convaiinnovations/laya",
@@ -39,7 +50,7 @@
       "phishing": "06b7557e10c5f7b6f602466920ef74403fb133bfb394f5a494778a87fe1dc892",
       "rag_relevance": "567435bb97a8c577e5c97c959907d4d81d8fe5d84207c6ed54e1ff59929de789",
       "support_triage": "32b0a09ff7436cc5524a5d4f25860671cdea47fa33553910f32127c058dfc211",
-      "typed_decisions": "afab61997c7dc87fda9e036075ea185d85d8e587b9aea1b8073853e205a1c216"
+      "typed_decisions": "ab70c8287f60b50364a48628c02a959a27c49e70ebb554279c6f99d22bfbd8d9"
     },
     "suites": [
       "ag_news",
@@ -149,16 +160,16 @@
         "n": 400
       },
       "typed_decisions": {
-        "accuracy": 0.3875,
-        "brier": 0.7073904467833334,
+        "accuracy": 0.38666666666666666,
+        "brier": 0.70523081655,
         "choice_accuracy": 0.28833333333333333,
-        "ece": 0.16183199999999995,
+        "ece": 0.16144233333333338,
         "errors": 0,
-        "macro_f1": 0.24720797000834305,
-        "mean_confidence": 0.5361503,
+        "macro_f1": 0.24646085497996256,
+        "mean_confidence": 0.5351731,
         "n": 2000,
-        "noul_accuracy": 0.4866666666666667,
-        "score_mae": 0.6937245874999999
+        "noul_accuracy": 0.485,
+        "score_mae": 0.6905068799999999
       }
     },
     "by_tag": {
@@ -185,16 +196,16 @@
         "noul_accuracy": 0.855
       },
       "workflow:agent_trace_observability": {
-        "accuracy": 0.43,
-        "brier": 0.6836262273666667,
-        "choice_accuracy": 0.355,
-        "ece": 0.13913633333333336,
+        "accuracy": 0.4266666666666667,
+        "brier": 0.6830845250666667,
+        "choice_accuracy": 0.35,
+        "ece": 0.13899433333333336,
         "errors": 0,
-        "macro_f1": 0.21385554383211364,
-        "mean_confidence": 0.5760254,
+        "macro_f1": 0.2123660915885112,
+        "mean_confidence": 0.575545,
         "n": 500,
         "noul_accuracy": 0.58,
-        "score_mae": 0.586828485
+        "score_mae": 0.5874314850000001
       },
       "workflow:customer_service": {
         "accuracy": 0.4,
@@ -210,15 +221,15 @@
       },
       "workflow:invoice_processing": {
         "accuracy": 0.3466666666666667,
-        "brier": 0.7862878160666666,
-        "choice_accuracy": 0.44,
-        "ece": 0.2612493333333334,
+        "brier": 0.7781909974333333,
+        "choice_accuracy": 0.45,
+        "ece": 0.25712066666666666,
         "errors": 0,
-        "macro_f1": 0.1896958375395033,
-        "mean_confidence": 0.5457673999999999,
+        "macro_f1": 0.18800885645919893,
+        "mean_confidence": 0.5423389999999999,
         "n": 500,
-        "noul_accuracy": 0.3,
-        "score_mae": 0.866986225
+        "noul_accuracy": 0.295,
+        "score_mae": 0.8535123950000001
       },
       "workflow:security_incidents": {
         "accuracy": 0.37333333333333335,
@@ -234,16 +245,16 @@
       }
     },
     "overall": {
-      "accuracy": 0.6361742029589498,
-      "brier": 0.48134147921025217,
+      "accuracy": 0.6359658262137945,
+      "brier": 0.4808014591477391,
       "choice_accuracy": 0.5638926784902228,
-      "ece": 0.13346480516774334,
+      "ece": 0.1333673682017087,
       "errors": 0,
-      "macro_f1": 0.40493914366792727,
-      "mean_confidence": 0.7328247186997678,
+      "macro_f1": 0.4045554900047048,
+      "mean_confidence": 0.7324756563672083,
       "n": 5599,
-      "noul_accuracy": 0.6973076923076923,
-      "score_mae": 0.6937245874999999
+      "noul_accuracy": 0.696923076923077,
+      "score_mae": 0.6905068799999999
     }
   }
 }
