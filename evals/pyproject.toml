@@ -1,7 +1,7 @@
 [project]
 name = "laya-js-evals"
 version = "0.0.0"
-description = "Phase 4 and 10 evals for @desplega/laya: dataset build, Python reference, Python perf baseline"
+description = "Phase 4 and 10 evals for @desplega.ai/laya: dataset build, Python reference, Python perf baseline"
 requires-python = "==3.12.*"
 dependencies = [
     "torch==2.14.0",

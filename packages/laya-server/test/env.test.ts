@@ -1,4 +1,4 @@
-import { ARTIFACT_REPO, ARTIFACT_REVISION } from "@desplega/laya/raw";
+import { ARTIFACT_REPO, ARTIFACT_REVISION } from "@desplega.ai/laya/raw";
 import { describe, expect, it } from "vitest";
 import { describeEnv, EnvError, loadEnv } from "../src/env.js";
 

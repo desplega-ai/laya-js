@@ -26,7 +26,7 @@ COPY packages/laya-server/package.json packages/laya-server/tsconfig.json packag
 RUN bun install --frozen-lockfile
 COPY packages/laya/src packages/laya/src
 COPY packages/laya-server/src packages/laya-server/src
-RUN bun run --filter @desplega/laya-server build
+RUN bun run --filter @desplega.ai/laya-server build
 
 # ---- deps: production dependencies only, pruned to this platform's ORT binaries -----------------
 FROM ${NODE_IMAGE} AS deps

@@ -5,8 +5,8 @@
 // and the Server-Timing / X-Inference-Time-Ms headers. Additions: `/health` answers 503 until
 // preload completes (the Python server does not listen before that), and reports `precision`.
 import { timingSafeEqual } from "node:crypto";
-import type { Precision } from "@desplega/laya";
-import { checkQuestion } from "@desplega/laya/raw";
+import type { Precision } from "@desplega.ai/laya";
+import { checkQuestion } from "@desplega.ai/laya/raw";
 import { Hono } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 

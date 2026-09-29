@@ -8,8 +8,8 @@
 // from the environment only, never from argv, and is never printed.
 import { realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import type { CheckpointName } from "@desplega/laya";
-import { normaliseName } from "@desplega/laya/raw";
+import type { CheckpointName } from "@desplega.ai/laya";
+import { normaliseName } from "@desplega.ai/laya/raw";
 import { bundleDir, bundleSpec, fetchBundle, isVerified } from "./bundles.js";
 import { EnvError, loadEnv } from "./env.js";
 

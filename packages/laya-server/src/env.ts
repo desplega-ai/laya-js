@@ -10,8 +10,8 @@
 // than run a server with a different concurrency cap or token budget than the operator wrote.
 import { homedir } from "node:os";
 import { join } from "node:path";
-import type { CheckpointName, Precision } from "@desplega/laya";
-import { ARTIFACT_REPO, ARTIFACT_REVISION, MAX_TOKEN_BUDGET, normaliseName } from "@desplega/laya/raw";
+import type { CheckpointName, Precision } from "@desplega.ai/laya";
+import { ARTIFACT_REPO, ARTIFACT_REVISION, MAX_TOKEN_BUDGET, normaliseName } from "@desplega.ai/laya/raw";
 
 export const DEFAULT_PORT = 8000;
 export const DEFAULT_MAX_CONCURRENT = 16;

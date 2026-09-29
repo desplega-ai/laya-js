@@ -1,6 +1,6 @@
 // Real-bundle smoke test for laya-server (plan Phase 8, "Automated QA").
 //
-//   bun run --filter @desplega/laya-server build && bun packages/laya-server/test/smoke.ts
+//   bun run --filter @desplega.ai/laya-server build && bun packages/laya-server/test/smoke.ts
 //
 // Starts `node packages/laya-server/dist/main.js` with LAYA_MODELS=multilingual (fetching the
 // fp32 bundle from the private artifact store, so HF_TOKEN must be set), waits for /health 200,

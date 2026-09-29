@@ -2,7 +2,7 @@
 // LAYA_MODEL_DIR is set (layout `<root>/<checkpoint>/fp32`), else from the artifact store
 // (needs HF_TOKEN). Not part of the library API.
 import { join } from "node:path";
-import { type CheckpointName, type CreateAgentOptions, createAgent, createRouter } from "@desplega/laya";
+import { type CheckpointName, type CreateAgentOptions, createAgent, createRouter } from "@desplega.ai/laya";
 
 const root = process.env.LAYA_MODEL_DIR;
 const threads = process.env.LAYA_THREADS ? Number(process.env.LAYA_THREADS) : undefined;

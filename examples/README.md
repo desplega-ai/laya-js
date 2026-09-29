@@ -1,6 +1,6 @@
 # Examples
 
-Runnable scenarios for `@desplega/laya` and `@desplega/laya-server`. Setup and real outputs are in [docs/usage.md](../docs/usage.md).
+Runnable scenarios for `@desplega.ai/laya` and `@desplega.ai/laya-server`. Setup and real outputs are in [docs/usage.md](../docs/usage.md).
 
 ```sh
 bun install && bun run build

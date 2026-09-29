@@ -1,4 +1,4 @@
-// Modified by Desplega Labs, 2026: dropped the createWebProvider, loadWebBundle and WebBundle exports; moved the vendored exports to raw.ts (`@desplega/laya/raw`) and export only the typed API (typed.ts) here.
+// Modified by Desplega Labs, 2026: dropped the createWebProvider, loadWebBundle and WebBundle exports; moved the vendored exports to raw.ts (`@desplega.ai/laya/raw`) and export only the typed API (typed.ts) here.
 export type {
   ActionInfo,
   ChoiceAnswer,

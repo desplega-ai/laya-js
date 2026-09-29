@@ -1,7 +1,7 @@
 // Support inbox triage: classify a batch of real-looking tickets in one shared forward pass.
 //   LAYA_MODEL_DIR=/path/to/bundles LAYA_THREADS=4 bun examples/01-support-triage.ts
 // LAYA_CHECKPOINT=multilingual runs the same tickets on the smaller checkpoint.
-import { type CheckpointName, defineQuestions } from "@desplega/laya";
+import { type CheckpointName, defineQuestions } from "@desplega.ai/laya";
 import { loadAgent, ms, pct, timed } from "./_lib.ts";
 
 // defineQuestions keeps the literal labels, so `answers.team.choice` is a union, not a string.

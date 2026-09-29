@@ -13,7 +13,7 @@
 // `--mode start` loads, answers once and exits: the cold-start probe. Prints one JSON line.
 import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
-import { createAgent } from "@desplega/laya";
+import { createAgent } from "@desplega.ai/laya";
 
 const { values } = parseArgs({
   options: {

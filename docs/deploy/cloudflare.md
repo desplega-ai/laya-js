@@ -73,4 +73,4 @@ For all three checkpoints use `standard-4` (12 GiB, 20 GB disk) with `LAYA_MODEL
 
 ## Workers
 
-**Verdict: not viable.** A Worker has 128 MB of memory and a 64 MiB script size limit on every plan ([Workers limits](https://developers.cloudflare.com/workers/platform/limits/)). The model is 1.3 GB and needs 2.2 GiB resident. Workers cannot load native Node addons like `onnxruntime-node`, and `@desplega/laya` has no WASM backend: the vendored browser path (`onnxruntime-web`) was removed (`packages/laya/src/providers.ts`). Use Containers instead.
+**Verdict: not viable.** A Worker has 128 MB of memory and a 64 MiB script size limit on every plan ([Workers limits](https://developers.cloudflare.com/workers/platform/limits/)). The model is 1.3 GB and needs 2.2 GiB resident. Workers cannot load native Node addons like `onnxruntime-node`, and `@desplega.ai/laya` has no WASM backend: the vendored browser path (`onnxruntime-web`) was removed (`packages/laya/src/providers.ts`). Use Containers instead.

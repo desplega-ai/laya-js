@@ -1,6 +1,6 @@
 // Local fp32 bundle store: find a checkpoint's bundle in the baked model dir or the download
 // cache, or fetch it from the artifact store and verify every file against the pinned SHA-256
-// map in `@desplega/laya` (artifacts.ts). Used by main.ts (checkpoints not baked into the
+// map in `@desplega.ai/laya` (artifacts.ts). Used by main.ts (checkpoints not baked into the
 // image) and by fetch-models.ts (the Docker models stage and the k8s initContainer).
 import { createHash, randomBytes } from "node:crypto";
 import { createReadStream, createWriteStream } from "node:fs";
@@ -9,8 +9,8 @@ import { join } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import type { ReadableStream as NodeWebReadableStream } from "node:stream/web";
-import type { CheckpointName, Precision } from "@desplega/laya";
-import { ARTIFACTS } from "@desplega/laya/raw";
+import type { CheckpointName, Precision } from "@desplega.ai/laya";
+import { ARTIFACTS } from "@desplega.ai/laya/raw";
 
 /** Written next to the files once every one of them verified. */
 export const MANIFEST = "laya-bundle.json";

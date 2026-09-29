@@ -1,6 +1,6 @@
 # Deploying laya-server
 
-`@desplega/laya-server` is a Hono server on Node 22 that serves `POST /v1/systemone` from a CPU `onnxruntime-node` session over a 1.3 GB fp32 ONNX bundle. It deploys anywhere that runs a 1.6 GB Linux container with 3 GB of RAM and waits a few seconds for `/health`. It does not fit serverless function bundles or edge isolates.
+`@desplega.ai/laya-server` is a Hono server on Node 22 that serves `POST /v1/systemone` from a CPU `onnxruntime-node` session over a 1.3 GB fp32 ONNX bundle. It deploys anywhere that runs a 1.6 GB Linux container with 3 GB of RAM and waits a few seconds for `/health`. It does not fit serverless function bundles or edge isolates.
 
 Every page below deploys the image built in [docker.md](docker.md#build). Provider limits were checked against the linked provider docs on **2026-09-29**. "Tested" means we ran it; everything else is a config written from the docs and has never been deployed.
 

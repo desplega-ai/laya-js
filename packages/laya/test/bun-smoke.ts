@@ -5,9 +5,9 @@ import { resolve } from "node:path";
 
 if (typeof Bun === "undefined") throw new Error("bun-smoke must run under Bun");
 
-const laya = await import("@desplega/laya");
+const laya = await import("@desplega.ai/laya");
 assert.equal(typeof laya.createAgent, "function", "createAgent export missing");
-const raw = await import("@desplega/laya/raw");
+const raw = await import("@desplega.ai/laya/raw");
 assert.equal(typeof raw.Agent, "function", "Agent export missing");
 assert.equal(typeof raw.loadNodeBundle, "function", "loadNodeBundle export missing");
 

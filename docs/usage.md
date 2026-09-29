@@ -1,6 +1,6 @@
 # Using laya-js
 
-Two ways to run laya decision models from TypeScript: call `@desplega/laya` in your process, or call `@desplega/laya-server` over HTTP. Every output below was produced by the scripts in [`examples/`](../examples) on the machine listed under [How the numbers were measured](#how-the-numbers-were-measured). Nothing is rounded up or re-run to look better.
+Two ways to run laya decision models from TypeScript: call `@desplega.ai/laya` in your process, or call `@desplega.ai/laya-server` over HTTP. Every output below was produced by the scripts in [`examples/`](../examples) on the machine listed under [How the numbers were measured](#how-the-numbers-were-measured). Nothing is rounded up or re-run to look better.
 
 ## What laya does
 
@@ -49,7 +49,7 @@ Without `modelDir`, `createAgent` fetches from the artifact store and needs `HF_
 ## Load a checkpoint and ask
 
 ```ts
-import { createAgent, defineQuestions } from "@desplega/laya";
+import { createAgent, defineQuestions } from "@desplega.ai/laya";
 
 const agent = await createAgent({ checkpoint: "english", modelDir: "./bundles/english/fp32" });
 
@@ -218,7 +218,7 @@ Routing is the same as in the library: the English request went to `english`, th
 
 ## Library or server
 
-| | Library (`@desplega/laya`) | Server (`@desplega/laya-server`) |
+| | Library (`@desplega.ai/laya`) | Server (`@desplega.ai/laya-server`) |
 | --- | --- | --- |
 | Caller | TypeScript or Bun code | any language, any number of services |
 | Calls | `predict`, `predictBatch`, `predictLong`, `decide`, `decideBatch`, Router | `POST /v1/systemone` only: one state per request, no batch, no long, no `decide` |

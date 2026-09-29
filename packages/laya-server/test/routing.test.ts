@@ -1,4 +1,4 @@
-import { Router } from "@desplega/laya/raw";
+import { Router } from "@desplega.ai/laya/raw";
 import { describe, expect, it } from "vitest";
 import { createApp } from "../src/app.js";
 import { agentRegistry, fallbackReason, routeWithin, toServerRouter } from "../src/routing.js";

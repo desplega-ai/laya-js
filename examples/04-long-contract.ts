@@ -2,7 +2,7 @@
 // `predict` reads the start of it; `predictLong` scans overlapping windows and aggregates.
 //   LAYA_MODEL_DIR=/path/to/bundles bun examples/04-long-contract.ts
 import { readFileSync } from "node:fs";
-import { defineQuestions } from "@desplega/laya";
+import { defineQuestions } from "@desplega.ai/laya";
 import { loadAgent, ms, pct, timed } from "./_lib.ts";
 
 const contract = readFileSync(new URL("./data/msa.txt", import.meta.url), "utf8");

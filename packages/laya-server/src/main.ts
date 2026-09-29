@@ -1,8 +1,8 @@
 // laya-server entry point: read the environment, start listening (health answers 503 while
 // loading), fetch any listed checkpoint that is not baked, preload, then serve. SIGTERM and
 // SIGINT drain in-flight requests before exiting.
-import { createAgent, type LayaAgent } from "@desplega/laya";
-import { Router } from "@desplega/laya/raw";
+import { createAgent, type LayaAgent } from "@desplega.ai/laya";
+import { Router } from "@desplega.ai/laya/raw";
 import { serve } from "@hono/node-server";
 import { createApp, type ServerRouter } from "./app.js";
 import { createBundleStore } from "./bundles.js";

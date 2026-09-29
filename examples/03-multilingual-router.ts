@@ -1,7 +1,7 @@
 // Mixed-language inbox: one router, two checkpoints. English goes to `english`, everything else
 // to `multilingual`; the router loads each checkpoint once and batches per checkpoint.
 //   LAYA_MODEL_DIR=/path/to/bundles bun examples/03-multilingual-router.ts
-import { defineQuestions } from "@desplega/laya";
+import { defineQuestions } from "@desplega.ai/laya";
 import { loadRouter, ms, pct, timed } from "./_lib.ts";
 
 const questions = defineQuestions({

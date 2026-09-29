@@ -3,7 +3,7 @@
 //   LAYA_MODEL_DIR=/path/to/bundles LAYA_THREADS=4 bun examples/06-latency.ts [checkpoint ...]
 
 import { cpus } from "node:os";
-import { type CheckpointName, defineQuestions } from "@desplega/laya";
+import { type CheckpointName, defineQuestions } from "@desplega.ai/laya";
 import { loadAgent, ms, timed } from "./_lib.ts";
 
 const questions = defineQuestions({

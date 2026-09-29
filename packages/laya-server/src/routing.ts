@@ -10,8 +10,8 @@
 //     default-model variable), and `routing.reason` says so.
 //   - An explicit `model` outside the set: 400 (app.ts), never a fallback, because the caller
 //     asked for that checkpoint by name.
-import type { Hook, PredictContext } from "@desplega/laya";
-import type { Router } from "@desplega/laya/raw";
+import type { Hook, PredictContext } from "@desplega.ai/laya";
+import type { Router } from "@desplega.ai/laya/raw";
 import type { PredictCallOptions, ServerRouter } from "./app.js";
 
 /** Suffix appended to `routing.reason` when the decision was redirected to the default checkpoint. */
