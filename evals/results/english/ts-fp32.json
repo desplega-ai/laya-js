@@ -1,0 +1,262 @@
+{
+  "meta": {
+    "runtime": "ts-bun",
+    "checkpoint": "english",
+    "precision": "fp32",
+    "source": {
+      "repo": "convaiinnovations/laya",
+      "revision": "55cf4c4ebb4ebe31b2550e8bdf3bd21b99753851"
+    },
+    "bundle_dir": "/root/bundles/english/fp32",
+    "upstream_sha": "9d955671415fc19f069b9cc998928075c1f255ec",
+    "batch_size": 8,
+    "limit": 0,
+    "suites": [
+      "ag_news",
+      "emotion",
+      "support_triage",
+      "email_spam",
+      "phishing",
+      "guardrails_jailbreak",
+      "moderation_toxicity",
+      "rag_relevance",
+      "model_routing",
+      "typed_decisions"
+    ],
+    "suite_sha256": {
+      "ag_news": "163c429a7a3262572799d34b8d817ae20ad56b7a6be4df550e1285bd787317c1",
+      "emotion": "6f1ffe833053d0a58a25a2e8a26af9529e6f0024e9e0b69b9a7b3c0fa6425712",
+      "support_triage": "32b0a09ff7436cc5524a5d4f25860671cdea47fa33553910f32127c058dfc211",
+      "email_spam": "900d3fa65914cbe51130fd91d7e31abe5b2dc23aed99bea197354bb2f6d327c7",
+      "phishing": "06b7557e10c5f7b6f602466920ef74403fb133bfb394f5a494778a87fe1dc892",
+      "guardrails_jailbreak": "6223f09e2454e66f991d8d64bfdd288163ca9345ff71569b58ac70220157644b",
+      "moderation_toxicity": "e36c7750426c607561056581fc2483a6d44a5a15c2f4d3043d8e7555c77ed76a",
+      "rag_relevance": "567435bb97a8c577e5c97c959907d4d81d8fe5d84207c6ed54e1ff59929de789",
+      "model_routing": "cd9aa34a45866045e44b8e446c7b8e77890812690fa608bc90e5b30cbf3bdb2f",
+      "typed_decisions": "ab70c8287f60b50364a48628c02a959a27c49e70ebb554279c6f99d22bfbd8d9"
+    },
+    "host": {
+      "cpu": "AMD EPYC-Milan Processor",
+      "cores": 16,
+      "node": "26.3.0",
+      "bun": "1.4.0",
+      "onnxruntime": "1.30.0",
+      "threads": 2
+    },
+    "load_s": 3.9,
+    "seconds_by_suite": {
+      "ag_news": 313.2,
+      "emotion": 159,
+      "support_triage": 829.9,
+      "email_spam": 933.4,
+      "phishing": 881.1,
+      "guardrails_jailbreak": 417.4,
+      "moderation_toxicity": 356.9,
+      "rag_relevance": 399.2,
+      "model_routing": 403.2,
+      "typed_decisions": 4411.1
+    },
+    "reused_suites": [
+      "ag_news",
+      "emotion",
+      "support_triage",
+      "email_spam",
+      "phishing",
+      "guardrails_jailbreak",
+      "moderation_toxicity",
+      "rag_relevance",
+      "model_routing"
+    ]
+  },
+  "metrics": {
+    "overall": {
+      "n": 5599,
+      "errors": 0,
+      "choice_accuracy": 0.5638926784902228,
+      "noul_accuracy": 0.696923076923077,
+      "score_mae": 0.690506879999999,
+      "mean_confidence": 0.7324756920878729,
+      "accuracy": 0.6359658262137945,
+      "macro_f1": 0.4045554900047047,
+      "brier": 0.4808014085809538,
+      "ece": 0.1333673265263608
+    },
+    "by_suite": {
+      "ag_news": {
+        "n": 400,
+        "errors": 0,
+        "choice_accuracy": 0.9425,
+        "mean_confidence": 0.9248425000000013,
+        "accuracy": 0.9425,
+        "macro_f1": 0.9353647882673362,
+        "brier": 0.08495543292500002,
+        "ece": 0.03907949999999927
+      },
+      "email_spam": {
+        "n": 400,
+        "errors": 0,
+        "noul_accuracy": 0.9925,
+        "mean_confidence": 0.9867990000000006,
+        "accuracy": 0.9925,
+        "macro_f1": 0.9924656717167595,
+        "brier": 0.0109740547,
+        "ece": 0.009769999999999737
+      },
+      "emotion": {
+        "n": 400,
+        "errors": 0,
+        "choice_accuracy": 0.6,
+        "mean_confidence": 0.9022567499999995,
+        "accuracy": 0.6,
+        "macro_f1": 0.48227400554594263,
+        "brier": 0.69327573105,
+        "ece": 0.3068777499999997
+      },
+      "guardrails_jailbreak": {
+        "n": 400,
+        "errors": 0,
+        "noul_accuracy": 0.7075,
+        "mean_confidence": 0.9657407500000008,
+        "accuracy": 0.7075,
+        "macro_f1": 0.6840378344439269,
+        "brier": 0.5389262710499998,
+        "ece": 0.25909075000000015
+      },
+      "model_routing": {
+        "n": 399,
+        "errors": 0,
+        "choice_accuracy": 0.6416040100250626,
+        "mean_confidence": 0.709857142857143,
+        "accuracy": 0.6416040100250626,
+        "macro_f1": 0.331437376541887,
+        "brier": 0.4896389066917291,
+        "ece": 0.08661954887218043
+      },
+      "moderation_toxicity": {
+        "n": 400,
+        "errors": 0,
+        "noul_accuracy": 0.53,
+        "mean_confidence": 0.8242214999999996,
+        "accuracy": 0.53,
+        "macro_f1": 0.4003381072374087,
+        "brier": 0.6014845369000006,
+        "ece": 0.296106
+      },
+      "phishing": {
+        "n": 400,
+        "errors": 0,
+        "noul_accuracy": 0.98,
+        "mean_confidence": 0.9737727500000004,
+        "accuracy": 0.98,
+        "macro_f1": 0.978882905712174,
+        "brier": 0.029193319949999994,
+        "ece": 0.012087249999999588
+      },
+      "rag_relevance": {
+        "n": 400,
+        "errors": 0,
+        "noul_accuracy": 0.5925,
+        "mean_confidence": 0.7832895000000003,
+        "accuracy": 0.5925,
+        "macro_f1": 0.5776518218623482,
+        "brier": 0.5492606770000003,
+        "ece": 0.19078949999999983
+      },
+      "support_triage": {
+        "n": 400,
+        "errors": 0,
+        "choice_accuracy": 0.485,
+        "mean_confidence": 0.5079565000000004,
+        "accuracy": 0.485,
+        "macro_f1": 0.4681113643568023,
+        "brier": 0.6562387480249999,
+        "ece": 0.09191999999999993
+      },
+      "typed_decisions": {
+        "n": 2000,
+        "errors": 0,
+        "choice_accuracy": 0.28833333333333333,
+        "noul_accuracy": 0.485,
+        "score_mae": 0.690506879999999,
+        "mean_confidence": 0.5351733499999999,
+        "accuracy": 0.38666666666666666,
+        "macro_f1": 0.24646085497996256,
+        "brier": 0.7052304394749994,
+        "ece": 0.16144241666666675
+      }
+    },
+    "by_tag": {
+      "held_out": {
+        "n": 1599,
+        "errors": 0,
+        "choice_accuracy": 0.6207759699624531,
+        "noul_accuracy": 0.61875,
+        "mean_confidence": 0.8506070043777382,
+        "accuracy": 0.6197623514696685,
+        "macro_f1": 0.44068876099310306,
+        "brier": 0.580888392351471,
+        "ece": 0.235427642276424
+      },
+      "in_training": {
+        "n": 2000,
+        "errors": 0,
+        "choice_accuracy": 0.71375,
+        "noul_accuracy": 0.855,
+        "mean_confidence": 0.8353320500000009,
+        "accuracy": 0.7985,
+        "macro_f1": 0.6760286797609966,
+        "brier": 0.2661244465200002,
+        "ece": 0.04963975000000109
+      },
+      "workflow:agent_trace_observability": {
+        "n": 500,
+        "errors": 0,
+        "choice_accuracy": 0.35,
+        "noul_accuracy": 0.58,
+        "score_mae": 0.5874314849999995,
+        "mean_confidence": 0.5755453999999997,
+        "accuracy": 0.4266666666666667,
+        "macro_f1": 0.2123660915885112,
+        "brier": 0.6830839009666656,
+        "ece": 0.1389946666666667
+      },
+      "workflow:customer_service": {
+        "n": 500,
+        "errors": 0,
+        "choice_accuracy": 0.265,
+        "noul_accuracy": 0.67,
+        "score_mae": 0.621160165,
+        "mean_confidence": 0.47833379999999953,
+        "accuracy": 0.4,
+        "macro_f1": 0.2932673351401138,
+        "brier": 0.6861867772000002,
+        "ece": 0.11605366666666672
+      },
+      "workflow:invoice_processing": {
+        "n": 500,
+        "errors": 0,
+        "choice_accuracy": 0.45,
+        "noul_accuracy": 0.295,
+        "score_mae": 0.8535118950000004,
+        "mean_confidence": 0.5423389999999996,
+        "accuracy": 0.3466666666666667,
+        "macro_f1": 0.1880088564591989,
+        "brier": 0.7781909974333335,
+        "ece": 0.25712066666666666
+      },
+      "workflow:security_incidents": {
+        "n": 500,
+        "errors": 0,
+        "choice_accuracy": 0.05,
+        "noul_accuracy": 0.535,
+        "score_mae": 0.6999239749999999,
+        "mean_confidence": 0.5444751999999993,
+        "accuracy": 0.37333333333333335,
+        "macro_f1": 0.2773215874998135,
+        "brier": 0.6734600823000003,
+        "ece": 0.20648266666666662
+      }
+    },
+    "by_language": {}
+  }
+}

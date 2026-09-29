@@ -17,7 +17,11 @@
     "api:check": "bun run --filter @desplega/laya build && api-extractor run -c packages/laya/api-extractor.json",
     "api:update": "bun run --filter @desplega/laya build && api-extractor run --local -c packages/laya/api-extractor.json",
     "smoke:server": "bun run --filter @desplega/laya-server build && bun packages/laya-server/test/smoke.ts",
-    "smoke:image": "bun scripts/smoke-image.ts"
+    "smoke:image": "bun scripts/smoke-image.ts",
+    "eval:accuracy": "bun packages/laya/evals/accuracy.ts",
+    "eval:gate": "bun packages/laya/evals/gate.ts",
+    "eval:perf": "bun run --filter @desplega/laya build && bun packages/laya/evals/perf.ts",
+    "eval:cost": "bun packages/laya/evals/cost.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",

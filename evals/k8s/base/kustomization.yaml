@@ -1,0 +1,20 @@
+# Eval-only overlay over deploy/k8s/base for `kind` on the reference host (plan, Phase 10).
+# Requests, limits, LAYA_THREADS, probes and replicas stay as shipped. Only the transport and the
+# image source change: a NodePort so the host can reach the Service, and the locally built image.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../deploy/k8s/base
+images:
+  - name: ghcr.io/desplega-ai/laya-server
+    newName: laya-server
+    newTag: eval
+patches:
+  - target: { kind: Service, name: laya-server }
+    patch: |-
+      - op: replace
+        path: /spec/type
+        value: NodePort
+      - op: add
+        path: /spec/ports/0/nodePort
+        value: 30080

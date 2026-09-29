@@ -1,0 +1,68 @@
+{
+  "host": "hetzner-ccx23",
+  "pass": false,
+  "checks": [
+    {
+      "gate": "cold start p95 < 50% of startupProbe (ms)",
+      "cell": "docker-english-fp32",
+      "value": 4666.4,
+      "limit": 150000,
+      "pass": true
+    },
+    {
+      "gate": "cold start p95 < 50% of startupProbe (ms)",
+      "cell": "docker-multilingual-fp32",
+      "value": 4530.1,
+      "limit": 150000,
+      "pass": true
+    },
+    {
+      "gate": "port overhead",
+      "cell": "node-english-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    },
+    {
+      "gate": "port overhead",
+      "cell": "bun-english-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    },
+    {
+      "gate": "port overhead",
+      "cell": "node-multilingual-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    },
+    {
+      "gate": "port overhead",
+      "cell": "bun-multilingual-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    },
+    {
+      "gate": "port overhead",
+      "cell": "node-typed-decisions-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    },
+    {
+      "gate": "port overhead",
+      "cell": "bun-typed-decisions-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    }
+  ],
+  "control": {
+    "python_torch_multilingual_1q_p50_ms": 297.14,
+    "upstream_m7a_xlarge_ms": 193,
+    "ratio": 1.54,
+    "within_25pct": false
+  }
+}

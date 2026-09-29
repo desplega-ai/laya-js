@@ -5,3 +5,5 @@ dist/
 __pycache__/
 /bundles/
 packages/laya/temp/
+/evals/datasets/build/
+/evals/out/
