@@ -1,4 +1,4 @@
-// Modified by Desplega Labs, 2026: removed the browser path (createWebProvider, loadWebBundle, fetchArrayBuffer, onnxruntime-web); HF 401/403 throws LayaLoadError; SessionProvider.release frees the ONNX sessions.
+// Modified by Desplega Labs, 2026: removed the browser path (createWebProvider, loadWebBundle, fetchArrayBuffer, onnxruntime-web); HF 401/403 throws LayaLoadError; SessionProvider.release frees the ONNX sessions; numThreads/LAYA_THREADS set the sessions' intraOpNumThreads (ort.env.numThreads is a web-only knob).
 /** ONNX session shim: Node (onnxruntime-node).
  * Lazy imports only — unit tests with a fake provider never touch onnxruntime. */
 
@@ -173,17 +173,13 @@ export interface ProviderOptions {
   expectedSha256?: Record<string, string>;
 }
 
-function applyNumThreads(ort: any, numThreads?: number): void {
-  try {
-    const raw =
-      numThreads ??
-      (typeof process !== "undefined" ? Number((process as any).env?.["LAYA_THREADS"]) : NaN);
-    if (Number.isFinite(raw) && (raw as number) > 0 && ort?.env) {
-      ort.env.numThreads = Math.trunc(raw as number);
-    }
-  } catch {
-    /* best-effort only */
-  }
+/** Session options for the requested thread count. onnxruntime-node ignores `ort.env.numThreads`
+ * (an onnxruntime-web setting), so the count has to go into each session's `intraOpNumThreads`. */
+function threadOptions(numThreads?: number): { intraOpNumThreads?: number } {
+  const raw =
+    numThreads ??
+    (typeof process !== "undefined" ? Number((process as any).env?.["LAYA_THREADS"]) : NaN);
+  return Number.isFinite(raw) && (raw as number) > 0 ? { intraOpNumThreads: Math.trunc(raw as number) } : {};
 }
 
 function isOomError(e: unknown): boolean {
@@ -322,7 +318,7 @@ export async function createNodeProvider(
 ): Promise<SessionProvider> {
   const spec = "onnxruntime-" + "node";
   const ort: any = await import(/* @vite-ignore */ spec);
-  applyNumThreads(ort, opts?.numThreads);
+  const threads = threadOptions(opts?.numThreads);
   const fs: typeof import("node:fs/promises") = await import("node:fs/promises");
   const path: typeof import("node:path") = await import("node:path");
   for (const f of ["encoder.onnx", "head.onnx"]) {
@@ -339,9 +335,11 @@ export async function createNodeProvider(
   const make = async (ep: string) => {
     const e = await ort.InferenceSession.create(`${modelDir}/encoder.onnx`, {
       executionProviders: [ep],
+      ...threads,
     });
     const h = await ort.InferenceSession.create(`${modelDir}/head.onnx`, {
       executionProviders: ["cpu"],
+      ...threads,
     });
     return { e, h };
   };
@@ -365,9 +363,11 @@ export async function createNodeProvider(
     if (!cpuEnc) {
       cpuEnc = await ort.InferenceSession.create(`${modelDir}/encoder.onnx`, {
         executionProviders: ["cpu"],
+        ...threads,
       });
       cpuHead = await ort.InferenceSession.create(`${modelDir}/head.onnx`, {
         executionProviders: ["cpu"],
+        ...threads,
       });
     }
     return { cpuEnc, cpuHead };

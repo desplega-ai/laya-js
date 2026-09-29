@@ -1,0 +1,25 @@
+# Eval-only overlay over deploy/k8s/overlays/all-checkpoints (plan, Phase 10). As base above,
+# plus: the eval image bakes all three bundles, so the fetch-models initContainer (which needs a
+# read token for the private store) is removed. The server resolves the baked dir first, so the
+# resident models, requests and limits are those of the shipped overlay.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../deploy/k8s/overlays/all-checkpoints
+images:
+  - name: ghcr.io/desplega-ai/laya-server
+    newName: laya-server
+    newTag: eval
+patches:
+  - target: { kind: Service, name: laya-server }
+    patch: |-
+      - op: replace
+        path: /spec/type
+        value: NodePort
+      - op: add
+        path: /spec/ports/0/nodePort
+        value: 30080
+  - target: { kind: Deployment, name: laya-server }
+    patch: |-
+      - op: remove
+        path: /spec/template/spec/initContainers

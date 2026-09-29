@@ -1,0 +1,30 @@
+{
+  "note": "Prices for evals/cost.ts. eval:cost fails when any `date` is older than 30 days.",
+  "hosts": {
+    "hetzner-ccx23": {
+      "eur_per_hour": 0.1378,
+      "vcpu": 4,
+      "memory_gib": 16,
+      "location": "fsn1",
+      "gross": true,
+      "source": "Hetzner Cloud API GET /v1/server_types (ccx23, fsn1, price_hourly.gross)",
+      "url": "https://docs.hetzner.cloud/reference/cloud#server-types-get-all-server-types",
+      "date": "2026-09-29"
+    }
+  },
+  "llm": {
+    "claude-haiku-4-5": {
+      "usd_per_mtok_input": 1.0,
+      "usd_per_mtok_output": 5.0,
+      "source": "Anthropic pricing, base input and output",
+      "url": "https://docs.claude.com/en/docs/about-claude/pricing",
+      "date": "2026-09-29"
+    }
+  },
+  "fx": {
+    "usd_per_eur": 1.1378,
+    "source": "ECB euro foreign exchange reference rate, USD",
+    "url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
+    "date": "2026-09-28"
+  }
+}

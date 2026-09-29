@@ -1,0 +1,30 @@
+[project]
+name = "laya-js-evals"
+version = "0.0.0"
+description = "Phase 4 and 10 evals for @desplega/laya: dataset build, Python reference, Python perf baseline"
+requires-python = "==3.12.*"
+dependencies = [
+    "torch==2.14.0",
+    "transformers==5.17.0",
+    "safetensors>=0.4.0",
+    "huggingface_hub>=1.5,<2",
+    "numpy==2.5.3",
+    "onnx==1.23.0",
+    "onnxruntime==1.30.0",
+    "onnxscript==0.7.2",
+    "laya @ git+https://github.com/NandhaKishorM/laya@9d955671415fc19f069b9cc998928075c1f255ec",
+    "datasets==4.3.0",
+    "pandas>=2.2",
+    "pyarrow>=18",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

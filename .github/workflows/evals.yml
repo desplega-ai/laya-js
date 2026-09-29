@@ -1,0 +1,62 @@
+name: evals
+
+# Phase 4 (accuracy, Python agreement) and Phase 10 (perf gates, cost) evals. Manual only: never
+# on push or PR (CI minutes). The reference numbers are measured on the Hetzner eval host, not on
+# shared runners (evals/README.md); this workflow reruns Phase 4 on a runner when asked, and
+# re-checks the committed Phase 10 results and prices. It uploads results; it does not open a PR.
+on:
+  workflow_dispatch:
+    inputs:
+      checkpoints:
+        description: "Comma-separated checkpoints for the accuracy job"
+        default: "english,multilingual,typed-decisions"
+
+permissions:
+  contents: read
+
+jobs:
+  accuracy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        checkpoint: [english, multilingual, typed-decisions]
+    env:
+      HF_TOKEN: ${{ secrets.HF_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        if: contains(inputs.checkpoints, matrix.checkpoint)
+      - uses: astral-sh/setup-uv@v6
+        if: contains(inputs.checkpoints, matrix.checkpoint)
+      - uses: oven-sh/setup-bun@v2
+        if: contains(inputs.checkpoints, matrix.checkpoint)
+        with:
+          bun-version: 1.4.0
+      - if: contains(inputs.checkpoints, matrix.checkpoint)
+        run: |
+          uv sync --frozen --project evals
+          uv run --project evals python evals/datasets/build.py --check
+          bun install --frozen-lockfile
+          uv run --project evals python evals/python/reference.py --checkpoint ${{ matrix.checkpoint }}
+          bun run eval:accuracy --checkpoint ${{ matrix.checkpoint }}
+          bun run eval:gate --checkpoints ${{ matrix.checkpoint }} --out evals/out/gate-${{ matrix.checkpoint }}.json
+      - uses: actions/upload-artifact@v4
+        if: always() && contains(inputs.checkpoints, matrix.checkpoint)
+        with:
+          name: evals-${{ matrix.checkpoint }}
+          path: |
+            evals/results/${{ matrix.checkpoint }}/
+            evals/out/
+          retention-days: 90
+
+  perf-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
+      - run: bun install --frozen-lockfile
+      - run: bun run eval:gate --perf

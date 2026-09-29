@@ -1,0 +1,451 @@
+{
+  "expected": {
+    "by_language": {
+      "en": {
+        "accuracy": 0.4,
+        "brier": 0.5822714459999999,
+        "choice_accuracy": 0.25,
+        "ece": 0.37018,
+        "errors": 0,
+        "macro_f1": 0.2857142857142857,
+        "mean_confidence": 0.5730285714285713,
+        "n": 7,
+        "noul_accuracy": 1.0,
+        "score_mae": 1.4420000000000002
+      },
+      "es": {
+        "accuracy": 0.5,
+        "brier": 0.6720068625,
+        "choice_accuracy": 0.5,
+        "ece": 0.5526,
+        "errors": 1,
+        "macro_f1": 0.3333333333333333,
+        "mean_confidence": 0.47092,
+        "n": 6,
+        "noul_accuracy": 0.5,
+        "score_mae": 0.8165
+      }
+    },
+    "by_suite": {
+      "a": {
+        "accuracy": 0.25,
+        "brier": 0.759892995,
+        "choice_accuracy": 0.16666666666666666,
+        "ece": 0.5078250000000001,
+        "errors": 0,
+        "macro_f1": 0.16666666666666666,
+        "mean_confidence": 0.5672200000000001,
+        "n": 10,
+        "noul_accuracy": 0.5,
+        "score_mae": 0.49245000000000005
+      },
+      "b": {
+        "accuracy": 0.6666666666666666,
+        "brier": 0.39332659,
+        "choice_accuracy": 0.3333333333333333,
+        "ece": 0.22451666666666661,
+        "errors": 1,
+        "macro_f1": 0.4,
+        "mean_confidence": 0.6285444444444445,
+        "n": 10,
+        "noul_accuracy": 1.0,
+        "score_mae": 1.8536000000000001
+      }
+    },
+    "by_tag": {
+      "t1": {
+        "accuracy": 0.4,
+        "brier": 0.575107605,
+        "choice_accuracy": 0.14285714285714285,
+        "ece": 0.31993,
+        "errors": 0,
+        "macro_f1": 0.23809523809523808,
+        "mean_confidence": 0.6410357142857144,
+        "n": 14,
+        "noul_accuracy": 1.0,
+        "score_mae": 1.4323000000000001
+      },
+      "t2": {
+        "accuracy": 0.4,
+        "brier": 0.5822714459999999,
+        "choice_accuracy": 0.25,
+        "ece": 0.37018,
+        "errors": 0,
+        "macro_f1": 0.2857142857142857,
+        "mean_confidence": 0.5730285714285713,
+        "n": 7,
+        "noul_accuracy": 1.0,
+        "score_mae": 1.4420000000000002
+      }
+    },
+    "overall": {
+      "accuracy": 0.42857142857142855,
+      "brier": 0.6027931071428572,
+      "choice_accuracy": 0.2222222222222222,
+      "ece": 0.33739285714285716,
+      "errors": 1,
+      "macro_f1": 0.2777777777777778,
+      "mean_confidence": 0.5962684210526316,
+      "n": 20,
+      "noul_accuracy": 0.8,
+      "score_mae": 1.30914
+    }
+  },
+  "records": [
+    {
+      "answer": {
+        "act_probability": 0.8493,
+        "answer_confidence": 0.0,
+        "choice": "y",
+        "probabilities": {
+          "x": 0.1591,
+          "y": 0.4208,
+          "z": 0.4201
+        },
+        "type": "choice"
+      },
+      "expected": "x",
+      "language": null,
+      "qid": "q0",
+      "suite": "a",
+      "tags": ["t1"],
+      "type": "choice"
+    },
+    {
+      "answer": {
+        "act_probability": 0.1874,
+        "answer_confidence": 0.652,
+        "choice": "y",
+        "probabilities": {
+          "x": 0.3061,
+          "y": 0.3994,
+          "z": 0.2945
+        },
+        "type": "choice"
+      },
+      "expected": "x",
+      "language": "en",
+      "qid": "q1",
+      "suite": "a",
+      "tags": ["t1", "t2"],
+      "type": "choice"
+    },
+    {
+      "answer": {
+        "act_probability": 0.2947,
+        "answer_confidence": 0.5313,
+        "noul": 0.2139,
+        "type": "noul"
+      },
+      "expected": true,
+      "language": "es",
+      "qid": "n",
+      "suite": "a",
+      "tags": [],
+      "type": "noul"
+    },
+    {
+      "answer": {
+        "act_probability": 0.8097,
+        "answer_confidence": 0.8377,
+        "probabilities": {
+          "0": 0.3174,
+          "1": 0.0075,
+          "2": 0.1439,
+          "3": 0.0765,
+          "4": 0.4546
+        },
+        "score": 2.3432,
+        "type": "score"
+      },
+      "expected": 2.0,
+      "language": null,
+      "qid": "s",
+      "suite": "a",
+      "tags": ["t1"],
+      "type": "score"
+    },
+    {
+      "answer": {
+        "act_probability": 0.2567,
+        "answer_confidence": 0.8264,
+        "choice": "y",
+        "probabilities": {
+          "x": 0.2994,
+          "y": 0.3816,
+          "z": 0.3191
+        },
+        "type": "choice"
+      },
+      "expected": "x",
+      "language": "en",
+      "qid": "q0",
+      "suite": "a",
+      "tags": ["t1", "t2"],
+      "type": "choice"
+    },
+    {
+      "answer": {
+        "act_probability": 0.4296,
+        "answer_confidence": 0.2,
+        "choice": "y",
+        "probabilities": {
+          "x": 0.2695,
+          "y": 0.4181,
+          "z": 0.3124
+        },
+        "type": "choice"
+      },
+      "expected": "y",
+      "language": "es",
+      "qid": "q1",
+      "suite": "a",
+      "tags": [],
+      "type": "choice"
+    },
+    {
+      "answer": {
+        "act_probability": 0.6553,
+        "answer_confidence": 0.8886,
+        "noul": 0.6386,
+        "type": "noul"
+      },
+      "expected": true,
+      "language": null,
+      "qid": "n",
+      "suite": "a",
+      "tags": ["t1"],
+      "type": "noul"
+    },
+    {
+      "answer": {
+        "act_probability": 0.4404,
+        "answer_confidence": 0.5947,
+        "probabilities": {
+          "0": 0.2153,
+          "1": 0.0893,
+          "2": 0.1523,
+          "3": 0.2076,
+          "4": 0.3354
+        },
+        "score": 2.3583,
+        "type": "score"
+      },
+      "expected": 3.0,
+      "language": "en",
+      "qid": "s",
+      "suite": "a",
+      "tags": ["t1", "t2"],
+      "type": "score"
+    },
+    {
+      "answer": {
+        "act_probability": 0.3711,
+        "answer_confidence": 0.536,
+        "choice": "z",
+        "probabilities": {
+          "x": 0.3538,
+          "y": 0.2164,
+          "z": 0.4297
+        },
+        "type": "choice"
+      },
+      "expected": "y",
+      "language": "es",
+      "qid": "q0",
+      "suite": "a",
+      "tags": [],
+      "type": "choice"
+    },
+    {
+      "answer": {
+        "act_probability": 0.2354,
+        "answer_confidence": 0.6055,
+        "choice": "z",
+        "probabilities": {
+          "x": 0.389,
+          "y": 0.1285,
+          "z": 0.4825
+        },
+        "type": "choice"
+      },
+      "expected": "x",
+      "language": null,
+      "qid": "q1",
+      "suite": "a",
+      "tags": ["t1"],
+      "type": "choice"
+    },
+    {
+      "answer": {
+        "act_probability": 0.7015,
+        "answer_confidence": 0.4,
+        "noul": 0.8866,
+        "type": "noul"
+      },
+      "expected": true,
+      "language": "en",
+      "qid": "n",
+      "suite": "b",
+      "tags": ["t1", "t2"],
+      "type": "noul"
+    },
+    {
+      "answer": {
+        "act_probability": 0.2249,
+        "answer_confidence": 0.4304,
+        "probabilities": {
+          "0": 0.2636,
+          "1": 0.1943,
+          "2": 0.0009,
+          "3": 0.1778,
+          "4": 0.3635
+        },
+        "score": 2.1835,
+        "type": "score"
+      },
+      "expected": 3.0,
+      "language": "es",
+      "qid": "s",
+      "suite": "b",
+      "tags": [],
+      "type": "score"
+    },
+    {
+      "answer": {
+        "act_probability": 0.4135,
+        "answer_confidence": 0.8061,
+        "choice": "x",
+        "probabilities": {
+          "x": 0.512,
+          "y": 0.3904,
+          "z": 0.0976
+        },
+        "type": "choice"
+      },
+      "expected": "y",
+      "language": null,
+      "qid": "q0",
+      "suite": "b",
+      "tags": ["t1"],
+      "type": "choice"
+    },
+    {
+      "answer": {
+        "act_probability": 0.3748,
+        "answer_confidence": 0.8862,
+        "choice": "z",
+        "probabilities": {
+          "x": 0.4318,
+          "y": 0.1092,
+          "z": 0.459
+        },
+        "type": "choice"
+      },
+      "expected": "z",
+      "language": "en",
+      "qid": "q1",
+      "suite": "b",
+      "tags": ["t1", "t2"],
+      "type": "choice"
+    },
+    {
+      "answer": {
+        "act_probability": 0.7039,
+        "answer_confidence": 0.6569,
+        "noul": 0.9014,
+        "type": "noul"
+      },
+      "expected": true,
+      "language": "es",
+      "qid": "n",
+      "suite": "b",
+      "tags": [],
+      "type": "noul"
+    },
+    {
+      "answer": {
+        "act_probability": 0.583,
+        "answer_confidence": 1.0,
+        "probabilities": {
+          "0": 0.2318,
+          "1": 0.4024,
+          "2": 0.0199,
+          "3": 0.3278,
+          "4": 0.0181
+        },
+        "score": 1.498,
+        "type": "score"
+      },
+      "expected": 4.0,
+      "language": null,
+      "qid": "s",
+      "suite": "b",
+      "tags": ["t1"],
+      "type": "score"
+    },
+    {
+      "answer": {
+        "act_probability": 0.1123,
+        "answer_confidence": 0.3413,
+        "choice": "z",
+        "probabilities": {
+          "x": 0.2582,
+          "y": 0.1438,
+          "z": 0.598
+        },
+        "type": "choice"
+      },
+      "expected": "x",
+      "language": "en",
+      "qid": "q0",
+      "suite": "b",
+      "tags": ["t1", "t2"],
+      "type": "choice"
+    },
+    {
+      "answer": null,
+      "expected": "y",
+      "language": "es",
+      "qid": "q1",
+      "suite": "b",
+      "tags": [],
+      "type": "choice"
+    },
+    {
+      "answer": {
+        "act_probability": 0.5266,
+        "answer_confidence": 0.8254,
+        "noul": 0.6451,
+        "type": "noul"
+      },
+      "expected": true,
+      "language": null,
+      "qid": "n",
+      "suite": "b",
+      "tags": ["t1"],
+      "type": "noul"
+    },
+    {
+      "answer": {
+        "act_probability": 0.522,
+        "answer_confidence": 0.3106,
+        "probabilities": {
+          "0": 0.116,
+          "1": 0.2578,
+          "2": 0.1606,
+          "3": 0.1987,
+          "4": 0.2668
+        },
+        "score": 2.2423,
+        "type": "score"
+      },
+      "expected": 0.0,
+      "language": "en",
+      "qid": "s",
+      "suite": "b",
+      "tags": ["t1", "t2"],
+      "type": "score"
+    }
+  ]
+}

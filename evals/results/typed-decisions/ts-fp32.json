@@ -1,0 +1,251 @@
+{
+  "meta": {
+    "runtime": "ts-bun",
+    "checkpoint": "typed-decisions",
+    "precision": "fp32",
+    "source": {
+      "repo": "convaiinnovations/laya-typed-decisions",
+      "revision": "1a793eb568e6718f15941d08f85432581df534e3"
+    },
+    "bundle_dir": "/root/bundles/typed-decisions/fp32",
+    "upstream_sha": "9d955671415fc19f069b9cc998928075c1f255ec",
+    "batch_size": 8,
+    "limit": 0,
+    "suites": [
+      "ag_news",
+      "emotion",
+      "support_triage",
+      "email_spam",
+      "phishing",
+      "guardrails_jailbreak",
+      "moderation_toxicity",
+      "rag_relevance",
+      "model_routing",
+      "typed_decisions"
+    ],
+    "suite_sha256": {
+      "ag_news": "163c429a7a3262572799d34b8d817ae20ad56b7a6be4df550e1285bd787317c1",
+      "emotion": "6f1ffe833053d0a58a25a2e8a26af9529e6f0024e9e0b69b9a7b3c0fa6425712",
+      "support_triage": "32b0a09ff7436cc5524a5d4f25860671cdea47fa33553910f32127c058dfc211",
+      "email_spam": "900d3fa65914cbe51130fd91d7e31abe5b2dc23aed99bea197354bb2f6d327c7",
+      "phishing": "06b7557e10c5f7b6f602466920ef74403fb133bfb394f5a494778a87fe1dc892",
+      "guardrails_jailbreak": "6223f09e2454e66f991d8d64bfdd288163ca9345ff71569b58ac70220157644b",
+      "moderation_toxicity": "e36c7750426c607561056581fc2483a6d44a5a15c2f4d3043d8e7555c77ed76a",
+      "rag_relevance": "567435bb97a8c577e5c97c959907d4d81d8fe5d84207c6ed54e1ff59929de789",
+      "model_routing": "cd9aa34a45866045e44b8e446c7b8e77890812690fa608bc90e5b30cbf3bdb2f",
+      "typed_decisions": "afab61997c7dc87fda9e036075ea185d85d8e587b9aea1b8073853e205a1c216"
+    },
+    "host": {
+      "cpu": "AMD EPYC-Milan Processor",
+      "cores": 16,
+      "node": "26.3.0",
+      "bun": "1.4.0",
+      "onnxruntime": "1.30.0",
+      "threads": 2
+    },
+    "load_s": 3.4,
+    "seconds_by_suite": {
+      "ag_news": 300.4,
+      "emotion": 144.1,
+      "support_triage": 845.9,
+      "email_spam": 1321.4,
+      "phishing": 1220.2,
+      "guardrails_jailbreak": 417.7,
+      "moderation_toxicity": 388.5,
+      "rag_relevance": 361.5,
+      "model_routing": 355.2,
+      "typed_decisions": 3345
+    }
+  },
+  "metrics": {
+    "overall": {
+      "n": 5599,
+      "errors": 0,
+      "choice_accuracy": 0.6894042746703046,
+      "noul_accuracy": 0.7753846153846153,
+      "score_mae": 0.2470577624999999,
+      "mean_confidence": 0.6688701196642272,
+      "accuracy": 0.73598666388831,
+      "macro_f1": 0.6110200716285921,
+      "brier": 0.3835871285351097,
+      "ece": 0.05236157532819345
+    },
+    "by_suite": {
+      "ag_news": {
+        "n": 400,
+        "errors": 0,
+        "choice_accuracy": 0.945,
+        "mean_confidence": 0.7983707499999996,
+        "accuracy": 0.945,
+        "macro_f1": 0.9384823598506231,
+        "brier": 0.11583807585,
+        "ece": 0.14853925000000015
+      },
+      "email_spam": {
+        "n": 400,
+        "errors": 0,
+        "noul_accuracy": 0.9375,
+        "mean_confidence": 0.8268954999999995,
+        "accuracy": 0.9375,
+        "macro_f1": 0.9374996093725585,
+        "brier": 0.12635565169999993,
+        "ece": 0.11060450000000001
+      },
+      "emotion": {
+        "n": 400,
+        "errors": 0,
+        "choice_accuracy": 0.5975,
+        "mean_confidence": 0.7919029999999995,
+        "accuracy": 0.5975,
+        "macro_f1": 0.4725733798973722,
+        "brier": 0.61424361435,
+        "ece": 0.19457500000000005
+      },
+      "guardrails_jailbreak": {
+        "n": 400,
+        "errors": 0,
+        "noul_accuracy": 0.7625,
+        "mean_confidence": 0.8409617500000006,
+        "accuracy": 0.7625,
+        "macro_f1": 0.7329791794028571,
+        "brier": 0.3365206021500001,
+        "ece": 0.08690775000000006
+      },
+      "model_routing": {
+        "n": 399,
+        "errors": 0,
+        "choice_accuracy": 0.6741854636591479,
+        "mean_confidence": 0.6102952380952374,
+        "accuracy": 0.6741854636591479,
+        "macro_f1": 0.3536673221706728,
+        "brier": 0.48252120776942353,
+        "ece": 0.07330075187969919
+      },
+      "moderation_toxicity": {
+        "n": 400,
+        "errors": 0,
+        "noul_accuracy": 0.53,
+        "mean_confidence": 0.7552812500000003,
+        "accuracy": 0.53,
+        "macro_f1": 0.39673982800667434,
+        "brier": 0.5314824209500002,
+        "ece": 0.24403675000000002
+      },
+      "phishing": {
+        "n": 400,
+        "errors": 0,
+        "noul_accuracy": 0.94,
+        "mean_confidence": 0.864988499999999,
+        "accuracy": 0.94,
+        "macro_f1": 0.9352820623449466,
+        "brier": 0.1061876843000001,
+        "ece": 0.0761995000000004
+      },
+      "rag_relevance": {
+        "n": 400,
+        "errors": 0,
+        "noul_accuracy": 0.5875,
+        "mean_confidence": 0.6769719999999994,
+        "accuracy": 0.5875,
+        "macro_f1": 0.5639275591175479,
+        "brier": 0.4946553734999998,
+        "ece": 0.09406650000000003
+      },
+      "support_triage": {
+        "n": 400,
+        "errors": 0,
+        "choice_accuracy": 0.4775,
+        "mean_confidence": 0.4445459999999998,
+        "accuracy": 0.4775,
+        "macro_f1": 0.4427656158048315,
+        "brier": 0.6618341450499998,
+        "ece": 0.06501450000000003
+      },
+      "typed_decisions": {
+        "n": 2000,
+        "errors": 0,
+        "choice_accuracy": 0.7316666666666667,
+        "noul_accuracy": 0.855,
+        "score_mae": 0.2470577624999999,
+        "mean_confidence": 0.5507642499999994,
+        "accuracy": 0.7933333333333333,
+        "macro_f1": 0.6576372687172694,
+        "brier": 0.3778847006666666,
+        "ece": 0.22340058333333337
+      }
+    },
+    "by_tag": {
+      "held_out": {
+        "n": 1599,
+        "errors": 0,
+        "choice_accuracy": 0.6357947434292867,
+        "noul_accuracy": 0.64625,
+        "mean_confidence": 0.7496974358974361,
+        "accuracy": 0.6410256410256411,
+        "macro_f1": 0.45105513920170826,
+        "brier": 0.49119738391494705,
+        "ece": 0.12081350844277675
+      },
+      "in_training": {
+        "n": 2000,
+        "errors": 0,
+        "choice_accuracy": 0.71125,
+        "noul_accuracy": 0.8216666666666667,
+        "mean_confidence": 0.722354550000001,
+        "accuracy": 0.7775,
+        "macro_f1": 0.6527502029560457,
+        "brier": 0.3009741860799996,
+        "ece": 0.06455665000000013
+      },
+      "workflow:agent_trace_observability": {
+        "n": 500,
+        "errors": 0,
+        "choice_accuracy": 0.675,
+        "noul_accuracy": 0.84,
+        "score_mae": 0.2093336750000001,
+        "mean_confidence": 0.5007238,
+        "accuracy": 0.73,
+        "macro_f1": 0.5918382070268642,
+        "brier": 0.46397645383333347,
+        "ece": 0.23423166666666664
+      },
+      "workflow:customer_service": {
+        "n": 500,
+        "errors": 0,
+        "choice_accuracy": 0.76,
+        "noul_accuracy": 0.76,
+        "score_mae": 0.21983915499999995,
+        "mean_confidence": 0.5541974000000004,
+        "accuracy": 0.76,
+        "macro_f1": 0.7055614143074499,
+        "brier": 0.3973245054333337,
+        "ece": 0.21265300000000004
+      },
+      "workflow:invoice_processing": {
+        "n": 500,
+        "errors": 0,
+        "choice_accuracy": 0.79,
+        "noul_accuracy": 0.925,
+        "score_mae": 0.311219575,
+        "mean_confidence": 0.6310286000000002,
+        "accuracy": 0.88,
+        "macro_f1": 0.7501403665755262,
+        "brier": 0.2356478423666667,
+        "ece": 0.1909946666666667
+      },
+      "workflow:security_incidents": {
+        "n": 500,
+        "errors": 0,
+        "choice_accuracy": 0.73,
+        "noul_accuracy": 0.84,
+        "score_mae": 0.24783864500000008,
+        "mean_confidence": 0.5171071999999995,
+        "accuracy": 0.8033333333333333,
+        "macro_f1": 0.5814872977855211,
+        "brier": 0.4145900010333333,
+        "ece": 0.2606576666666666
+      }
+    },
+    "by_language": {}
+  }
+}
