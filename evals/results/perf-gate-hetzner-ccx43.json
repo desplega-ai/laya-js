@@ -1,0 +1,54 @@
+{
+  "host": "hetzner-ccx43",
+  "pass": false,
+  "checks": [
+    {
+      "gate": "port overhead",
+      "cell": "node-english-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    },
+    {
+      "gate": "port overhead",
+      "cell": "bun-english-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    },
+    {
+      "gate": "port overhead",
+      "cell": "node-multilingual-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    },
+    {
+      "gate": "port overhead",
+      "cell": "bun-multilingual-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    },
+    {
+      "gate": "port overhead",
+      "cell": "node-typed-decisions-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    },
+    {
+      "gate": "port overhead",
+      "cell": "bun-typed-decisions-fp32",
+      "value": null,
+      "limit": 1.25,
+      "pass": false
+    }
+  ],
+  "control": {
+    "python_torch_multilingual_1q_p50_ms": 122.91,
+    "upstream_m7a_xlarge_ms": 193,
+    "ratio": 0.637,
+    "within_25pct": false
+  }
+}

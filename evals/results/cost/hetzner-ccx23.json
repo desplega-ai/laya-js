@@ -1,0 +1,62 @@
+{
+  "host": "hetzner-ccx23",
+  "price": {
+    "eur_per_hour": 0.1378,
+    "vcpu": 4,
+    "memory_gib": 16,
+    "location": "fsn1",
+    "gross": true,
+    "source": "Hetzner Cloud API GET /v1/server_types (ccx23, fsn1, price_hourly.gross)",
+    "url": "https://docs.hetzner.cloud/reference/cloud#server-types-get-all-server-types",
+    "date": "2026-09-29"
+  },
+  "prices_checked": "2026-09-29",
+  "rows": [
+    {
+      "target": "docker",
+      "checkpoint": "english",
+      "precision": "fp32",
+      "eur_per_1m": 22.9208,
+      "per_s": 1.67,
+      "measured_at": "concurrency_4",
+      "p95_ms_at_load": 7089.44
+    },
+    {
+      "target": "docker",
+      "checkpoint": "multilingual",
+      "precision": "fp32",
+      "eur_per_1m": 9.7647,
+      "per_s": 3.92,
+      "measured_at": "concurrency_4",
+      "p95_ms_at_load": 3964.71
+    },
+    {
+      "target": "python-torch",
+      "checkpoint": "english",
+      "precision": "fp32",
+      "eur_per_1m": 29.9045,
+      "per_s": 1.28,
+      "measured_at": "batch_1",
+      "p95_ms_at_load": null
+    },
+    {
+      "target": "python-torch",
+      "checkpoint": "multilingual",
+      "precision": "fp32",
+      "eur_per_1m": 13.2449,
+      "per_s": 2.89,
+      "measured_at": "batch_1",
+      "p95_ms_at_load": null
+    },
+    {
+      "target": "llm-claude-haiku-4-5",
+      "checkpoint": null,
+      "precision": null,
+      "eur_per_1m": 289.4434,
+      "usd_per_1m": 329.3287,
+      "mean_input_tokens": 279,
+      "mean_output_tokens": 10,
+      "note": "computed only: list price x estimated tokens, no API calls, no accuracy claim"
+    }
+  ]
+}
