@@ -1,0 +1,15 @@
+# all-checkpoints, with a PersistentVolumeClaim as the cache instead of an emptyDir, so pod
+# restarts skip the ~3.4 GB download (the initContainer re-verifies SHA-256 and exits).
+#
+# ReadWriteOnce: every replica mounting it must land on the same node. For replicas spread across
+# nodes use a ReadWriteMany storage class here (fetch-models is safe to run concurrently on a shared
+# volume), or give each pod its own claim.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../all-checkpoints
+  - pvc.yaml
+
+patches:
+  - path: deployment-patch.yaml

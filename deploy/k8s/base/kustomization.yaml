@@ -1,0 +1,22 @@
+# laya-server, multilingual fp32 baked into the image (plan, Phase 9).
+#
+# Needs a Secret `laya-api` with key `api-key` (the bearer token clients send):
+#   kubectl create secret generic laya-api --from-file=api-key=./api-key.txt
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - pairs:
+      app.kubernetes.io/name: laya-server
+    includeSelectors: true
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - hpa.yaml
+  - pdb.yaml
+
+# The image is referenced by its full name in base and overlays, so one image transformer in the
+# kustomization you deploy retags every container (initContainers included). GHCR publishing is
+# a manual step for now; pin the pushed tag in your own overlay with
+#   kustomize edit set image ghcr.io/desplega-ai/laya-server=ghcr.io/desplega-ai/laya-server:<tag>
