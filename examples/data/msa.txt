@@ -1,0 +1,37 @@
+MASTER SERVICES AGREEMENT
+
+This Master Services Agreement (the "Agreement") is entered into as of 1 March 2026 (the "Effective Date") between Northwind Analytics Ltd., a company registered in England and Wales ("Provider"), and Harbor & Vale Logistics Inc., a Delaware corporation ("Customer").
+
+1. DEFINITIONS. "Services" means the hosted analytics platform, support and professional services described in each Order Form. "Customer Data" means all data submitted by or for Customer to the Services. "Order Form" means a document signed by both parties that references this Agreement and specifies the Services, the Fees and the Subscription Term.
+
+2. SERVICES. Provider will make the Services available to Customer during the Subscription Term in accordance with this Agreement and the applicable Order Form. Provider will use commercially reasonable efforts to make the Services available 99.5 percent of the time in each calendar month, excluding scheduled maintenance announced at least 48 hours in advance. Service credits for missed availability are Customer's sole remedy for downtime.
+
+3. CUSTOMER RESPONSIBILITIES. Customer is responsible for the accuracy of Customer Data, for maintaining the confidentiality of user credentials, and for all activity under its accounts. Customer will not reverse engineer the Services, resell them, or use them to build a competing product. Customer will promptly notify Provider of any unauthorised use of its accounts.
+
+4. FEES AND PAYMENT. Customer will pay the fees set out in each Order Form (the "Fees"). Unless the Order Form states otherwise, Fees are invoiced annually in advance and are due thirty (30) days after the invoice date. Late amounts accrue interest at one percent per month or the maximum rate permitted by law, whichever is lower. Fees are exclusive of taxes, which Customer will pay other than taxes on Provider's net income.
+
+5. INTELLECTUAL PROPERTY. Provider retains all rights in the Services, including all improvements and derivative works. Customer retains all rights in Customer Data and grants Provider a limited licence to process Customer Data solely to provide the Services. Feedback provided by Customer may be used by Provider without restriction or obligation.
+
+6. CONFIDENTIALITY. Each party will protect the other's Confidential Information with at least the care it uses for its own, and will use it only to perform or receive the Services. These obligations survive for five years after termination, and for trade secrets for as long as they remain trade secrets. Disclosure required by law is permitted after prompt notice to the disclosing party where lawful.
+
+7. DATA PROTECTION. To the extent Provider processes personal data on behalf of Customer, the Data Processing Addendum in Schedule 2 applies. Provider will implement the technical and organisational measures described in Schedule 3, will process personal data only on documented instructions, and will notify Customer without undue delay, and in any event within seventy-two (72) hours, after becoming aware of a personal data breach affecting Customer Data.
+
+8. WARRANTIES. Each party warrants that it has the authority to enter into this Agreement. Provider warrants that the Services will perform materially in accordance with the documentation. EXCEPT AS EXPRESSLY STATED, THE SERVICES ARE PROVIDED "AS IS" AND PROVIDER DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+9. INDEMNIFICATION. Provider will defend Customer against any third-party claim alleging that the Services infringe that party's intellectual property rights, and will pay damages finally awarded or agreed in settlement. Provider has no obligation for claims arising from Customer Data, from combinations with items not supplied by Provider, or from use in breach of this Agreement. Customer will defend Provider against third-party claims arising from Customer Data or Customer's breach of Section 3.
+
+10. LIMITATION OF LIABILITY. Neither party is liable for indirect, incidental or consequential damages, or for loss of profit or revenue, however arising. Each party's total aggregate liability arising out of this Agreement in any twelve-month period is limited to the Fees paid or payable by Customer in that period. These limits do not apply to breach of confidentiality, to indemnification obligations under Section 9, or to liability that cannot be limited by law.
+
+11. TERM AND RENEWAL. This Agreement starts on the Effective Date and continues until all Order Forms have expired or been terminated. Each Order Form has an initial subscription term of thirty-six (36) months (the "Initial Term"). Following the Initial Term, each Order Form will automatically renew for successive renewal terms of twelve (12) months each, unless either party gives written notice of non-renewal at least ninety (90) days before the end of the then-current term. Provider may increase Fees for a renewal term by up to seven percent (7%) on sixty (60) days' notice.
+
+12. TERMINATION. Either party may terminate this Agreement or an Order Form for material breach that remains uncured thirty (30) days after written notice. Either party may terminate immediately if the other becomes insolvent. On termination Customer will pay all Fees due through the effective date, and no Fees paid in advance are refundable except on termination for Provider's uncured breach.
+
+13. TRANSITION ASSISTANCE. For sixty (60) days after expiry or termination, Provider will make Customer Data available for export in a standard machine-readable format at no additional charge, and will delete Customer Data within ninety (90) days after that period unless law requires retention.
+
+14. INSURANCE. Provider will maintain commercial general liability insurance of at least five million dollars per occurrence and cyber liability insurance of at least ten million dollars in the aggregate throughout the term, and will provide certificates on request.
+
+15. GENERAL. Neither party may assign this Agreement without the other's written consent, except to a successor in a merger or sale of substantially all of its assets. Notices must be in writing and sent to the addresses in the Order Form. This Agreement, with its schedules and Order Forms, is the entire agreement and supersedes prior discussions. Amendments must be in writing and signed by both parties. If any provision is unenforceable, the remainder stays in effect.
+
+16. GOVERNING LAW AND DISPUTES. This Agreement and any dispute arising out of it are governed by the laws of the State of New York, without regard to conflict of laws rules. The parties submit to the exclusive jurisdiction of the state and federal courts located in New York County, New York.
+
+Signed for Northwind Analytics Ltd.: ______________________    Signed for Harbor & Vale Logistics Inc.: ______________________
