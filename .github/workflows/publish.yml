@@ -3,7 +3,10 @@ name: publish
 # Publishes @desplega.ai/laya, then @desplega.ai/laya-server, to npm with provenance.
 #
 # - A `v*` tag push publishes for real. The tag must equal both package versions (v0.1.0 for 0.1.0).
+# - auto-release.yml tags a version bump on main and dispatches this workflow on that tag with
+#   `dry_run` off, which is a real run: a tag pushed with GITHUB_TOKEN triggers nothing itself.
 # - workflow_dispatch is a dry run unless you untick `dry_run`, and a real run only from a tag or main.
+# - A package whose version is already on npm is skipped, so a rerun resumes where a run stopped.
 #
 # Needs the Actions secret NPM_TOKEN: the desplega-ai organization secret, which must be shared with
 # this repository (see README, "Releasing"). Tarballs are made with

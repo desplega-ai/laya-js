@@ -1,0 +1,108 @@
+name: auto-release
+
+# A version bump on main is the release trigger.
+#
+# On every push to main: fail if the two package versions differ, and release only when the tag
+# v<version> does not exist yet. A release is the tag push plus a dispatch of publish.yml on that
+# tag. The dispatch is explicit because a tag pushed with GITHUB_TOKEN never triggers
+# `on: push: tags` workflows, so publish.yml would not start from the tag alone.
+#
+# Keyed on the tag, so it is safe to rerun and it does nothing on a push that leaves the version
+# alone. A manual tag push still works: publish.yml runs from it, and this job then finds the tag.
+# If the tag exists but nothing was published (the dispatch failed), run `publish` by hand from
+# that tag with `dry_run` unticked; it skips any package already on npm.
+#
+# workflow_dispatch is a dry run unless you untick `dry_run`, and a real run only from main. A dry
+# run does the version check and reports what it would do, and creates and starts nothing.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Check and report only, create no tag and start no publish"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: auto-release
+  cancel-in-progress: false
+
+jobs:
+  auto-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # push the tag
+      actions: write # dispatch publish.yml
+    env:
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+    steps:
+      - name: Refuse a real run from a branch other than main
+        if: env.DRY_RUN != 'true'
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error title=Wrong ref::A real auto-release runs from main, not from $GITHUB_REF. Nothing was tagged or published."
+            exit 1
+          fi
+
+      # Pinned by SHA: this job can push tags and start the publish job.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Verify both packages carry the same version
+        id: version
+        run: |
+          laya="$(jq -r .version packages/laya/package.json)"
+          server="$(jq -r .version packages/laya-server/package.json)"
+          if [ "$laya" != "$server" ]; then
+            echo "::error title=Version mismatch::@desplega.ai/laya is $laya but @desplega.ai/laya-server is $server. Both packages release together at one version; nothing was tagged."
+            exit 1
+          fi
+          if ! echo "$laya" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+            echo "::error title=Bad version::'$laya' is not a semver version; nothing was tagged."
+            exit 1
+          fi
+          echo "version=$laya" >> "$GITHUB_OUTPUT"
+          echo "tag=v$laya" >> "$GITHUB_OUTPUT"
+
+      - name: Decide whether a release is needed
+        id: state
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Nothing to release::$TAG already exists."
+          else
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Release needed::$TAG does not exist yet."
+          fi
+
+      - name: Dry run, stop here
+        if: env.DRY_RUN == 'true' && steps.state.outputs.needed == 'true'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: echo "::notice title=Dry run::Would tag $GITHUB_SHA as $TAG and dispatch publish on it. Created and started nothing."
+
+      - name: Tag main and push the tag
+        if: env.DRY_RUN != 'true' && steps.state.outputs.needed == 'true'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag "$TAG" "$GITHUB_SHA"
+          git push origin "refs/tags/$TAG"
+
+      # From the tag, so publish.yml's `--expect-tag` check runs against what was released.
+      - name: Dispatch publish on the tag
+        if: env.DRY_RUN != 'true' && steps.state.outputs.needed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh workflow run publish.yml --ref "$TAG" -f dry_run=false
+          echo "::notice title=Released::Tagged $TAG and dispatched publish on it."

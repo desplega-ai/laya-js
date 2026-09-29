@@ -7,7 +7,7 @@ A typesafe TypeScript runtime for [laya](https://github.com/NandhaKishorM/laya) 
 
 ## Status
 
-Under construction. Both packages are versioned for their first release, 0.1.0, but neither is on npm yet (`@desplega.ai/laya` and `@desplega.ai/laya-server` both return 404 on the registry), so you install from a clone. No container image is published either: you build it from the Dockerfile.
+Under construction. Both packages are on npm at 0.1.0: `npm install @desplega.ai/laya` for the library, `@desplega.ai/laya-server` for the HTTP server. No container image is published: you build it from the Dockerfile.
 
 ## Quick start
 
@@ -41,11 +41,13 @@ The runtime needs fp32 ONNX bundles (`encoder.onnx`, `head.onnx`, `tokenizer.jso
 
 ## Releasing
 
-Both packages release together, at the same version. [`publish.yml`](.github/workflows/publish.yml) publishes `@desplega.ai/laya`, then `@desplega.ai/laya-server`, to npm with provenance.
+Both packages release together, at the same version. Bumping the version on `main` releases them: [`auto-release.yml`](.github/workflows/auto-release.yml) tags the commit and [`publish.yml`](.github/workflows/publish.yml) publishes `@desplega.ai/laya`, then `@desplega.ai/laya-server`, to npm with provenance.
 
 1. Set the same `version` in `packages/laya/package.json` and `packages/laya-server/package.json`, and in the two matching `"version"` lines of `bun.lock`. Merge that to `main`.
-2. Optional dry run: Actions, `publish`, Run workflow (`dry_run` is on by default). It builds, packs and checks both tarballs and runs `npm publish --dry-run`.
-3. Tag and push: `git tag v0.1.0 && git push origin v0.1.0`. The tag must equal the version, or the job fails before publishing.
+2. `auto-release` runs on the push. If the two versions differ it fails and tags nothing. If the tag `v<version>` does not exist yet, it creates that tag on the pushed commit and dispatches `publish` on it. If the tag exists, it does nothing, so a push that leaves the version alone releases nothing.
+3. Watch the `publish` run in Actions. It typechecks, tests, packs both tarballs, checks them and publishes.
+
+Optional dry runs, both in Actions, Run workflow, with `dry_run` on by default: `publish` builds, packs and checks both tarballs and runs `npm publish --dry-run`; `auto-release` checks the versions and reports whether it would tag, and creates nothing. `publish` skips a package whose version is already on npm, so a rerun resumes where a failed run stopped. If the tag exists but nothing was published (the dispatch failed), run `publish` by hand from that tag with `dry_run` unticked. Pushing `git tag v<version> && git push origin v<version>` yourself still publishes: the tag must equal the version, or the job fails before publishing.
 
 The workflow reads the Actions secret `NPM_TOKEN`, the `desplega-ai` organization secret (an npm token with read and write on the `@desplega.ai` scope). It must be shared with this repository, and because this repository is public, "Private repositories" visibility does not cover it. If the secret is empty, a real run fails at its first step with a message saying so. `bun run pack:check` runs the same tarball checks locally and in CI. Publish only through the workflow: `npm pack` and `npm publish` from a package directory leave laya-server depending on `workspace:*`, which npm cannot install; the workflow packs with `bun pm pack`, which writes the real version.
 

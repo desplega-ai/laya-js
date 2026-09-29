@@ -14,7 +14,7 @@ There is no generation, so a call is one encoder pass plus a small head: hundred
 
 ## Install
 
-The packages are not published to npm yet, so you work from a clone. Node 22+ or Bun 1.4+.
+Node 22+ or Bun 1.4+. Use the packages from npm (`npm install @desplega.ai/laya`, `@desplega.ai/laya-server`), or work from a clone:
 
 ```sh
 git clone https://github.com/desplega-ai/laya-js && cd laya-js
