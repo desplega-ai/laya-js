@@ -1,0 +1,12 @@
+[Unit]
+Description=Deploy the newest laya-js release to the laya container
+Documentation=file:///opt/laya/run.sh
+Wants=network-online.target
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/laya/deploy.sh
+# A build plus a first model fetch plus a health wait; the timer never stacks runs (see the timer).
+TimeoutStartSec=45min
+Nice=10
