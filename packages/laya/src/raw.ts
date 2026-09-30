@@ -1,6 +1,6 @@
 // The untyped vendored surface of laya-ts, importable as `@desplega.ai/laya/raw` (escape hatch).
 // Moved here from index.ts by Desplega Labs, 2026; see UPSTREAM.md.
-export const VERSION = "0.1.0";
+export const VERSION = "0.1.1";
 export type {
   ActionInfo,
   AgentCfg,

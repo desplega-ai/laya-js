@@ -504,7 +504,7 @@ export type TypedRouterRequest<Q extends QuestionMap = QuestionMap> = Omit<Route
 export function validateDecision<S extends StandardSchemaV1>(schema: S, value: unknown): Promise<StandardSchemaV1.InferOutput<S>>;
 
 // @public (undocumented)
-export const VERSION = "0.1.0";
+export const VERSION = "0.1.1";
 
 // @public
 export interface WindowInfo {

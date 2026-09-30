@@ -43,6 +43,7 @@ Not covered: Northflank, Porter, Coolify, Dokku and other container platforms. T
 | Peak RSS while loading `multilingual` | 2,280 MiB | local run, below |
 | RSS idle after load | 1,856 to 1,878 MiB | local run |
 | RSS after 300 requests (100 sequential, 8x25 concurrent) | 1,761 to 1,767 MiB | local run |
+| Peak cgroup memory under the Phase 10 load (long states, 1 to 10 questions, 16 concurrent requests), 4 vCPU | 2,574 MiB; 2,454 MiB under a 3 GiB limit, no OOM kill (was 7,129 MiB) | Hetzner `ccx23`, Docker, 2026-09-30 |
 | Process start to `/health` 200 | 6.7 to 7.4 s, model file already in the page cache | local run |
 | Sequential `POST /v1/systemone` latency, 2 questions | p50 324 to 373 ms, p95 497 to 507 ms | local run, noisy shared host |
 

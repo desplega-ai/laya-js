@@ -59,6 +59,6 @@
 ## Sizing notes
 
 - Keep `LAYA_THREADS` equal to the CPU request. The base sets both to 1.
-- One fp32 `multilingual` process peaks at about 2.2 GiB RSS while loading and settles near 1.8 GiB ([README](README.md#measured-footprint)). The 3Gi limit leaves room for request buffers.
+- One fp32 `multilingual` process peaks at about 2.2 GiB RSS while loading and settles near 1.8 GiB ([README](README.md#measured-footprint)). Under the Phase 10 load (long states, 10 questions, 16 concurrent requests) the container peaked at 2.5 GiB (cgroup `memory.peak`, 4 vCPU) and finished with no OOM kill under a hard 3 GiB limit. The 3Gi limit holds because `LAYA_RUN_MB` (default 256) bounds the working memory of each ONNX run, one run at a time per process; one row cannot be split, so a call with a `maxLen` above the default 512 that produces rows of about 2,000 tokens or more can still pass it (a lone 2,048-token row takes the encoder to 2.7 GiB by itself); raise the limit if you serve such rows.
 - Nodes pull a 1.6 GB image. Pre-pull it or keep `minReplicas` at 2 or more so a scale-up is not stuck behind a cold pull.
 - Expose it with the Ingress or Gateway your cluster already runs. Nothing in `base` is public.

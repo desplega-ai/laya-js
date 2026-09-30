@@ -7,7 +7,7 @@ A typesafe TypeScript runtime for [laya](https://github.com/NandhaKishorM/laya) 
 
 ## Status
 
-Under construction. Both packages are on npm at 0.1.0: `npm install @desplega.ai/laya` for the library, `@desplega.ai/laya-server` for the HTTP server. No container image is published: you build it from the Dockerfile.
+Under construction. Both packages are on npm at 0.1.1: `npm install @desplega.ai/laya` for the library, `@desplega.ai/laya-server` for the HTTP server. No container image is published: you build it from the Dockerfile.
 
 ## Quick start
 

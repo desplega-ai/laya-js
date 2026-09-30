@@ -1,4 +1,6 @@
-// Modified by Desplega Labs, 2026: removed the browser path (createWebProvider, loadWebBundle, fetchArrayBuffer, onnxruntime-web); HF 401/403 throws LayaLoadError; SessionProvider.release frees the ONNX sessions; numThreads/LAYA_THREADS set the sessions' intraOpNumThreads (ort.env.numThreads is a web-only knob).
+// Modified by Desplega Labs, 2026: removed the browser path (createWebProvider, loadWebBundle, fetchArrayBuffer, onnxruntime-web); HF 401/403 throws LayaLoadError; SessionProvider.release frees the ONNX sessions; numThreads/LAYA_THREADS set the sessions' intraOpNumThreads (ort.env.numThreads is a web-only knob). Bounded working memory: the encoder and head graphs run in row chunks sized by `runMemoryMb` / `LAYA_RUN_MB`, one graph run at a time per provider, and each chunk is trimmed to its longest real row (the graphs materialise [rows, heads, len, len] attention, so peak RSS grew with batch x len^2).
+import { maxOf } from "./common.js";
+
 /** ONNX session shim: Node (onnxruntime-node).
  * Lazy imports only — unit tests with a fake provider never touch onnxruntime. */
 
@@ -118,13 +120,14 @@ export function feed(ort: any, b: Batch): Record<string, any> {
 }
 
 /** Head feeds: encoder hidden + marker_pos/mask + qtype. */
-export function feedHead(ort: any, hidden: number[][][] | any, b: Batch): Record<string, any> {
+export function feedHead(ort: any, hidden: number[][][] | any, b: Batch, seqLen?: number): Record<string, any> {
   const n = b.markerPos.length;
   let k = 1;
   for (const r of b.markerPos) if (r.length > k) k = r.length;
   // Direct flatten into typed arrays; no flat(Infinity)+map intermediates.
   const nH = (hidden as any).length ?? n;
-  const S = (hidden as any)[0]?.length ?? 1;
+  // `seqLen` lets a caller pass rows trimmed to their own length; missing positions read as zeros.
+  const S = seqLen ?? (hidden as any)[0]?.length ?? 1;
   const Hd = (hidden as any)[0]?.[0]?.length ?? 1;
   const flatH = new Float32Array(nH * S * Hd);
   let p = 0;
@@ -169,6 +172,9 @@ function pickOutput(out: Record<string, any>, names: string[]): any {
 export interface ProviderOptions {
   device?: string;
   numThreads?: number;
+  /** Working-memory budget of one graph run, in MiB (`LAYA_RUN_MB` when unset). Rows beyond it go
+   * through the graph in several runs. Default 256 on the CPU, unbounded on other devices. */
+  runMemoryMb?: number;
   /** Opt-in {artifact name: SHA-256 hexdigest} check for fetched ONNX files (web). */
   expectedSha256?: Record<string, string>;
 }
@@ -180,6 +186,60 @@ function threadOptions(numThreads?: number): { intraOpNumThreads?: number } {
     numThreads ??
     (typeof process !== "undefined" ? Number((process as any).env?.["LAYA_THREADS"]) : NaN);
   return Number.isFinite(raw) && (raw as number) > 0 ? { intraOpNumThreads: Math.trunc(raw as number) } : {};
+}
+
+/** Default working-memory budget of one graph run on the CPU, in MiB. */
+export const DEFAULT_RUN_MB = 256;
+
+/** Working set of one row per token^2, in bytes. Both graphs build [rows, 12 heads, len, len]
+ * attention and keep about ten such tensors live: 372 B (head) and 412 B (encoder) per token^2 at
+ * one 1024-token row, onnxruntime-node 1.30, arena on. Rounded up. */
+const RUN_BYTES_PER_TOKEN_SQ = 400;
+
+function runBudgetBytes(runMemoryMb: number | undefined, cpu: boolean): number {
+  const raw = runMemoryMb ?? (typeof process !== "undefined" ? Number((process as any).env?.["LAYA_RUN_MB"]) : NaN);
+  if (Number.isFinite(raw) && (raw as number) > 0) return (raw as number) * 2 ** 20;
+  return cpu ? DEFAULT_RUN_MB * 2 ** 20 : Number.POSITIVE_INFINITY;
+}
+
+/** Tokens a row really uses: its attention mask up to the last 1 (rows are right-padded). */
+export function usedLengths(attentionMask: number[][]): number[] {
+  return attentionMask.map((row) => {
+    let n = row.length;
+    while (n > 1 && !row[n - 1]) n--;
+    return Math.max(1, n);
+  });
+}
+
+/** Split rows, in order, into runs whose padded working set fits `budgetBytes`. A run always holds
+ * at least one row, so a single row longer than the budget still runs. */
+export function planRuns(lengths: number[], budgetBytes: number): number[][] {
+  const runs: number[][] = [];
+  let run: number[] = [];
+  let longest = 0;
+  for (let i = 0; i < lengths.length; i++) {
+    const len = Math.max(longest, lengths[i]);
+    if (run.length > 0 && (run.length + 1) * len * len * RUN_BYTES_PER_TOKEN_SQ > budgetBytes) {
+      runs.push(run);
+      run = [];
+      longest = 0;
+    }
+    run.push(i);
+    longest = Math.max(longest, lengths[i]);
+  }
+  if (run.length > 0) runs.push(run);
+  return runs;
+}
+
+/** Run one task at a time, in call order. Concurrent session runs each allocate their own working
+ * set, so a busy server would multiply the per-run budget by its concurrency. */
+function serialQueue(): <T>(fn: () => Promise<T>) => Promise<T> {
+  let tail: Promise<unknown> = Promise.resolve();
+  return (fn) => {
+    const result = tail.then(fn);
+    tail = result.catch(() => undefined);
+    return result;
+  };
 }
 
 function isOomError(e: unknown): boolean {
@@ -390,20 +450,56 @@ export async function createNodeProvider(
       throw e;
     }
   };
+  const serial = serialQueue();
+  const budget = () => runBudgetBytes(opts?.runMemoryMb, activeEP === "cpu");
   return {
     runEncoder: async (b) =>
       runWithCpuFallback(async (e) => {
-        const out = await e.run(feed(ort, b));
-        const t = pickOutput(out, ["last_hidden_state", "lastHidden", "hidden_states"]);
-        return { lastHidden: toNested(t.data, t.dims) };
+        const lens = usedLengths(b.attentionMask);
+        const lastHidden: number[][][] = new Array(b.inputIds.length);
+        for (const rows of planRuns(lens, budget())) {
+          const len = maxOf(rows.map((i) => lens[i]), 1);
+          const chunk = {
+            inputIds: rows.map((i) => b.inputIds[i].slice(0, len)),
+            attentionMask: rows.map((i) => b.attentionMask[i].slice(0, len)),
+          } as Batch;
+          const out = await serial<Record<string, any>>(() => e.run(feed(ort, chunk)));
+          const t = pickOutput(out, ["last_hidden_state", "lastHidden", "hidden_states"]);
+          const nested: number[][][] = toNested(t.data, t.dims);
+          // Keep each row's real tokens only: the head reads its own row length from the mask.
+          rows.forEach((row, j) => {
+            lastHidden[row] = nested[j].slice(0, lens[row]);
+          });
+        }
+        return { lastHidden };
       }),
     runHead: async (h, b) =>
       runWithCpuFallback(async (_e, hd) => {
-        const out = await hd.run(feedHead(ort, h, b));
-        const vals = Object.values(out) as any[];
-        const lt = pickOutput(out, ["logits"]);
-        const at = pickOutput(out, ["act_logits", "act"]) ?? vals[1] ?? vals[0];
-        return { logits: toNested(lt.data, lt.dims), act: toNested(at.data, at.dims) };
+        const hidden = h as number[][][];
+        const lens = usedLengths(b.attentionMask);
+        const logits: number[][] = new Array(b.markerPos.length);
+        const act: number[][] = new Array(b.markerPos.length);
+        for (const rows of planRuns(lens, budget())) {
+          const len = maxOf(rows.map((i) => lens[i]), 1);
+          const chunk: Batch = {
+            inputIds: [],
+            attentionMask: rows.map((i) => b.attentionMask[i]),
+            markerPos: rows.map((i) => b.markerPos[i]),
+            markerMask: rows.map((i) => b.markerMask[i]),
+            qtype: rows.map((i) => b.qtype[i]),
+          };
+          const out = await serial<Record<string, any>>(() => hd.run(feedHead(ort, rows.map((i) => hidden[i]), chunk, len)));
+          const vals = Object.values(out) as any[];
+          const lt = pickOutput(out, ["logits"]);
+          const at = pickOutput(out, ["act_logits", "act"]) ?? vals[1] ?? vals[0];
+          const lNested: number[][] = toNested(lt.data, lt.dims);
+          const aNested: number[][] = toNested(at.data, at.dims);
+          rows.forEach((row, j) => {
+            logits[row] = lNested[j];
+            act[row] = aNested[j];
+          });
+        }
+        return { logits, act };
       }),
     release: async () => {
       const sessions = [...new Set([enc, head, cpuEnc, cpuHead].filter(Boolean))];
