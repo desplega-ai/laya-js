@@ -1,0 +1,14 @@
+[Unit]
+Description=Poll for a new laya-js release every 5 minutes
+
+[Timer]
+# First poll 1 min after the timer starts (this is what makes the install itself the first run),
+# then 5 min after each run ends. OnUnitInactiveSec waits for a running deploy to finish.
+OnActiveSec=1min
+OnBootSec=3min
+OnUnitInactiveSec=5min
+RandomizedDelaySec=20
+AccuracySec=10s
+
+[Install]
+WantedBy=timers.target
