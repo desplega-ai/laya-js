@@ -38,7 +38,7 @@ Either way, point every example, and your own code, at the directory:
 export LAYA_MODEL_DIR=$PWD/bundles     # layout: <dir>/<checkpoint>/fp32/{encoder.onnx,head.onnx,...}
 ```
 
-Without `modelDir`, `createAgent` fetches from the public artifact store (`HF_TOKEN` is optional; a rejected token raises `LayaLoadError`). `LAYA_THREADS` sets the ONNX thread count for the library as well as the server.
+Without `modelDir`, `createAgent` fetches from the public artifact store (`HF_TOKEN` is optional; a rejected token raises `LayaLoadError`). `LAYA_THREADS` sets the ONNX thread count for the library as well as the server. `LAYA_RUN_MB` (default 256) caps the working memory of one ONNX run, in MiB: a call with many or long rows goes through the graphs in several runs instead of one, with the same answers. Raise it for fewer, larger runs; one row longer than the cap still runs, alone.
 
 | Checkpoint | Encoder | Use it for |
 | --- | --- | --- |

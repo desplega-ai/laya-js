@@ -1,6 +1,6 @@
 {
   "name": "@desplega.ai/laya",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Typesafe TypeScript runtime for laya decision models (Node, Bun).",
   "license": "Apache-2.0",
   "author": "Desplega Labs",

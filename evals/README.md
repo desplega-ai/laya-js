@@ -3,8 +3,9 @@
 Phase 4 (classification accuracy and Python agreement) and Phase 10 (performance and cost) of the
 laya-js plan. fp32 only: INT8 is deferred (plan, 2026-09-28), so every TS INT8 cell is N/A.
 The reference numbers are measured on a Hetzner `ccx23` (4 dedicated vCPU, 16 GB), not on shared
-CI runners. The TS in-process runtimes do not fit in 16 GB yet (head-graph memory, see the Phase 10 report),
-so `results/perf/hetzner-ccx43/` holds the in-process numbers from a ccx43 (16 vCPU, 64 GB), Python beside TS.
+CI runners. The committed TS in-process numbers predate the bounded-run fix (0.1.1): they did not fit in 16 GB
+(head-graph memory), so `results/perf/hetzner-ccx43/` holds them from a ccx43 (16 vCPU, 64 GB), Python beside TS.
+The fix takes the docker peak from 7.1 GiB to 2.5 GiB; those files are not regenerated.
 `.github/workflows/evals.yml` is `workflow_dispatch` only.
 
 | Path | What |
